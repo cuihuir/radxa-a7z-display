@@ -19,6 +19,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - [Naming Conventions](docs/naming-conventions.md)
 - [Validation Guide](docs/validation.md)
 - [Validation Record Template](docs/validation-template.md)
+- [Validation Example](docs/examples/radxa-a7z-first-hdmi-example.md)
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
 
