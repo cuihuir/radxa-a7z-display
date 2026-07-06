@@ -27,6 +27,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - Every core document must have a matching `.zh-CN.md` translation.
 - Keep decisions in the decision log, not scattered across notes.
 - Add sources for any hardware, BSP, or release claim before treating it as a project fact.
+- Keep the docs practical and lightweight. This is a personal project first, with collaborators welcome but not required.
 
 ## Current status
 

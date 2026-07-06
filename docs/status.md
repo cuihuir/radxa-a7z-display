@@ -5,6 +5,7 @@
 Date: 2026-07-06
 
 This repository has been initialized as a documentation-first workspace for A733 HDMI display bring-up.
+It is intended to stay practical and lightweight.
 
 ## What is already in place
 
@@ -24,4 +25,3 @@ This repository has been initialized as a documentation-first workspace for A733
 - Record more detailed A733 board comparisons.
 - Add build and bring-up notes as validation evidence becomes available.
 - Create the GitHub remote when you are ready.
-
