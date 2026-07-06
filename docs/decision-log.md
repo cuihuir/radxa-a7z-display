@@ -25,3 +25,8 @@ Record durable project decisions here. Keep notes short and explicit.
 - Reason: The name is specific, searchable, and matches the project scope.
 - Impact: The repository, documentation, and future GitHub remote should use this identity.
 
+### 2026-07-06: Source comparison tool scope
+
+- Decision: Start with a small comparison tool that inspects vendor source trees and renders a Markdown diff report.
+- Reason: The most useful first code step is a tool that helps compare board configs, family configs, and DTS files without pulling in download or build automation.
+- Impact: The initial implementation stays small, testable, and directly useful for A733 port analysis.
