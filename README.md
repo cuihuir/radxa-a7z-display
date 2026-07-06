@@ -12,6 +12,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 ## Document map
 
 - [Project Overview](docs/project-overview.md)
+- [Current Status](docs/status.md)
 - [Display Landscape Research](docs/research/a733-display-landscape.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)
 - [Contributing Guide](docs/contributing.md)
@@ -32,4 +33,3 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - Project name: `radxa-a7z-display`
 - Scope: Debian 12 HDMI desktop bring-up and long-term maintenance on A733 boards
 - Repository state: local git initialized
-
