@@ -23,6 +23,11 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
 
+## Tools
+
+- `python3 tools/a733_compare.py <left-source-tree> <right-source-tree> --left-label <name> --right-label <name> --output report.md`
+- The tool scans board configs, family configs, and AArch64 DTS files, then renders a Markdown comparison report.
+
 ## Maintenance rules
 
 - English documents are the source of truth.
