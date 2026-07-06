@@ -30,3 +30,9 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Start with a small comparison tool that inspects vendor source trees and renders a Markdown diff report.
 - Reason: The most useful first code step is a tool that helps compare board configs, family configs, and DTS files without pulling in download or build automation.
 - Impact: The initial implementation stays small, testable, and directly useful for A733 port analysis.
+
+### 2026-07-06: Tree check subcommand
+
+- Decision: Add a single-tree validation mode to the comparison tool for minimum A733 source-tree checks.
+- Reason: A lightweight source-tree checker is a more useful next step than a download or build pipeline.
+- Impact: The tool can now answer both "what differs" and "is this tree minimally ready to inspect?".

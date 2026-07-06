@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 from typing import Iterable
 
@@ -160,22 +161,133 @@ def build_report(left_root: Path, right_root: Path, left_label: str, right_label
     return "\n".join(lines)
 
 
+def validate_tree(root: Path) -> dict[str, object]:
+    root = Path(root)
+    present: list[str] = []
+    missing: list[str] = []
+
+    board_files = _iter_files(root, BOARD_CONFIG_DIR, ("*.conf",))
+    family_files = _iter_files(root, FAMILY_CONFIG_DIR, ("*.conf",))
+    dts_files = _iter_files(root, DTS_ROOT, ("*.dts", "*.dtsi", "*.dtbo"))
+
+    if board_files:
+        present.append(f"board config: {board_files[0].relative_to(root).as_posix()}")
+    else:
+        missing.append("board config (*.conf under external/config/boards)")
+
+    if family_files:
+        present.append(f"family config: {family_files[0].relative_to(root).as_posix()}")
+    else:
+        missing.append("family config (*.conf under external/config/sources/families)")
+
+    if dts_files:
+        present.append(f"dts files: {dts_files[0].relative_to(root).as_posix()}")
+    else:
+        missing.append("dts files (arch/arm64/boot/dts/**/*.dts|dtsi|dtbo)")
+
+    values: dict[str, str] = {}
+    if board_files:
+        values.update(extract_key_values(board_files[0]))
+    if family_files:
+        values.update(extract_key_values(family_files[0]))
+
+    if values.get("BOARDFAMILY") != "sun60iw2":
+        missing.append("BOARDFAMILY=sun60iw2 in board config")
+    else:
+        present.append("BOARDFAMILY=sun60iw2")
+
+    if "MODULES" not in values:
+        missing.append("MODULES entry in board config")
+    else:
+        present.append("MODULES entry present")
+
+    if "DISTRIB_TYPE_CURRENT" not in values and "DISTRIB_TYPE_LEGACY" not in values:
+        missing.append("DISTRIB_TYPE_CURRENT or DISTRIB_TYPE_LEGACY in family config")
+    else:
+        present.append("distribution type entry present")
+
+    if "BOOT_FDT_FILE" not in values:
+        missing.append("BOOT_FDT_FILE entry in board config")
+    else:
+        present.append("BOOT_FDT_FILE entry present")
+
+    return {
+        "ok": not missing,
+        "present": present,
+        "missing": missing,
+        "summary": {
+            "board_files": len(board_files),
+            "family_files": len(family_files),
+            "dts_files": len(dts_files),
+        },
+    }
+
+
+def _render_validation_report(result: dict[str, object], root: Path) -> str:
+    lines = ["# A733 Tree Check", "", f"- Root: `{root}`", ""]
+    lines.append("## Present")
+    lines.append("")
+    present = result.get("present", [])
+    if present:
+        for item in present:
+            lines.append(f"- {item}")
+    else:
+        lines.append("- None")
+    lines.append("")
+    lines.append("## Missing")
+    lines.append("")
+    missing = result.get("missing", [])
+    if missing:
+        for item in missing:
+            lines.append(f"- {item}")
+    else:
+        lines.append("- None")
+    lines.append("")
+    lines.append("## Summary")
+    lines.append("")
+    summary = result.get("summary", {})
+    if isinstance(summary, dict):
+        for key in ("board_files", "family_files", "dts_files"):
+            lines.append(f"- {key}: {summary.get(key, 0)}")
+    lines.append("")
+    lines.append(f"- ok: `{result.get('ok', False)}`")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Compare two A733 vendor source trees and render a Markdown report."
+        description="Compare or validate A733 vendor source trees."
     )
-    parser.add_argument("left_root", type=Path, help="Path to the left source tree")
-    parser.add_argument("right_root", type=Path, help="Path to the right source tree")
-    parser.add_argument("--left-label", default="Left tree", help="Label for the left tree")
-    parser.add_argument("--right-label", default="Right tree", help="Label for the right tree")
-    parser.add_argument("--output", type=Path, help="Write the report to this file instead of stdout")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    compare = subparsers.add_parser("compare", help="Compare two source trees")
+    compare.add_argument("left_root", type=Path, help="Path to the left source tree")
+    compare.add_argument("right_root", type=Path, help="Path to the right source tree")
+    compare.add_argument("--left-label", default="Left tree", help="Label for the left tree")
+    compare.add_argument("--right-label", default="Right tree", help="Label for the right tree")
+    compare.add_argument("--output", type=Path, help="Write the report to this file instead of stdout")
+
+    check = subparsers.add_parser("check", help="Validate a single source tree for minimum A733 support")
+    check.add_argument("root", type=Path, help="Path to the source tree")
+    check.add_argument("--output", type=Path, help="Write the report to this file instead of stdout")
+    check.add_argument("--json", action="store_true", help="Emit JSON instead of Markdown")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
-    report = build_report(args.left_root, args.right_root, args.left_label, args.right_label)
-    if args.output:
+
+    if args.command == "compare":
+        report = build_report(args.left_root, args.right_root, args.left_label, args.right_label)
+    else:
+        result = validate_tree(args.root)
+        if args.json:
+            report = json.dumps(result, indent=2, sort_keys=True)
+        else:
+            report = _render_validation_report(result, args.root)
+
+    if getattr(args, "output", None):
         args.output.write_text(report + "\n", encoding="utf-8")
     else:
         print(report)

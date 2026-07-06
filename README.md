@@ -25,8 +25,9 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 
 ## Tools
 
-- `python3 tools/a733_compare.py <left-source-tree> <right-source-tree> --left-label <name> --right-label <name> --output report.md`
-- The tool scans board configs, family configs, and AArch64 DTS files, then renders a Markdown comparison report.
+- `python3 tools/a733_compare.py compare <left-source-tree> <right-source-tree> --left-label <name> --right-label <name> --output report.md`
+- `python3 tools/a733_compare.py check <source-tree> --output report.md`
+- The tool scans board configs, family configs, and AArch64 DTS files, then renders a Markdown comparison report or a minimum-tree check report.
 
 ## Maintenance rules
 
