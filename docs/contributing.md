@@ -2,7 +2,7 @@
 
 ## Goals
 
-Keep this repository maintainable, auditable, and useful for long-term A733 display work.
+Keep this repository useful and easy to maintain for A733 display work.
 
 ## Rules
 
@@ -11,6 +11,7 @@ Keep this repository maintainable, auditable, and useful for long-term A733 disp
 - Record important technical decisions in the decision log.
 - Add or update sources whenever a hardware, BSP, or release claim changes.
 - Prefer clear file names and predictable directory placement.
+- Keep the workflow light. If you are the only maintainer, follow the same rules yourself without turning them into process theater.
 
 ## Workflow
 
@@ -25,4 +26,3 @@ Keep this repository maintainable, auditable, and useful for long-term A733 disp
 - Keep terminology consistent across both languages.
 - Avoid introducing duplicate definitions in multiple files.
 - If a claim is uncertain, mark it as such instead of overstating it.
-
