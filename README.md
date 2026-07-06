@@ -18,6 +18,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - [Contributing Guide](docs/contributing.md)
 - [Naming Conventions](docs/naming-conventions.md)
 - [Validation Guide](docs/validation.md)
+- [Validation Record Template](docs/validation-template.md)
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
 
