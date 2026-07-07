@@ -42,3 +42,9 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Treat `rsdk` as the real Radxa A733 build source and keep `radxa-cubie-a7z` as a release/workflow shell.
 - Reason: The public Radxa product repo only points to the builder; the actual A733 policy and package wiring live in `rsdk`.
 - Impact: Source comparison and port analysis should use `rsdk` against Orange Pi's build tree.
+
+### 2026-07-06: A7Z Debian 12 report generator
+
+- Decision: Add a dedicated A7Z Debian 12 migration report generator that reads the local Radxa and Orange Pi source trees.
+- Reason: The main goal is to get `radxa-cubie-a7z` onto Debian 12 desktop, so the tool should turn source signals into a practical migration brief.
+- Impact: The repository now has a code path that supports the actual porting decision instead of only comparing trees.
