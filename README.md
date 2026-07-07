@@ -20,6 +20,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - [Validation Guide](docs/validation.md)
 - [Validation Record Template](docs/validation-template.md)
 - [Validation Example](docs/examples/radxa-a7z-first-hdmi-example.md)
+- [Radxa RSDK vs Orange Pi A733](docs/comparison/radxa-rsdk-vs-orangepi-a733.md)
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
 

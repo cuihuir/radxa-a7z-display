@@ -36,3 +36,9 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Add a single-tree validation mode to the comparison tool for minimum A733 source-tree checks.
 - Reason: A lightweight source-tree checker is a more useful next step than a download or build pipeline.
 - Impact: The tool can now answer both "what differs" and "is this tree minimally ready to inspect?".
+
+### 2026-07-06: Radxa source tree target
+
+- Decision: Treat `rsdk` as the real Radxa A733 build source and keep `radxa-cubie-a7z` as a release/workflow shell.
+- Reason: The public Radxa product repo only points to the builder; the actual A733 policy and package wiring live in `rsdk`.
+- Impact: Source comparison and port analysis should use `rsdk` against Orange Pi's build tree.
