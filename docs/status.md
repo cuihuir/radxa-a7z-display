@@ -15,6 +15,8 @@ It is intended to stay practical and lightweight.
 - Core governance documents created for contribution, naming, validation, decisions, and sources.
 - A733 source comparison tool exists.
 - A7Z Debian 12 migration report generator exists.
+- The local Radxa RSDK trial branch now exposes `bookworm` for `radxa-a733`.
+- A patch artifact exists for the A7Z Debian 12 trial change.
 
 ## What this means
 
