@@ -1,0 +1,13 @@
+src/share/rsdk/build/mod/packages/categories/base.libjsonnet
+  @@ -1,5 +1,6 @@
+  +local product_soc_array = import "../../../../configs/product_soc_array.libjsonnet";
+   
+   function(suite,
+            product,
+  @@ -123,7 +124,7 @@ else
+  -            "radxa-otgutils",
+  +            if !(suite == "bookworm" && std.member(product_soc_array(product), "a733")) then "radxa-otgutils",
+           ] +
+   
+   (if suite != "trixie" && suite != "resolute"
+  +2 -1

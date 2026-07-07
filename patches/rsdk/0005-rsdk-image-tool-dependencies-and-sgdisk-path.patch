@@ -1,0 +1,88 @@
+From 5555555555555555555555555555555555555555 Mon Sep 17 00:00:00 2001
+From: Codex <codex@local>
+Date: Tue, 7 Jul 2026 00:00:00 +0000
+Subject: [PATCH] include image generation dependencies in rsdk setup
+
+---
+diff --git a/src/libexec/rsdk/rsdk-setup b/src/libexec/rsdk/rsdk-setup
+index fa750dc..7c4a9e6 100755
+--- a/src/libexec/rsdk/rsdk-setup
++++ b/src/libexec/rsdk/rsdk-setup
+@@ -82,6 +82,8 @@ EOF
+ 		bdebstrap
+ 		binfmt-support
+ 		qemu-user-static
++		libguestfs-tools
++		gdisk
+ 		debian-archive-keyring
+ 		debian-ports-archive-keyring
+ 		libfakechroot:arm64
+@@ -89,12 +91,6 @@ EOF
+ 	)
+ 	sudo dpkg --add-architecture arm64
+ 
+-	if [[ "$(uname -m)" != "x86_64" ]]; then
+-		PACKAGES+=(
+-			libguestfs-tools
+-		)
+-	fi
+-
+ 	if [[ $riscv_support == "true" ]]; then
+ 		PACKAGES+=(
+ 			libfakechroot:riscv64
+diff --git a/src/share/rsdk/build/image.jsonnet b/src/share/rsdk/build/image.jsonnet
+index 2ec709c..d4f0f1e 100644
+--- a/src/share/rsdk/build/image.jsonnet
++++ b/src/share/rsdk/build/image.jsonnet
+@@ -205,12 +205,12 @@ then
+     resize2fs-M /dev/sda%(rootdev)d
+     tune2fs-l /dev/sda%(rootdev)d | cat > "%(temp_dir)s/tune2fs"
+     !echo "resizepart %(rootdev)d" > "%(temp_dir)s/parted"
+-    !echo "$(( $(sgdisk -i %(rootdev)d "%(output)s" | grep "First sector:" | cut -d " " -f 3) * %(sector_size)d + $(grep "Block count:" %(temp_dir)s/tune2fs | cut -d " " -f 3) * $(grep "Block size:" %(temp_dir)s/tune2fs | cut -d " " -f 3) ))B" >> "%(temp_dir)s/parted"
++    !echo "$(( $(PATH=/usr/sbin:/sbin:$PATH sgdisk -i %(rootdev)d "%(output)s" | grep "First sector:" | cut -d " " -f 3) * %(sector_size)d + $(grep "Block count:" %(temp_dir)s/tune2fs | cut -d " " -f 3) * $(grep "Block size:" %(temp_dir)s/tune2fs | cut -d " " -f 3) ))B" >> "%(temp_dir)s/parted"
+     !echo "yes" >> "%(temp_dir)s/parted"
+     sync
+     shutdown
+     !cat "%(temp_dir)s/parted" | parted ---pretend-input-tty "%(output)s" > /dev/null 2>&1
+-    !truncate "--size=$(( ( $(sgdisk -i %(rootdev)d "%(output)s" | grep "Last sector:" | cut -d " " -f 3) + 34 ) * %(sector_size)d ))" "%(output)s"
++    !truncate "--size=$(( ( $(PATH=/usr/sbin:/sbin:$PATH sgdisk -i %(rootdev)d "%(output)s" | grep "Last sector:" | cut -d " " -f 3) + 34 ) * %(sector_size)d ))" "%(output)s"
+ ||| % {
+     output: output,
+     temp_dir: temp_dir,
+@@ -223,7 +223,7 @@ then
+ 
+     echo "Fixing partition table..."
+     echo "NOTICE: Some issues are expected result of shrinking the disk."
+-    !sgdisk -ge "%(output)s" > /dev/null 2>&1 || true
++    !PATH=/usr/sbin:/sbin:$PATH sgdisk -ge "%(output)s" > /dev/null 2>&1 || true
+ ||| % {
+     output: output,
+ }
+diff --git a/src/share/rsdk/build/lib/image/shrink_root_partition.jsonnet b/src/share/rsdk/build/lib/image/shrink_root_partition.jsonnet
+index e34ee3c..6ff42cb 100644
+--- a/src/share/rsdk/build/lib/image/shrink_root_partition.jsonnet
++++ b/src/share/rsdk/build/lib/image/shrink_root_partition.jsonnet
+@@ -33,12 +33,12 @@ else
+ ) +
+ |||
+     !echo "resizepart %(root_part_num)d" > "%(temp_dir)s/parted"
+-    !echo "$(( $(sgdisk -i %(root_part_num)d "%(output)s" | grep "First sector:" | cut -d " " -f 3) * %(sector_size)d + $(cat "%(temp_dir)s/rootfs_size") ))B" >> "%(temp_dir)s/parted"
++    !echo "$(( $(PATH=/usr/sbin:/sbin:$PATH sgdisk -i %(root_part_num)d "%(output)s" | grep "First sector:" | cut -d " " -f 3) * %(sector_size)d + $(cat "%(temp_dir)s/rootfs_size") ))B" >> "%(temp_dir)s/parted"
+     !echo "yes" >> "%(temp_dir)s/parted"
+     sync
+     shutdown
+     !cat "%(temp_dir)s/parted" | parted ---pretend-input-tty "%(output)s" > /dev/null 2>&1
+-    !truncate "--size=$(( ( $(sgdisk -i %(root_part_num)d "%(output)s" | grep "Last sector:" | cut -d " " -f 3) + 34 ) * %(sector_size)d ))" "%(output)s"
++    !truncate "--size=$(( ( $(PATH=/usr/sbin:/sbin:$PATH sgdisk -i %(root_part_num)d "%(output)s" | grep "Last sector:" | cut -d " " -f 3) + 34 ) * %(sector_size)d ))" "%(output)s"
+ ||| % {
+     output: output,
+     temp_dir: temp_dir,
+@@ -51,7 +51,7 @@ then
+ 
+     echo "Fixing partition table..."
+     echo "NOTICE: Some issues are expected result of shrinking the disk."
+-    !sgdisk -ge "%(output)s" > /dev/null 2>&1 || true
++    !PATH=/usr/sbin:/sbin:$PATH sgdisk -ge "%(output)s" > /dev/null 2>&1 || true
+ ||| % {
+     output: output,
+ }
