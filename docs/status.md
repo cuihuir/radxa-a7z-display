@@ -2,10 +2,10 @@
 
 ## Snapshot
 
-Date: 2026-07-06
+Date: 2026-07-07
 
-This repository has been initialized as a documentation-first workspace for A733 HDMI display bring-up.
-It is intended to stay practical and lightweight.
+This repository has moved from documentation-only preparation to a confirmed first board boot.
+A locally built Debian 12 KDE image now boots on the A733 board and reaches HDMI Plasma desktop.
 
 ## What is already in place
 
@@ -17,15 +17,22 @@ It is intended to stay practical and lightweight.
 - A7Z Debian 12 migration report generator exists.
 - The local Radxa RSDK trial branch now exposes `bookworm` for `radxa-a733`.
 - A patch artifact exists for the A7Z Debian 12 trial change.
+- A Debian 12 Bookworm KDE image has been built from RSDK.
+- The generated image boots from SD card on the A733 board.
+- HDMI desktop output works at 1920x1080.
+- SDDM and KDE Plasma Wayland start successfully.
+- SSH validation and screenshots have been captured.
 
 ## What this means
 
-- The project now has a stable written baseline.
-- Future technical work should be recorded as documents, validation notes, and sourced decisions.
+- The core Debian 12 HDMI desktop bring-up claim is now supported by real-board evidence.
+- Future technical work should focus on defects and polish, not on proving whether the path is viable.
 - When the GitHub repository is created later, the local history can be pushed without reorganizing the document layout.
 
 ## Next milestones
 
-- Record more detailed A733 board comparisons.
-- Add build and bring-up notes as validation evidence becomes available.
+- Fix or characterize GPU acceleration; current renderer is `llvmpipe`.
+- Validate audio playback and Bluetooth pairing.
+- Triage vendor kernel warnings from the first boot.
+- Keep adding reproducible validation records.
 - Create the GitHub remote when you are ready.

@@ -50,9 +50,14 @@
 - [x] KDE 包集合是否能在 qemu-user 下完成安装？
 - [x] RSDK 是否生成非空 `rootfs.tar`？
 - [x] RSDK 是否在 rootfs 完成后生成可刷写镜像？
-- [ ] 生成镜像是否能在 A7Z/Z7A 上启动？
-- [ ] A7Z/Z7A 上 HDMI 是否显示 U-Boot/kernel 输出？
-- [ ] Debian 12 是否能在 HDMI 上进入 SDDM/KDE？
+- [x] 生成镜像是否能在 A7Z/Z7A 上启动？
+- [x] A7Z/Z7A 上 HDMI 是否能显示可用桌面？
+- [x] Debian 12 是否能在 HDMI 上进入 SDDM/KDE？
+- [x] 保存第一次成功板端截图。
+- [x] 记录第一次成功板端验证。
+- [ ] Mesa 是否能暴露硬件 GPU 加速，而不是 `llvmpipe`？
+- [ ] HDMI 音频播放是否工作？
+- [ ] 蓝牙配对是否工作？
 
 ## 已知发现
 
@@ -78,10 +83,15 @@
 - RSDK 镜像 shrink 阶段会调用 `sgdisk`；需要安装 `gdisk`，并确保 `/usr/sbin` 或 `/sbin` 在 PATH 中。
 - Patch `0005` 会让 RSDK setup 安装 `libguestfs-tools`/`gdisk`，并让生成的镜像脚本用显式 sbin PATH 调用 `sgdisk`。
 - `sources/rsdk/out/radxa-a733_bookworm_kde/output.img` 已经生成成功，分区表为 GPT。
+- 生成镜像已经可以从 SD 卡启动，并通过 HDMI 进入 KDE Plasma Wayland。
+- 本镜像观察到的默认登录是 `radxa` / `radxa`。
+- HDMI 连接为 `card0-HDMI-A-1`，GUI 工作在 1920x1080。
+- `glxinfo` 显示 `llvmpipe`；硬件 GPU 加速还没有解决。
+- 第一次 SSH 检查没有发现 failed systemd system units。
 
 ## 下一步
 
-- 将 `sources/rsdk/out/radxa-a733_bookworm_kde/output.img` 刷写到 microSD/eMMC，并同时记录串口和 HDMI 首次启动结果。
+- 优先梳理 GPU 加速，然后验证 HDMI 音频和蓝牙。
 
 ## 备注
 
