@@ -47,3 +47,43 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - Project name: `radxa-a7z-display`
 - Scope: Debian 12 HDMI desktop bring-up and long-term maintenance on A733 boards
 - Repository state: local git initialized
+
+## First Successful Debian 12 KDE Boot
+
+Date: 2026-07-07
+
+We built a Debian 12 Bookworm KDE image for Radxa Cubie A7Z / A733 from the Radxa RSDK path, flashed it to an SD card, booted the board, and reached a working HDMI Plasma desktop.
+
+Observed on the board:
+
+- Board hostname: `radxa-cubie-a7z`
+- Login: `radxa` / `radxa`
+- OS: Debian GNU/Linux 12 Bookworm
+- Kernel: `5.15.147-21-a733`
+- Desktop: KDE Plasma 5.27.5 on Wayland
+- Display path: HDMI-A-1, 1920x1080 at 60 Hz
+- Display manager: SDDM
+- Network: Wi-Fi connected, SSH reachable at `192.168.123.210` during validation
+- Storage: rootfs expanded to the SD card, `/` mounted on `mmcblk0p3`
+
+Evidence:
+
+![Debian 12 KDE desktop on A733](docs/assets/a733-debian12-first-boot/debian12-kde-hdmi-01.png)
+
+![A733 system information](docs/assets/a733-debian12-first-boot/debian12-kde-system-info.png)
+
+![A733 display settings](docs/assets/a733-debian12-first-boot/debian12-kde-display-settings.png)
+
+![A733 KDE desktop with terminal](docs/assets/a733-debian12-first-boot/debian12-kde-terminal-validation.png)
+
+Known gaps after first boot:
+
+- Graphics acceleration is not proven. `glxinfo` and Info Center report `llvmpipe`, so rendering is currently software-backed.
+- Only `/dev/dri/card0` is present; no separate render node was observed during this validation.
+- `xdg-desktop-portal` and `xdg-desktop-portal-kde` were inactive in the user session during the first check.
+- Kernel logs contain vendor/BSP warnings, including debug-kernel notices, GPU power-domain probe timeout messages, audio/HDMI warnings, and some missing module entries.
+- Audio devices are visible through PipeWire/ALSA, but playback quality was not tested yet.
+
+Detailed record:
+
+- [2026-07-07 A733 Debian 12 KDE first boot validation](docs/validation-records/2026-07-07-a733-debian12-kde-first-boot.md)

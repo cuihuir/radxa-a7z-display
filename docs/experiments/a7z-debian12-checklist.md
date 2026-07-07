@@ -50,9 +50,14 @@ This is a living checklist for the Debian 12 trial branch on Radxa Cubie A7Z.
 - [x] Does the KDE package set finish installing under qemu-user?
 - [x] Does RSDK emit a non-empty `rootfs.tar`?
 - [x] Does RSDK generate a flashable image after rootfs completion?
-- [ ] Does the generated image boot on A7Z/Z7A?
-- [ ] Does HDMI show U-Boot/kernel output on A7Z/Z7A?
-- [ ] Does Debian 12 reach SDDM/KDE on HDMI?
+- [x] Does the generated image boot on A7Z/Z7A?
+- [x] Does HDMI show a usable desktop on A7Z/Z7A?
+- [x] Does Debian 12 reach SDDM/KDE on HDMI?
+- [x] Capture first successful board screenshots.
+- [x] Record first successful board validation note.
+- [ ] Does Mesa expose hardware GPU acceleration instead of `llvmpipe`?
+- [ ] Does HDMI audio playback work?
+- [ ] Does Bluetooth pairing work?
 
 ## Findings so far
 
@@ -78,10 +83,15 @@ This is a living checklist for the Debian 12 trial branch on Radxa Cubie A7Z.
 - RSDK image shrink calls `sgdisk`; install `gdisk` and ensure `/usr/sbin` or `/sbin` is in PATH.
 - Patch `0005` makes RSDK setup install `libguestfs-tools`/`gdisk` and makes generated image scripts call `sgdisk` with an explicit sbin PATH.
 - `sources/rsdk/out/radxa-a733_bookworm_kde/output.img` was generated successfully and has a GPT partition table.
+- The generated image booted from SD card and reached KDE Plasma Wayland over HDMI.
+- Default login observed on the image is `radxa` / `radxa`.
+- HDMI was connected as `card0-HDMI-A-1` and the GUI ran at 1920x1080.
+- `glxinfo` reports `llvmpipe`; hardware GPU acceleration is not solved yet.
+- No failed systemd system units were observed during first SSH inspection.
 
 ## Next action
 
-- Flash `sources/rsdk/out/radxa-a733_bookworm_kde/output.img` to microSD/eMMC and capture first boot results from serial plus HDMI.
+- Triage GPU acceleration first, then validate HDMI audio and Bluetooth.
 
 ## Notes
 
