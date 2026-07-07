@@ -21,6 +21,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - [Validation Record Template](docs/validation-template.md)
 - [Validation Example](docs/examples/radxa-a7z-first-hdmi-example.md)
 - [Radxa RSDK vs Orange Pi A733](docs/comparison/radxa-rsdk-vs-orangepi-a733.md)
+- [A7Z Debian 12 Report Format](docs/a7z-debian12-report-format.md)
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
 
@@ -29,6 +30,8 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - `python3 tools/a733_compare.py compare <left-source-tree> <right-source-tree> --left-label <name> --right-label <name> --output report.md`
 - `python3 tools/a733_compare.py check <source-tree> --output report.md`
 - The tool scans board configs, family configs, and AArch64 DTS files, then renders a Markdown comparison report or a minimum-tree check report.
+- `python3 tools/a7z_debian12_report.py <radxa-rsdk-tree> <orangepi-build-tree> --output report.md`
+- This tool turns the Radxa/Orange Pi source trees into an A7Z Debian 12 migration report.
 
 ## Maintenance rules
 

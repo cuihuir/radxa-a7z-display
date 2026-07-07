@@ -13,6 +13,8 @@ It is intended to stay practical and lightweight.
 - English source documents created.
 - Matching Chinese translation documents created.
 - Core governance documents created for contribution, naming, validation, decisions, and sources.
+- A733 source comparison tool exists.
+- A7Z Debian 12 migration report generator exists.
 
 ## What this means
 
