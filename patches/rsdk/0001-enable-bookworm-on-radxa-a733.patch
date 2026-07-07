@@ -1,0 +1,41 @@
+From 1111111111111111111111111111111111111111 Mon Sep 17 00:00:00 2001
+From: Codex <codex@local>
+Date: Mon, 6 Jul 2026 00:00:00 +0000
+Subject: [PATCH] enable bookworm on radxa-a733
+
+---
+ src/share/rsdk/configs/products.json | 1 +
+ src/share/rsdk/configs/socs.json     | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/src/share/rsdk/configs/products.json b/src/share/rsdk/configs/products.json
+index 0000000..0000000 100644
+--- a/src/share/rsdk/configs/products.json
++++ b/src/share/rsdk/configs/products.json
+@@ -648,6 +648,7 @@
+         "sector_size": [
+             512,
+             4096
+         ],
+         "supported_suite": [
++            "bookworm",
+             "trixie"
+         ],
+         "supported_edition": [
+             "kde",
+             "cli"
+diff --git a/src/share/rsdk/configs/socs.json b/src/share/rsdk/configs/socs.json
+index 0000000..0000000 100644
+--- a/src/share/rsdk/configs/socs.json
++++ b/src/share/rsdk/configs/socs.json
+@@ -78,6 +78,7 @@
+         "partition_table_type": "gpt",
+         "firmware_type": "u-boot",
+         "soc_install_recommends": [
++            "bookworm",
+             "bullseye",
+             "trixie"
+         ],
+         "soc_list": [
+             "a527",
+             "a733"

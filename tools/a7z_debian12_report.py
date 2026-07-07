@@ -155,6 +155,7 @@ def build_report(radxa_root: Path, orangepi_root: Path) -> str:
         missing.append("Orange Pi 4 Pro board config is missing.")
     if "pvrsrvkm" not in str(orange_4pro.get("MODULES", "")):
         missing.append("Orange Pi 4 Pro does not expose pvrsrvkm in MODULES.")
+    missing.append("No real Debian 12 build/boot validation on a physical A7Z has been recorded yet.")
 
     recommended = [
         "Use Radxa Debian 11 as the boot/display baseline, but move the rootfs and desktop layer toward Debian 12.",
@@ -181,7 +182,7 @@ def build_report(radxa_root: Path, orangepi_root: Path) -> str:
     lines.extend(_render_section(
         "Debian 12 desktop implications",
         [
-            "Radxa A733 is still positioned as a trixie-first desktop target in the public SDK.",
+            "The local Radxa trial branch now exposes Bookworm for radxa-a733, so the next question is runtime validation.",
             "Orange Pi shows explicit Bookworm desktop packaging and pvrsrvkm wiring for A733 boards.",
             "Micro HDMI should be validated before any secondary display path.",
             "Desktop bring-up should accept limited graphics acceleration at first.",

@@ -22,6 +22,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - [Validation Example](docs/examples/radxa-a7z-first-hdmi-example.md)
 - [Radxa RSDK vs Orange Pi A733](docs/comparison/radxa-rsdk-vs-orangepi-a733.md)
 - [A7Z Debian 12 Report Format](docs/a7z-debian12-report-format.md)
+- [A7Z Debian 12 Trial Checklist](docs/experiments/a7z-debian12-checklist.md)
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
 

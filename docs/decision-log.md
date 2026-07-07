@@ -48,3 +48,9 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Add a dedicated A7Z Debian 12 migration report generator that reads the local Radxa and Orange Pi source trees.
 - Reason: The main goal is to get `radxa-cubie-a7z` onto Debian 12 desktop, so the tool should turn source signals into a practical migration brief.
 - Impact: The repository now has a code path that supports the actual porting decision instead of only comparing trees.
+
+### 2026-07-06: Radxa A733 Bookworm trial branch
+
+- Decision: Expose `bookworm` in the local Radxa `rsdk` trial branch for `radxa-a733` and keep the existing `kde` default.
+- Reason: The actual build path needs a Debian 12 entry point before runtime validation can begin.
+- Impact: `radxa-a733` now defaults to `bookworm` locally, and the next step is a real build/boot test on A7Z.
