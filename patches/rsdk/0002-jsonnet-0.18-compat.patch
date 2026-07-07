@@ -1,0 +1,52 @@
+diff --git a/src/share/rsdk/build/mod/packages/categories/core.libjsonnet b/src/share/rsdk/build/mod/packages/categories/core.libjsonnet
+--- a/src/share/rsdk/build/mod/packages/categories/core.libjsonnet
++++ b/src/share/rsdk/build/mod/packages/categories/core.libjsonnet
+@@ -19,7 +19,7 @@
+             "login",
+         ] +
+ 
+-(if suite == "trixie" && std.contains(product_soc_array(product), "a733")
++(if suite == "trixie" && std.member(product_soc_array(product), "a733")
+ then
+         [
+             // Core system package
+diff --git a/src/share/rsdk/build/mod/packages/categories/desktop.libjsonnet b/src/share/rsdk/build/mod/packages/categories/desktop.libjsonnet
+--- a/src/share/rsdk/build/mod/packages/categories/desktop.libjsonnet
++++ b/src/share/rsdk/build/mod/packages/categories/desktop.libjsonnet
+@@ -98,6 +98,6 @@
+ (if suite == "bookworm"
+ then
+-        if !(std.contains(product_soc_array(product), "rk3566") ||
+-            std.contains(product_soc_array(product), "rk3568"))
++        if !(std.member(product_soc_array(product), "rk3566") ||
++            std.member(product_soc_array(product), "rk3568"))
+         then
+         [
+diff --git a/src/share/rsdk/build/mod/packages/kde.libjsonnet b/src/share/rsdk/build/mod/packages/kde.libjsonnet
+--- a/src/share/rsdk/build/mod/packages/kde.libjsonnet
++++ b/src/share/rsdk/build/mod/packages/kde.libjsonnet
+@@ -82,6 +82,6 @@
+         []
+ ) +
+ 
+-(if std.contains(product_soc_array(product), "a733")
++(if std.member(product_soc_array(product), "a733")
+ then
+         // Allwinner A733 GPU driver only support OpenGL ES,
+@@ -101,6 +101,6 @@
+         []
+ ),
+     },
+-} + (if suite != "bullseye" && !std.contains(product_soc_array(product), "a733")
++} + (if suite != "bullseye" && !std.member(product_soc_array(product), "a733")
+ then
+     // Debian 12's sddm has issue handling screen hotplug, as well as screen wake up
+diff --git a/src/share/rsdk/configs/soc_install_recommends.libjsonnet b/src/share/rsdk/configs/soc_install_recommends.libjsonnet
+--- a/src/share/rsdk/configs/soc_install_recommends.libjsonnet
++++ b/src/share/rsdk/configs/soc_install_recommends.libjsonnet
+@@ -7,4 +7,4 @@
+     std.objectHas(family, "soc_install_recommends") &&
+     std.member(family.soc_install_recommends, suite)
+   );
+-  std.all(std.map(check_recommends, soc_array))
++  std.length(std.filter(check_recommends, soc_array)) == std.length(soc_array)
