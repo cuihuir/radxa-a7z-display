@@ -61,7 +61,25 @@ That first successful desktop boot was the point where this stopped being only a
 - Project name: `radxa-a7z-display`
 - Scope: Debian 12 HDMI desktop bring-up and long-term maintenance on A733 boards
 - Repository state: local git initialized
-- Latest test release: `v0.1.0-a733-debian12-kde`
+- Latest test release: [`v0.1.0-a733-debian12-kde`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.0-a733-debian12-kde)
+
+## Download
+
+The first public test image is available from the GitHub release page:
+
+- Release: [`v0.1.0-a733-debian12-kde`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.0-a733-debian12-kde)
+- Image: `radxa-a733-debian12-kde-20260707.img.xz`
+- Checksum file: `SHA256SUMS`
+
+On Linux, decompress and flash it with:
+
+```bash
+xz -d radxa-a733-debian12-kde-20260707.img.xz
+sudo dd if=radxa-a733-debian12-kde-20260707.img of=/dev/<target-disk> bs=4M status=progress conv=fsync
+sync
+```
+
+On Windows, try writing the `.img.xz` directly with Rufus or balenaEtcher. If the writer does not accept `.xz`, decompress it first and write the resulting `.img`.
 
 ## First Successful Debian 12 KDE Boot
 
