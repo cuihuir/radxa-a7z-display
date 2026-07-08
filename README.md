@@ -2,6 +2,20 @@
 
 Documentation hub for bringing up and maintaining HDMI desktop support on Allwinner A733 boards, with a focus on Radxa A7Z/Z7A and related Orange Pi references.
 
+![Radxa Cubie A7Z board, official product photo](https://docs.radxa.com/en/img/cubie/a7z/a7z-top.webp)
+
+Product photo source: [Radxa Cubie A7Z documentation](https://docs.radxa.com/en/cubie/a7z).
+
+## Project Background
+
+I bought a Radxa A7Z in December 2025 because the Allwinner A733 looked unusually strong for its class: an 8-core CPU with 2x Cortex-A76 and 6x Cortex-A55 cores, an Imagination PowerVR GPU, and a 3 TOPS INT8 NPU in a very small board. At the time, the entry A733 boards were priced like budget hobby boards, while the Raspberry Pi-shaped Radxa A7Z 4GB model was still far cheaper than many boards with weaker practical performance. Compared with common RK3566 boards such as the Orange Pi 3B and CM4-style alternatives, the A733 platform looked like a much better performance-per-money target.
+
+The hardware was attractive, but the software situation was not. After buying the board, I found that official system updates were slow. The only officially useful GUI image was an archived Debian 11 build, while newer Debian desktop images were either missing or not in a usable release state for HDMI desktop use.
+
+This project exists to unlock that hardware. The first goal was simple and concrete: make the Radxa A7Z / A733 boot a modern Debian desktop with HDMI output. We now have a Debian 12 Bookworm KDE image that boots, starts SDDM, reaches Plasma Wayland, and displays a 1920x1080 HDMI desktop on real hardware.
+
+That first successful desktop boot was the point where this stopped being only a research note. The board still has unfinished work, especially GPU acceleration, NPU enablement, audio validation, and BSP cleanup, but the main path is now proven. If you bought this board for the same reason, or if you think the A733 still has more potential than its official software support suggests, this repository is meant to be a practical place to continue that work.
+
 ## What this repository is for
 
 - Collect and preserve research notes about A733 display support.
@@ -47,6 +61,7 @@ Documentation hub for bringing up and maintaining HDMI desktop support on Allwin
 - Project name: `radxa-a7z-display`
 - Scope: Debian 12 HDMI desktop bring-up and long-term maintenance on A733 boards
 - Repository state: local git initialized
+- Latest test release: `v0.1.0-a733-debian12-kde`
 
 ## First Successful Debian 12 KDE Boot
 
