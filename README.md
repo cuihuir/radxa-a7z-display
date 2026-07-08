@@ -16,6 +16,27 @@ This project exists to unlock that hardware. The first goal was simple and concr
 
 That first successful desktop boot was the point where this stopped being only a research note. The board still has unfinished work, especially GPU acceleration, NPU enablement, audio validation, and BSP cleanup, but the main path is now proven. If you bought this board for the same reason, or if you think the A733 still has more potential than its official software support suggests, this repository is meant to be a practical place to continue that work.
 
+## Capability Status
+
+This table is the short, practical view of what currently works and what still needs work on the Debian 12 KDE image.
+
+| Area | Current status | Notes |
+| --- | --- | --- |
+| Debian 12 Bookworm boot | Working | Boots on Radxa Cubie A7Z / A733 from the RSDK-based image. |
+| HDMI desktop output | Working | KDE Plasma Wayland reaches HDMI-A-1 at 1920x1080 60 Hz on real hardware. |
+| Display manager | Working | SDDM starts and reaches the graphical login / desktop path. |
+| Default user login | Working | `radxa` / `radxa`. |
+| Wi-Fi and SSH | Working in first validation | Board was reachable over SSH at `192.168.123.210` during the first test. |
+| Root filesystem expansion | Working in first validation | Rootfs expanded to the SD card and mounted from `mmcblk0p3`. |
+| Windows-friendly image release | Working | Public `.img.xz` release is available; Rufus or balenaEtcher can be tried directly. |
+| GPU acceleration | Not solved | Current renderer is `llvmpipe`; hardware 3D acceleration is not enabled yet. |
+| DRM render node | Not solved | Only `/dev/dri/card0` was observed; no separate render node was seen in first validation. |
+| HDMI audio | Not validated | Audio devices are visible, but playback and HDMI audio quality still need testing. |
+| Bluetooth | Not validated | Controller visibility and pairing/audio profiles still need validation. |
+| NPU | Not started | A733 has NPU potential, but this project has not enabled or validated it yet. |
+| BSP/kernel cleanup | Open issue | Vendor kernel logs still contain warnings and missing-module messages. |
+| Debian 13 / Trixie | Not started | Debian 12 is the current priority and the first working desktop target. |
+
 ## What this repository is for
 
 - Collect and preserve research notes about A733 display support.
