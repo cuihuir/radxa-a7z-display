@@ -1,0 +1,53 @@
+diff --git a/drivers/drm/sunxi_drm_drv.c b/drivers/drm/sunxi_drm_drv.c
+index dd4d697..db5ae4f 100644
+--- a/drivers/drm/sunxi_drm_drv.c
++++ b/drivers/drm/sunxi_drm_drv.c
+@@ -741,6 +741,20 @@ static int get_boot_display_info(struct drm_device *drm)
+ 	return 0;
+ }
+ 
++static struct drm_display_mode *sunxi_drm_pick_preferred_mode(
++		struct drm_connector *connector)
++{
++	struct drm_display_mode *mode;
++
++	list_for_each_entry(mode, &connector->modes, head) {
++		if (mode->type & DRM_MODE_TYPE_PREFERRED)
++			return mode;
++	}
++
++	return list_first_entry_or_null(&connector->modes,
++					struct drm_display_mode, head);
++}
++
+ static void sunxi_drm_mode_monitor_work_handler(struct work_struct *work)
+ {
+ 	struct sunxi_mode_monitor *monitor = container_of(
+@@ -778,8 +792,7 @@ static void sunxi_drm_mode_monitor_work_handler(struct work_struct *work)
+ 		DRM_INFO("%s connection detected\n", connector->name);
+ 
+ 		modes_count = connector->funcs->fill_modes(connector, 8192, 8192);
+-		mode = list_first_entry_or_null(&connector->modes,
+-				struct drm_display_mode, head);
++		mode = sunxi_drm_pick_preferred_mode(connector);
+ 		if (mode) {
+ 			c = kmalloc(sizeof(*c), GFP_KERNEL | __GFP_ZERO);
+ 			if (c) {
+@@ -904,7 +917,7 @@ static int init_connecting(struct drm_device *drm, struct drm_crtc **crtcs, unsi
+ 				if (mode_found || !modes_count)
+ 					mode = &info->mode;
+ 				else
+-					mode = list_first_entry_or_null(&connectors[i]->modes, struct drm_display_mode, head);
++					mode = sunxi_drm_pick_preferred_mode(connectors[i]);
+ 				DRM_DEBUG_DRIVER("%s use mode %dx%d\n", __FUNCTION__, mode->hdisplay, mode->vdisplay);
+ 				mutex_unlock(&drm->mode_config.mutex);
+ 
+@@ -930,7 +943,7 @@ static int init_connecting(struct drm_device *drm, struct drm_crtc **crtcs, unsi
+ 		mutex_lock(&drm->mode_config.mutex);
+ 		modes_count = connectors[0]->funcs->fill_modes(connectors[0], 8192, 8192);
+ 		//DRM_INFO("%s found mode %d\n", __FUNCTION__, modes_count);
+-		mode = list_first_entry_or_null(&connectors[0]->modes, struct drm_display_mode, head);
++		mode = sunxi_drm_pick_preferred_mode(connectors[0]);
+ 		if (mode) {
+ 			c = kmalloc(sizeof(*c), GFP_KERNEL | __GFP_ZERO);
+ 			c->crtc = crtcs[0];

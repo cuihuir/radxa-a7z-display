@@ -29,6 +29,7 @@ This table is the short, practical view of what currently works and what still n
 | Wi-Fi and SSH | Working in first validation | Board was reachable over SSH at `192.168.123.210` during the first test. |
 | Root filesystem expansion | Working in first validation | Rootfs expanded to the SD card and mounted from `mmcblk0p3`. |
 | Windows-friendly image release | Working | Public `.img.xz` release is available; Rufus or balenaEtcher can be tried directly. |
+| Small-screen native mode selection | BSP patch ready; build and board validation pending | The BSP ignores standard DRM `video=` overrides and currently picks a CEA 1080i mode over a preferred 1024x600 EDID timing. |
 | GPU acceleration | Not solved | Current renderer is `llvmpipe`; hardware 3D acceleration is not enabled yet. |
 | DRM render node | Not solved | Only `/dev/dri/card0` was observed; no separate render node was seen in first validation. |
 | HDMI audio | Not validated | Audio devices are visible, but playback and HDMI audio quality still need testing. |
@@ -57,6 +58,7 @@ This table is the short, practical view of what currently works and what still n
 - [Validation Example](docs/examples/radxa-a7z-first-hdmi-example.md)
 - [Radxa RSDK vs Orange Pi A733](docs/comparison/radxa-rsdk-vs-orangepi-a733.md)
 - [A7Z Debian 12 Report Format](docs/a7z-debian12-report-format.md)
+- [Small HDMI Panel Mode Selection](docs/experiments/a733-small-hdmi-panel-mode-selection.md)
 - [A7Z Debian 12 Trial Checklist](docs/experiments/a7z-debian12-checklist.md)
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
@@ -68,6 +70,7 @@ This table is the short, practical view of what currently works and what still n
 - The tool scans board configs, family configs, and AArch64 DTS files, then renders a Markdown comparison report or a minimum-tree check report.
 - `python3 tools/a7z_debian12_report.py <radxa-rsdk-tree> <orangepi-build-tree> --output report.md`
 - This tool turns the Radxa/Orange Pi source trees into an A7Z Debian 12 migration report.
+- `patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` makes the vendor DRM driver select the EDID preferred mode before falling back to the first advertised mode.
 
 ## Maintenance rules
 
