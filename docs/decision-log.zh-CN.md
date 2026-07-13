@@ -54,3 +54,9 @@
 - 决策：在本地 Radxa `rsdk` 试验分支里为 `radxa-a733` 暴露 `bookworm`，同时保留现有的 `kde` 默认值。
 - 原因：实际构建路径需要先有 Debian 12 的入口，才能开始跑板级验证。
 - 影响：`radxa-a733` 现在本地默认指向 `bookworm`，下一步是做真实的构建/启动测试。
+
+### 2026-07-13：不要对 A733 发布镜像使用 PiShrink
+
+- 决策：发布时压缩已经验证的原始镜像，可使用 XZ 或 Zstandard；不要运行 PiShrink 或其他会改写 GPT 的工具。
+- 原因：原始 RSDK `output.img` 可以在 A7Z 启动，而 PiShrink 产物不能。PiShrink 改变了根分区 UUID，并移除了其 `LegacyBIOSBootable` GPT 属性。
+- 影响：`v0.1.0-a733-debian12-kde` 不再作为可安装镜像发布。替代版本必须逐字节保持原始分区表，并在发布前完成烧录和启动验证。

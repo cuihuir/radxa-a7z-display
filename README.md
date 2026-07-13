@@ -27,8 +27,9 @@ This table is the short, practical view of what currently works and what still n
 | Display manager | Working | SDDM starts and reaches the graphical login / desktop path. |
 | Default user login | Working | `radxa` / `radxa`. |
 | Wi-Fi and SSH | Working in first validation | Board was reachable over SSH at `192.168.123.210` during the first test. |
+| Serial console | Documented | UART0 is available on the 40-pin header for boot and recovery diagnostics. |
 | Root filesystem expansion | Working in first validation | Rootfs expanded to the SD card and mounted from `mmcblk0p3`. |
-| Windows-friendly image release | Working | Public `.img.xz` release is available; Rufus or balenaEtcher can be tried directly. |
+| Windows-friendly image release | Blocked | The PiShrink-processed `v0.1.0` image does not boot; rebuild from the verified raw image without modifying GPT. |
 | Small-screen native mode selection | BSP patch ready; build and board validation pending | The BSP ignores standard DRM `video=` overrides and currently picks a CEA 1080i mode over a preferred 1024x600 EDID timing. |
 | GPU acceleration | Not solved | Current renderer is `llvmpipe`; hardware 3D acceleration is not enabled yet. |
 | DRM render node | Not solved | Only `/dev/dri/card0` was observed; no separate render node was seen in first validation. |
@@ -60,6 +61,7 @@ This table is the short, practical view of what currently works and what still n
 - [A7Z Debian 12 Report Format](docs/a7z-debian12-report-format.md)
 - [Small HDMI Panel Mode Selection](docs/experiments/a733-small-hdmi-panel-mode-selection.md)
 - [A7Z Debian 12 Trial Checklist](docs/experiments/a7z-debian12-checklist.md)
+- [A7Z Serial Console and Recovery](docs/a7z-serial-console.md)
 - [Decision Log](docs/decision-log.md)
 - [Sources Index](docs/sources.md)
 
@@ -89,13 +91,14 @@ This table is the short, practical view of what currently works and what still n
 
 ## Download
 
-The first public test image is available from the GitHub release page:
+`v0.1.0-a733-debian12-kde` is withdrawn as an install image. Its
+PiShrink-processed `.img.xz` does not boot on the A7Z, despite the original
+RSDK `output.img` booting successfully. Do not flash that release asset.
 
-- Release: [`v0.1.0-a733-debian12-kde`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.0-a733-debian12-kde)
-- Image: `radxa-a733-debian12-kde-20260707.img.xz`
-- Checksum file: `SHA256SUMS`
+The next release will compress the verified raw RSDK image without changing its
+GPT layout or partition attributes.
 
-On Linux, decompress and flash it with:
+For a future verified `.img.xz` release, on Linux decompress and flash it with:
 
 ```bash
 xz -d radxa-a733-debian12-kde-20260707.img.xz
@@ -103,7 +106,7 @@ sudo dd if=radxa-a733-debian12-kde-20260707.img of=/dev/<target-disk> bs=4M stat
 sync
 ```
 
-On Windows, try writing the `.img.xz` directly with Rufus or balenaEtcher. If the writer does not accept `.xz`, decompress it first and write the resulting `.img`.
+On Windows, try writing a verified `.img.xz` directly with Rufus or balenaEtcher. If the writer does not accept `.xz`, decompress it first and write the resulting `.img`.
 
 ## First Successful Debian 12 KDE Boot
 

@@ -54,3 +54,9 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Expose `bookworm` in the local Radxa `rsdk` trial branch for `radxa-a733` and keep the existing `kde` default.
 - Reason: The actual build path needs a Debian 12 entry point before runtime validation can begin.
 - Impact: `radxa-a733` now defaults to `bookworm` locally, and the next step is a real build/boot test on A7Z.
+
+### 2026-07-13: Do not PiShrink A733 release images
+
+- Decision: Release the verified raw image compressed with XZ or Zstandard; do not run PiShrink or another tool that rewrites the GPT.
+- Reason: The raw RSDK `output.img` boots on A7Z, while the PiShrink output does not. PiShrink changed the root partition UUID and removed its `LegacyBIOSBootable` GPT attribute.
+- Impact: `v0.1.0-a733-debian12-kde` is withdrawn as an install image. A replacement must preserve the original partition table byte-for-byte and be flashed and boot-tested before release.
