@@ -57,7 +57,14 @@ git -C bsp apply /path/to/radxa-a7z-display/patches/a733-bsp/0001-drm-prefer-edi
 make deb
 ```
 
-Install the resulting A733 kernel packages, reboot with the small panel connected, then verify:
+The A733 RSDK image boot path must include the rebuilt kernel in its vendor
+`boot.img`. Installing the resulting Debian packages alone is not sufficient:
+on the tested image, U-Boot continued to load the kernel embedded in the
+existing boot image even after `u-boot-update` selected the new package in
+`/boot/extlinux/extlinux.conf`.
+
+Rebuild an RSDK image with the patched BSP kernel, flash it, reboot with the
+small panel connected, then verify:
 
 ```bash
 sudo dmesg | grep -E 'Configuration mode|drm hdmi mode set'
@@ -72,4 +79,10 @@ Success criteria:
 
 ## Status
 
-The patch applies cleanly to the `cubie-aiot-v1.4.6` BSP source used by `linux-a733` release `5.15.147-21`. It has not yet been compiled into a kernel package or validated on hardware.
+The patch applies cleanly to the `cubie-aiot-v1.4.6` BSP source used by
+`linux-a733` release `5.15.147-21`, and it was compiled into a distinct ABI
+package (`5.15.147-21.1-a733`). The package and matching DKMS Wi-Fi modules
+installed successfully on the board, but it did not become the running kernel:
+after reboot, the board still reported `5.15.147-21-a733`. The next validation
+artifact must therefore be a patched RSDK image, not a standalone Debian kernel
+package.

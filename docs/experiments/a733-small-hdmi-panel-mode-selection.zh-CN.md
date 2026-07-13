@@ -57,7 +57,9 @@ git -C bsp apply /path/to/radxa-a7z-display/patches/a733-bsp/0001-drm-prefer-edi
 make deb
 ```
 
-安装生成的 A733 kernel 包，接好小屏重启后检查：
+A733 RSDK 镜像的启动路径必须把重建的 kernel 放入厂商 `boot.img`。仅安装生成的 Debian 包并不充分：在已测试镜像中，即使 `u-boot-update` 已在 `/boot/extlinux/extlinux.conf` 选择新包，U-Boot 重启后仍会加载原有 boot image 内的 kernel。
+
+应使用带补丁 BSP kernel 重建完整 RSDK 镜像，烧录后接好小屏启动，再检查：
 
 ```bash
 sudo dmesg | grep -E 'Configuration mode|drm hdmi mode set'
@@ -72,4 +74,4 @@ cat /sys/class/drm/card0-HDMI-A-1/modes
 
 ## 状态
 
-补丁已确认可应用到 `linux-a733` release `5.15.147-21` 使用的 `cubie-aiot-v1.4.6` BSP 源码。它还没有编译进 kernel package，也还没有完成真实板端验证。
+补丁已确认可应用到 `linux-a733` release `5.15.147-21` 使用的 `cubie-aiot-v1.4.6` BSP 源码，并已编译为独立 ABI 包 `5.15.147-21.1-a733`。该包及匹配的 DKMS Wi-Fi 模块已成功安装到板子，但它没有成为运行内核：重启后板子仍报告 `5.15.147-21-a733`。因此下一份验证产物必须是带补丁的 RSDK 完整镜像，而不是单独的 Debian kernel 包。
