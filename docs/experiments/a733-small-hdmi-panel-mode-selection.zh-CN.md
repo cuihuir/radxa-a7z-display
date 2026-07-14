@@ -1,54 +1,49 @@
 # A733 HDMI 小屏模式选择
 
-日期：2026-07-13
+日期：2026-07-14
 
-## 目标
+## 结果
 
-让 A733 在 HDMI 小屏的 EDID 同时声明低分辨率详细时序和常见 CEA 电视模式时，选择屏幕原生模式。
-
-## 板端结果
-
-测试屏幕识别为 `FLY-HDMI-LCD7`。厂商 HDMI 诊断接口列出了三个 `1024x600p` 详细时序，同时也列出了包括 VIC 5 在内的 CEA SVD 模式。
-
-运行中的 `5.15.147-21-a733` 内核却选择了 VIC 5：
+已在运行 Debian 12 KDE 的 Radxa Cubie A7Z 和 `FLY-HDMI-LCD7` 小屏上完成验证。
+HDMI 现在实际选择并输出 `1024x600@60Hz`，完整桌面正常显示，无拉伸和裁切。
 
 ```text
-HDMI-A-1: Configuration mode 1920x1080@60Hz
-sunxi hdmi select vic 5 use hdmi14 vsif
-[dw video] ... vic | 005 | 1920x540 i | 60
+HDMI-A-1: Configuration mode 1024x600@60Hz
+sunxi-hdmi: drm hdmi mode set: 1024*600
 ```
 
-因此小屏只能显示 1080 输出的一部分。
-
-## 已否定的用户态方案
-
-我们测试了标准 DRM command-line 覆盖：
-
-```text
-video=HDMI-A-1:1024x600@60
-```
-
-`u-boot-update` 已正确把它写入 `/boot/extlinux/extlinux.conf`，重启后 `/proc/cmdline` 也能看到该参数。但厂商 `sunxi-hdmi` 驱动仍然选择 1080，说明该 BSP 的早期 HDMI mode selection 不遵守标准 DRM override。测试结束后已删除这个覆盖参数。
+开发板从补丁内核 `5.15.147-21.1-a733` 启动；重建 DKMS 模块后，Wi-Fi 保持可用。
 
 ## 根因
 
-`radxa/allwinner-bsp` 的 `drivers/drm/sunxi_drm_drv.c` 在初始连接和热插拔处理时，使用 `list_first_entry_or_null()` 选择 connector mode，没有检查 `DRM_MODE_TYPE_PREFERRED`。
+该屏幕的 EDID 基础块包含 `1024x600` 的详细时序，但同时声明了最高
+`1920x1080` 的常见 CEA 模式。A733 BSP 配置
+`configs/linux-5.15/sun60iw2p1.dtsi` 为 DRM 同时启用了：
 
-对于这块屏，mode 列表第一项是 CEA 1080i，而 DRM EDID 解析器标记为 preferred 的原生 DTD 是 `1024x600`。所以这是 BSP mode priority bug，不是 KDE 缩放问题，也不是屏幕没有提供原生模式。
+```text
+quirk-prefer-fhd;
+quirk-prefer-large-60;
+```
 
-## 补丁
+厂商 EDID 代码清除了原生时序的 preferred 标志，并选择不超过 Full HD 的最大模式，
+最终输出 `1920x1080@60Hz`，导致小屏桌面拉伸、裁切。其 mode-monitor 路径也只选择
+mode list 的第一项，而不读取 DRM 的 preferred 标志。
 
-`patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` 添加 `sunxi_drm_pick_preferred_mode()`，并替换三处 first-mode fallback：
+## 修复
 
-- HDMI 热插拔 mode monitor。
-- 板级 boot display-info fallback。
-- 没有 bootloader display-info 时的 fallback。
+`patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch`：
 
-该 helper 优先选择 `DRM_MODE_TYPE_PREFERRED`，当没有 preferred mode 时保留原本的首项 fallback 行为。
+- 移除 A733 全局的强制 FHD 和最大 60Hz EDID 策略；
+- 在三个厂商 DRM 连接路径中优先选择 `DRM_MODE_TYPE_PREFERRED`，没有 preferred
+  模式时才回退到第一项。
 
-## 构建与测试
+修复完全依据 EDID，不硬编码屏幕名称或分辨率。普通显示器会继续使用其有效 EDID
+preferred 时序。
 
-从匹配的 Radxa 打包仓库及 submodule 构建：
+## 构建
+
+`linux-a733` 会在 `pre_build` 时将 `bsp/configs/linux-5.15/*.dtsi` 复制进内核树。
+必须向 `bsp` submodule 打补丁，不能只修改生成的 `src/` 副本：
 
 ```bash
 git clone --recurse-submodules https://github.com/radxa-pkg/linux-a733.git
@@ -57,21 +52,54 @@ git -C bsp apply /path/to/radxa-a7z-display/patches/a733-bsp/0001-drm-prefer-edi
 make deb
 ```
 
-A733 RSDK 镜像的启动路径必须把重建的 kernel 放入厂商 `boot.img`。仅安装生成的 Debian 包并不充分：在已测试镜像中，即使 `u-boot-update` 已在 `/boot/extlinux/extlinux.conf` 选择新包，U-Boot 重启后仍会加载原有 boot image 内的 kernel。
+本 RSDK 构建的 `.github/local/Makefile.local` 必须设置：
 
-应使用带补丁 BSP kernel 重建完整 RSDK 镜像，烧录后接好小屏启动，再检查：
-
-```bash
-sudo dmesg | grep -E 'Configuration mode|drm hdmi mode set'
-cat /sys/class/drm/card0-HDMI-A-1/modes
+```make
+KBUILD_IMAGE=arch/arm64/boot/Image
 ```
 
-成功标准：
+打包后的 `/boot/vmlinuz-*` 必须是未压缩的 `Image`。若为 `Image.gz`，U-Boot 无法加载，
+会静默回退到厂商内核。
 
-- `FLY-HDMI-LCD7` 能显示完整桌面。
-- HDMI 实际选择 `1024x600`，而不是 VIC 5 / `1920x540i`。
-- 普通 1080p 显示器仍然选择其 EDID preferred mode。
+```bash
+dpkg-deb --fsys-tarfile linux-image-*.deb \
+  | tar xOf - ./boot/vmlinuz-5.15.147-21.1-a733 | file -
+```
 
-## 状态
+预期输出包含 `Linux kernel ARM64 boot executable Image`。
 
-补丁已确认可应用到 `linux-a733` release `5.15.147-21` 使用的 `cubie-aiot-v1.4.6` BSP 源码，并已编译为独立 ABI 包 `5.15.147-21.1-a733`。该包及匹配的 DKMS Wi-Fi 模块已成功安装到板子，但它没有成为运行内核：重启后板子仍报告 `5.15.147-21-a733`。因此下一份验证产物必须是带补丁的 RSDK 完整镜像，而不是单独的 Debian kernel 包。
+## 安装与验证
+
+将厂商内核保留为 extlinux 的 `l1` 回退项。覆盖安装同版本 image 包会删除 DKMS 模块，
+因此切换到 `l0` 前必须重建：
+
+```bash
+sudo dpkg -i linux-image-5.15.147-21.1-a733_*.deb
+sudo dkms install --force -m aic8800-usb -v 5.0+git20260123.5f7be68d-6 \
+  -k 5.15.147-21.1-a733
+sudo dkms install --force -m radxa-overlays -v 0.2.25 \
+  -k 5.15.147-21.1-a733
+sudo sed -i 's/^default l1$/default l0/' /boot/extlinux/extlinux.conf
+sudo reboot
+```
+
+重启后检查：
+
+```bash
+uname -r
+sudo journalctl -b -k --no-pager | grep -E 'Configuration mode|drm hdmi mode set'
+```
+
+预期结果：
+
+```text
+5.15.147-21.1-a733
+HDMI-A-1: Configuration mode 1024x600@60Hz
+sunxi-hdmi: drm hdmi mode set: 1024*600
+```
+
+## 已验证事实
+
+- `video=HDMI-A-1:1024x600@60` 被厂商早期 HDMI 路径忽略。
+- `fb0` 的 `1024x1200` 是双缓冲虚拟高度，物理 HDMI 模式仍为 `1024x600`。
+- 若无法启动，可离线将 `/boot/extlinux/extlinux.conf` 的默认项改回 `default l1` 后重启。

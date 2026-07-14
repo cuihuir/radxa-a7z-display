@@ -1,54 +1,53 @@
 # A733 Small HDMI Panel Mode Selection
 
-Date: 2026-07-13
+Date: 2026-07-14
 
-## Goal
+## Result
 
-Make the A733 choose the native mode for HDMI panels whose EDID advertises both a low-resolution detailed timing and common CEA television modes.
-
-## Hardware Result
-
-The tested panel identifies itself as `FLY-HDMI-LCD7`. Its vendor HDMI diagnostic reports three `1024x600p` detailed timings, while also listing CEA SVD modes including VIC 5.
-
-The running `5.15.147-21-a733` kernel selected VIC 5 instead:
+Validated on a Radxa Cubie A7Z running Debian 12 KDE and the `FLY-HDMI-LCD7`
+panel. HDMI now selects `1024x600@60Hz`; the complete desktop is visible
+without stretching or cropping.
 
 ```text
-HDMI-A-1: Configuration mode 1920x1080@60Hz
-sunxi hdmi select vic 5 use hdmi14 vsif
-[dw video] ... vic | 005 | 1920x540 i | 60
+HDMI-A-1: Configuration mode 1024x600@60Hz
+sunxi-hdmi: drm hdmi mode set: 1024*600
 ```
 
-The panel consequently showed only part of the 1080 output.
-
-## Rejected Userspace Workaround
-
-We tested the standard DRM command-line override:
-
-```text
-video=HDMI-A-1:1024x600@60
-```
-
-`u-boot-update` correctly added it to `/boot/extlinux/extlinux.conf`, and it appeared in `/proc/cmdline` after reboot. The vendor `sunxi-hdmi` driver still selected 1080, so this BSP does not honor the standard DRM override for its early HDMI mode selection. The override was removed after the test.
+The board booted the patched package as `5.15.147-21.1-a733`. Wi-Fi remained
+available after the DKMS modules were rebuilt.
 
 ## Root Cause
 
-In `radxa/allwinner-bsp`, `drivers/drm/sunxi_drm_drv.c` calls `list_first_entry_or_null()` to choose a connector mode during initial connection and hot-plug handling. It does not inspect `DRM_MODE_TYPE_PREFERRED`.
+The panel EDID has a base-block detailed timing for `1024x600`, but also
+advertises common CEA modes up to `1920x1080`. A733 BSP configuration file
+`configs/linux-5.15/sun60iw2p1.dtsi` enabled both of these DRM properties:
 
-For this EDID, the first list entry is a CEA 1080i mode, while the native `1024x600` DTD is marked preferred by the DRM EDID parser. The failure is therefore a BSP mode-priority bug, not a KDE scaling issue and not an absent panel mode.
+```text
+quirk-prefer-fhd;
+quirk-prefer-large-60;
+```
 
-## Patch
+The vendor EDID code cleared the native preferred flag and selected the largest
+mode no larger than Full HD. The driver then chose `1920x1080@60Hz`, producing
+a stretched and cropped desktop. Its mode-monitor path also used the first
+advertised mode rather than the DRM preferred mode.
 
-`patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` adds `sunxi_drm_pick_preferred_mode()` and uses it in all three first-mode fallback paths:
+## Fix
 
-- HDMI hot-plug mode monitor.
-- Board boot display-info fallback.
-- No-bootloader-display-info fallback.
+`patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch`:
 
-The helper chooses a `DRM_MODE_TYPE_PREFERRED` mode first and retains the original first-list-entry behavior when no preferred mode exists.
+- removes the A733-wide forced-FHD and largest-60Hz EDID policy;
+- selects `DRM_MODE_TYPE_PREFERRED` before falling back to the first mode in
+  all three vendor DRM connection paths.
 
-## Build And Test
+This is EDID-driven and does not hard-code a panel name or resolution. A normal
+display with a valid preferred EDID timing continues to use that timing.
 
-Build from the matching Radxa packaging repository and submodules:
+## Build
+
+`linux-a733` copies `bsp/configs/linux-5.15/*.dtsi` into the kernel tree during
+`pre_build`. Apply the patch to the `bsp` submodule, not only to the generated
+`src/` copy:
 
 ```bash
 git clone --recurse-submodules https://github.com/radxa-pkg/linux-a733.git
@@ -57,32 +56,57 @@ git -C bsp apply /path/to/radxa-a7z-display/patches/a733-bsp/0001-drm-prefer-edi
 make deb
 ```
 
-The A733 RSDK image boot path must include the rebuilt kernel in its vendor
-`boot.img`. Installing the resulting Debian packages alone is not sufficient:
-on the tested image, U-Boot continued to load the kernel embedded in the
-existing boot image even after `u-boot-update` selected the new package in
-`/boot/extlinux/extlinux.conf`.
+For this RSDK build, `.github/local/Makefile.local` must set:
 
-Rebuild an RSDK image with the patched BSP kernel, flash it, reboot with the
-small panel connected, then verify:
-
-```bash
-sudo dmesg | grep -E 'Configuration mode|drm hdmi mode set'
-cat /sys/class/drm/card0-HDMI-A-1/modes
+```make
+KBUILD_IMAGE=arch/arm64/boot/Image
 ```
 
-Success criteria:
+The packaged `/boot/vmlinuz-*` must be an uncompressed `Image`. If it is
+`Image.gz`, U-Boot cannot load it and silently falls back to the vendor kernel.
 
-- The complete desktop is visible on the `FLY-HDMI-LCD7` panel.
-- The selected HDMI mode is `1024x600` rather than VIC 5 / `1920x540i`.
-- A normal 1080p monitor still selects its EDID preferred mode.
+```bash
+dpkg-deb --fsys-tarfile linux-image-*.deb \
+  | tar xOf - ./boot/vmlinuz-5.15.147-21.1-a733 | file -
+```
 
-## Status
+Expected output includes `Linux kernel ARM64 boot executable Image`.
 
-The patch applies cleanly to the `cubie-aiot-v1.4.6` BSP source used by
-`linux-a733` release `5.15.147-21`, and it was compiled into a distinct ABI
-package (`5.15.147-21.1-a733`). The package and matching DKMS Wi-Fi modules
-installed successfully on the board, but it did not become the running kernel:
-after reboot, the board still reported `5.15.147-21-a733`. The next validation
-artifact must therefore be a patched RSDK image, not a standalone Debian kernel
-package.
+## Installation And Validation
+
+Keep the vendor kernel as an `l1` extlinux fallback. Reinstalling the
+same-version image package removes DKMS modules, so rebuild them before
+switching to `l0`:
+
+```bash
+sudo dpkg -i linux-image-5.15.147-21.1-a733_*.deb
+sudo dkms install --force -m aic8800-usb -v 5.0+git20260123.5f7be68d-6 \
+  -k 5.15.147-21.1-a733
+sudo dkms install --force -m radxa-overlays -v 0.2.25 \
+  -k 5.15.147-21.1-a733
+sudo sed -i 's/^default l1$/default l0/' /boot/extlinux/extlinux.conf
+sudo reboot
+```
+
+Verify after reboot:
+
+```bash
+uname -r
+sudo journalctl -b -k --no-pager | grep -E 'Configuration mode|drm hdmi mode set'
+```
+
+Expected result:
+
+```text
+5.15.147-21.1-a733
+HDMI-A-1: Configuration mode 1024x600@60Hz
+sunxi-hdmi: drm hdmi mode set: 1024*600
+```
+
+## Tested Facts
+
+- `video=HDMI-A-1:1024x600@60` was ignored by the vendor early HDMI path.
+- `fb0` reports `1024x1200`; its virtual height is double-buffering, while the
+  physical HDMI mode is `1024x600`.
+- If booting fails, select `default l1` offline in
+  `/boot/extlinux/extlinux.conf` and reboot.

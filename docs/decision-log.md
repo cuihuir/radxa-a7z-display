@@ -60,3 +60,9 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Release the verified raw image compressed with XZ or Zstandard; do not run PiShrink or another tool that rewrites the GPT.
 - Reason: The raw RSDK `output.img` boots on A7Z, while the PiShrink output does not. PiShrink changed the root partition UUID and removed its `LegacyBIOSBootable` GPT attribute.
 - Impact: `v0.1.0-a733-debian12-kde` is withdrawn as an install image. A replacement must preserve the original partition table byte-for-byte and be flashed and boot-tested before release.
+
+### 2026-07-14: Restore EDID-native HDMI selection
+
+- Decision: Remove A733's forced-FHD/largest-60Hz DRM policy and select DRM preferred modes before a first-mode fallback.
+- Reason: The policy forced the `FLY-HDMI-LCD7` native `1024x600` panel to use `1920x1080`, causing stretching and cropping.
+- Impact: The verified stable deployment is the vendor `5.15.147-21-a733` kernel with the patched A7Z DTB; future full-kernel packages must avoid concurrent DKMS rebuilds.

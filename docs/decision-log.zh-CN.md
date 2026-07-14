@@ -60,3 +60,9 @@
 - 决策：发布时压缩已经验证的原始镜像，可使用 XZ 或 Zstandard；不要运行 PiShrink 或其他会改写 GPT 的工具。
 - 原因：原始 RSDK `output.img` 可以在 A7Z 启动，而 PiShrink 产物不能。PiShrink 改变了根分区 UUID，并移除了其 `LegacyBIOSBootable` GPT 属性。
 - 影响：`v0.1.0-a733-debian12-kde` 不再作为可安装镜像发布。替代版本必须逐字节保持原始分区表，并在发布前完成烧录和启动验证。
+
+### 2026-07-14：恢复按 EDID 原生时序选择 HDMI
+
+- 决策：移除 A733 强制 FHD/最大 60Hz 的 DRM 策略，并在首项 fallback 前优先选择 DRM preferred mode。
+- 原因：该策略把 `FLY-HDMI-LCD7` 的原生 `1024x600` 强制为 `1920x1080`，造成拉伸和裁切。
+- 影响：已验证的稳定部署是原厂 `5.15.147-21-a733` 内核加 A7Z DTB 修复；后续完整内核包不得并发重建 DKMS。

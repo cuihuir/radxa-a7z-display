@@ -2,7 +2,7 @@
 
 ## Snapshot
 
-Date: 2026-07-07
+Date: 2026-07-14
 
 This repository has moved from documentation-only preparation to a confirmed first board boot.
 A locally built Debian 12 KDE image now boots on the A733 board and reaches HDMI Plasma desktop.
@@ -22,6 +22,7 @@ A locally built Debian 12 KDE image now boots on the A733 board and reaches HDMI
 - HDMI desktop output works at 1920x1080.
 - SDDM and KDE Plasma Wayland start successfully.
 - SSH validation and screenshots have been captured.
+- HDMI native-mode selection is verified on the `FLY-HDMI-LCD7` small panel at `1024x600@60Hz`.
 
 ## What this means
 
@@ -35,4 +36,5 @@ A locally built Debian 12 KDE image now boots on the A733 board and reaches HDMI
 - Validate audio playback and Bluetooth pairing.
 - Triage vendor kernel warnings from the first boot.
 - Keep adding reproducible validation records.
+- Validate the same EDID policy with a normal 1080p monitor and additional panels.
 - Create the GitHub remote when you are ready.

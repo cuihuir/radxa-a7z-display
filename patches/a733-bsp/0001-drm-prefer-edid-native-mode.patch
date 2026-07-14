@@ -1,5 +1,18 @@
+diff --git a/configs/linux-5.15/sun60iw2p1.dtsi b/configs/linux-5.15/sun60iw2p1.dtsi
+index 4611aa29..ac50b433 100644
+--- a/configs/linux-5.15/sun60iw2p1.dtsi
++++ b/configs/linux-5.15/sun60iw2p1.dtsi
+@@ -3720,8 +3720,6 @@
+ 		sunxi_drm: sunxi-drm {
+ 			compatible = "allwinner,sunxi-drm";
+ 			fb_base = <0>;
+-			quirk-prefer-fhd;
+-			quirk-prefer-large-60;
+ 			status = "okay";
+ 		};
+ 
 diff --git a/drivers/drm/sunxi_drm_drv.c b/drivers/drm/sunxi_drm_drv.c
-index dd4d697..db5ae4f 100644
+index dd4d697f..db5ae4fb 100644
 --- a/drivers/drm/sunxi_drm_drv.c
 +++ b/drivers/drm/sunxi_drm_drv.c
 @@ -741,6 +741,20 @@ static int get_boot_display_info(struct drm_device *drm)

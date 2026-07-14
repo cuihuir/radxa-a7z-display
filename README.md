@@ -30,7 +30,7 @@ This table is the short, practical view of what currently works and what still n
 | Serial console | Documented | UART0 is available on the 40-pin header for boot and recovery diagnostics. |
 | Root filesystem expansion | Working in first validation | Rootfs expanded to the SD card and mounted from `mmcblk0p3`. |
 | Windows-friendly image release | Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
-| Small-screen native mode selection | BSP patch ready; build and board validation pending | The BSP ignores standard DRM `video=` overrides and currently picks a CEA 1080i mode over a preferred 1024x600 EDID timing. |
+| Small-screen native mode selection | Working | Verified on `FLY-HDMI-LCD7`: the native `1024x600@60Hz` timing is selected without stretching or cropping. |
 | GPU acceleration | Not solved | Current renderer is `llvmpipe`; hardware 3D acceleration is not enabled yet. |
 | DRM render node | Not solved | Only `/dev/dri/card0` was observed; no separate render node was seen in first validation. |
 | HDMI audio | Not validated | Audio devices are visible, but playback and HDMI audio quality still need testing. |
@@ -72,7 +72,7 @@ This table is the short, practical view of what currently works and what still n
 - The tool scans board configs, family configs, and AArch64 DTS files, then renders a Markdown comparison report or a minimum-tree check report.
 - `python3 tools/a7z_debian12_report.py <radxa-rsdk-tree> <orangepi-build-tree> --output report.md`
 - This tool turns the Radxa/Orange Pi source trees into an A7Z Debian 12 migration report.
-- `patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` makes the vendor DRM driver select the EDID preferred mode before falling back to the first advertised mode.
+- `patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` removes A733's forced-FHD policy and makes the vendor DRM driver select the EDID preferred mode before falling back to the first advertised mode.
 
 ## Maintenance rules
 
