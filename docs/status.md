@@ -23,6 +23,7 @@ A locally built Debian 12 KDE image now boots on the A733 board and reaches HDMI
 - SDDM and KDE Plasma Wayland start successfully.
 - SSH validation and screenshots have been captured.
 - HDMI native-mode selection is verified on the `FLY-HDMI-LCD7` small panel at `1024x600@60Hz`.
+- The complete `5.15.147-21.1+display2` kernel package boots from `l0` with SSH and AIC8800 Wi-Fi working.
 
 ## What this means
 

@@ -66,3 +66,9 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Remove A733's forced-FHD/largest-60Hz DRM policy and select DRM preferred modes before a first-mode fallback.
 - Reason: The policy forced the `FLY-HDMI-LCD7` native `1024x600` panel to use `1920x1080`, causing stretching and cropping.
 - Impact: The verified stable deployment is the vendor `5.15.147-21-a733` kernel with the patched A7Z DTB; future full-kernel packages must avoid concurrent DKMS rebuilds.
+
+### 2026-07-14: Keep the A7Z initramfs near the vendor size
+
+- Decision: Package an initramfs hook that removes early fsck binaries and their ext2fs-only libraries from the A7Z display kernel initramfs.
+- Reason: Valid 42.67 MB initramfs images failed before persistent kernel logging, while 42.25 MB images booted with the same kernel, DTB, modules, and command line.
+- Impact: The `+display2` package generates a 42,251,173-byte initramfs and boots successfully. System and offline filesystem repair tools remain installed on the root filesystem.

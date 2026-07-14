@@ -23,6 +23,7 @@
 - SDDM 和 KDE Plasma Wayland 可以成功启动。
 - 已通过 SSH 完成验证并保存截图证据。
 - 已在 `FLY-HDMI-LCD7` 小屏验证 HDMI 原生模式选择为 `1024x600@60Hz`。
+- 完整的 `5.15.147-21.1+display2` 内核包已从 `l0` 启动，SSH 和 AIC8800 Wi-Fi 正常。
 
 ## 这意味着什么
 

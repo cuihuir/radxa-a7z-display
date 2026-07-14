@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+PREREQ=""
+
+prereqs()
+{
+	echo "$PREREQ"
+}
+
+case "$1" in
+prereqs)
+	prereqs
+	exit 0
+	;;
+esac
+
+# The A733 initramfs can reach the SD rootfs before fsck can reliably resolve
+# its UUID. Leave filesystem checks to the mounted system and offline recovery.
+rm -f \
+	"${DESTDIR}/usr/sbin/fsck" \
+	"${DESTDIR}/usr/sbin/fsck.ext4" \
+	"${DESTDIR}/usr/sbin/e2fsck" \
+	"${DESTDIR}/usr/sbin/logsave" \
+	"${DESTDIR}"/usr/lib/*/libcom_err.so.2* \
+	"${DESTDIR}"/usr/lib/*/libe2p.so.2* \
+	"${DESTDIR}"/usr/lib/*/libext2fs.so.2*

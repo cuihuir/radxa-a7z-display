@@ -66,3 +66,9 @@
 - 决策：移除 A733 强制 FHD/最大 60Hz 的 DRM 策略，并在首项 fallback 前优先选择 DRM preferred mode。
 - 原因：该策略把 `FLY-HDMI-LCD7` 的原生 `1024x600` 强制为 `1920x1080`，造成拉伸和裁切。
 - 影响：已验证的稳定部署是原厂 `5.15.147-21-a733` 内核加 A7Z DTB 修复；后续完整内核包不得并发重建 DKMS。
+
+### 2026-07-14：保持 A7Z initramfs 接近厂商镜像大小
+
+- 决策：在显示内核包中加入 initramfs hook，移除早期 fsck 程序及仅供 ext2fs 使用的库。
+- 原因：内容有效但达到 42.67 MB 的 initramfs 在持久化内核日志前启动失败，而相同 kernel、DTB、模块和命令行配合 42.25 MB initramfs 可以启动。
+- 影响：`+display2` 包生成 42,251,173 字节的 initramfs 并已成功启动；系统根文件系统中的正常及离线修复工具不受影响。

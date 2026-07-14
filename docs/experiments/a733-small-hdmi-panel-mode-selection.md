@@ -110,3 +110,34 @@ sunxi-hdmi: drm hdmi mode set: 1024*600
   physical HDMI mode is `1024x600`.
 - If booting fails, select `default l1` offline in
   `/boot/extlinux/extlinux.conf` and reboot.
+
+## Full Kernel Package Failure And Fix
+
+The first complete package attempt had two independent failures:
+
+1. An interrupted installation was followed by a second DKMS invocation while
+   the first one was still running. Concurrent writes corrupted ext4 directory
+   metadata. Offline `e2fsck -fy` repaired the filesystem. Kernel deployment
+   must use one foreground `dpkg` process protected by a lock; never start a
+   second DKMS build because SSH output appears to stop.
+2. The regenerated `5.15.147-21.1` initramfs was 42,672,314 bytes and failed
+   before persistent journal logging. Reusing the vendor initramfs booted the
+   same custom kernel. A temporary initramfs without the fsck hook was
+   42,251,056 bytes and also booted. The evidence points to an A733 U-Boot or
+   early load-memory limit rather than a corrupt kernel or archive.
+
+`config/initramfs-tools/hooks/zz-a7z-skip-early-fsck` removes fsck binaries and
+their ext2fs-only libraries from the generated initramfs. It does not remove
+filesystem repair tools from the running Debian system. The packaged
+`5.15.147-21.1+display2` result generated a 42,251,173-byte initramfs and booted
+from the standard `l0` entry.
+
+Final board evidence:
+
+```text
+Linux 5.15.147-21.1-a733
+Package version: 5.15.147-21.1+display2
+wlan0: 192.168.123.210/24
+HDMI-A-1: Configuration mode 1024x600@60Hz
+drm hdmi mode set: 1024*600
+```

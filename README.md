@@ -31,6 +31,7 @@ This table is the short, practical view of what currently works and what still n
 | Root filesystem expansion | Working in first validation | Rootfs expanded to the SD card and mounted from `mmcblk0p3`. |
 | Windows-friendly image release | Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
 | Small-screen native mode selection | Working | Verified on `FLY-HDMI-LCD7`: the native `1024x600@60Hz` timing is selected without stretching or cropping. |
+| Full display kernel package | Working | `5.15.147-21.1+display2` boots from `l0`; SSH, AIC8800 Wi-Fi, KDE, and native HDMI mode are verified. |
 | GPU acceleration | Not solved | Current renderer is `llvmpipe`; hardware 3D acceleration is not enabled yet. |
 | DRM render node | Not solved | Only `/dev/dri/card0` was observed; no separate render node was seen in first validation. |
 | HDMI audio | Not validated | Audio devices are visible, but playback and HDMI audio quality still need testing. |
@@ -73,6 +74,8 @@ This table is the short, practical view of what currently works and what still n
 - `python3 tools/a7z_debian12_report.py <radxa-rsdk-tree> <orangepi-build-tree> --output report.md`
 - This tool turns the Radxa/Orange Pi source trees into an A7Z Debian 12 migration report.
 - `patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` removes A733's forced-FHD policy and makes the vendor DRM driver select the EDID preferred mode before falling back to the first advertised mode.
+- `tools/package_a733_kernel_display.sh INPUT.deb OUTPUT.deb` adds the A7Z initramfs size workaround and produces the installable `+display2` kernel package.
+- `sudo tools/deploy_a733_display_kernel.sh PACKAGE.deb --activate` installs one package under a lock and verifies DKMS and initramfs safety gates before selecting `l0`.
 
 ## Maintenance rules
 
@@ -88,6 +91,7 @@ This table is the short, practical view of what currently works and what still n
 - Scope: Debian 12 HDMI desktop bring-up and long-term maintenance on A733 boards
 - Repository state: local git initialized
 - Latest test release: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)
+- Latest full display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)
 
 ## Download
 
@@ -101,6 +105,10 @@ The verified install image is available from
 
 `v0.1.0-a733-debian12-kde` remains withdrawn. Its PiShrink-processed image
 does not boot on the A7Z; do not flash it.
+
+After booting the verified Debian 12 image, install the complete native-mode
+kernel package from
+[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
 
 On Linux, decompress and flash the verified release with:
 
