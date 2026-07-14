@@ -1,10 +1,32 @@
 # radxa-a7z-display
 
-Documentation hub for bringing up and maintaining HDMI desktop support on Allwinner A733 boards, with a focus on Radxa A7Z/Z7A and related Orange Pi references.
+[中文说明](README.zh-CN.md)
+
+Debian 12 KDE desktop image, native HDMI mode support, and reproducible A733
+display-kernel work for Radxa A7Z/Z7A boards.
 
 ![Radxa Cubie A7Z board, official product photo](https://docs.radxa.com/en/img/cubie/a7z/a7z-top.webp)
 
 Product photo source: [Radxa Cubie A7Z documentation](https://docs.radxa.com/en/cubie/a7z).
+
+## Latest Verified Release
+
+The complete display kernel is available from
+[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
+
+Verified on a physical Radxa Cubie A7Z:
+
+| Item | Verified result |
+| --- | --- |
+| Debian | Debian 12 Bookworm with KDE Plasma Wayland |
+| Kernel package | `5.15.147-21.1+display2` |
+| Boot entry | Custom kernel on `l0`; vendor recovery kernel retained on `l1` |
+| Small HDMI panel | `FLY-HDMI-LCD7` at native `1024x600@60Hz` |
+| Network | AIC8800 Wi-Fi and SSH working |
+| Display policy | Uses the EDID preferred/native timing instead of forcing Full HD |
+
+Release assets include the installable `.deb`, a guarded deployment script,
+the BSP source patch, and SHA256 checksums.
 
 ## Project Background
 
@@ -12,7 +34,7 @@ I bought a Radxa A7Z in December 2025 because the Allwinner A733 looked unusuall
 
 The hardware was attractive, but the software situation was not. After buying the board, I found that official system updates were slow. The only officially useful GUI image was an archived Debian 11 build, while newer Debian desktop images were either missing or not in a usable release state for HDMI desktop use.
 
-This project exists to unlock that hardware. The first goal was simple and concrete: make the Radxa A7Z / A733 boot a modern Debian desktop with HDMI output. We now have a Debian 12 Bookworm KDE image that boots, starts SDDM, reaches Plasma Wayland, and displays a 1920x1080 HDMI desktop on real hardware.
+This project exists to unlock that hardware. The first goal was simple and concrete: make the Radxa A7Z / A733 boot a modern Debian desktop with HDMI output. We now have a Debian 12 Bookworm KDE image that boots, starts SDDM, reaches Plasma Wayland, and selects the connected display's EDID preferred mode. The initial 1080p desktop path and the corrected `FLY-HDMI-LCD7` native `1024x600` path have both run on real hardware; final-kernel regression coverage on additional monitors remains open.
 
 That first successful desktop boot was the point where this stopped being only a research note. The board still has unfinished work, especially GPU acceleration, NPU enablement, audio validation, and BSP cleanup, but the main path is now proven. If you bought this board for the same reason, or if you think the A733 still has more potential than its official software support suggests, this repository is meant to be a practical place to continue that work.
 
@@ -23,12 +45,12 @@ This table is the short, practical view of what currently works and what still n
 | Area | Current status | Notes |
 | --- | --- | --- |
 | Debian 12 Bookworm boot | Working | Boots on Radxa Cubie A7Z / A733 from the RSDK-based image. |
-| HDMI desktop output | Working | KDE Plasma Wayland reaches HDMI-A-1 at 1920x1080 60 Hz on real hardware. |
+| HDMI desktop output | Working | KDE Plasma Wayland reaches HDMI-A-1 and follows the display's EDID preferred/native timing. |
 | Display manager | Working | SDDM starts and reaches the graphical login / desktop path. |
 | Default user login | Working | `radxa` / `radxa`. |
-| Wi-Fi and SSH | Working in first validation | Board was reachable over SSH at `192.168.123.210` during the first test. |
+| Wi-Fi and SSH | Working | AIC8800 Wi-Fi modules load under the full display kernel; SSH was verified at `192.168.123.210`. |
 | Serial console | Documented | UART0 is available on the 40-pin header for boot and recovery diagnostics. |
-| Root filesystem expansion | Working in first validation | Rootfs expanded to the SD card and mounted from `mmcblk0p3`. |
+| Root filesystem expansion | Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
 | Windows-friendly image release | Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
 | Small-screen native mode selection | Working | Verified on `FLY-HDMI-LCD7`: the native `1024x600@60Hz` timing is selected without stretching or cropping. |
 | Full display kernel package | Working | `5.15.147-21.1+display2` boots from `l0`; SSH, AIC8800 Wi-Fi, KDE, and native HDMI mode are verified. |
@@ -61,6 +83,7 @@ This table is the short, practical view of what currently works and what still n
 - [Radxa RSDK vs Orange Pi A733](docs/comparison/radxa-rsdk-vs-orangepi-a733.md)
 - [A7Z Debian 12 Report Format](docs/a7z-debian12-report-format.md)
 - [Small HDMI Panel Mode Selection](docs/experiments/a733-small-hdmi-panel-mode-selection.md)
+- [Full Display Kernel Release](docs/releases/v0.2.1-a733-full-kernel-display.md)
 - [A7Z Debian 12 Trial Checklist](docs/experiments/a7z-debian12-checklist.md)
 - [A7Z Serial Console and Recovery](docs/a7z-serial-console.md)
 - [Decision Log](docs/decision-log.md)
@@ -89,7 +112,7 @@ This table is the short, practical view of what currently works and what still n
 
 - Project name: `radxa-a7z-display`
 - Scope: Debian 12 HDMI desktop bring-up and long-term maintenance on A733 boards
-- Repository state: local git initialized
+- Repository state: published and maintained on GitHub
 - Latest test release: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)
 - Latest full display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)
 
@@ -106,19 +129,75 @@ The verified install image is available from
 `v0.1.0-a733-debian12-kde` remains withdrawn. Its PiShrink-processed image
 does not boot on the A7Z; do not flash it.
 
-After booting the verified Debian 12 image, install the complete native-mode
-kernel package from
-[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
-
 On Linux, decompress and flash the verified release with:
 
 ```bash
-xz -d radxa-a733-debian12-kde-20260707.img.xz
-sudo dd if=radxa-a733-debian12-kde-20260707.img of=/dev/<target-disk> bs=4M status=progress conv=fsync
+xz -d radxa-a733-debian12-kde-20260713.img.xz
+sudo dd if=radxa-a733-debian12-kde-20260713.img of=/dev/<target-disk> bs=4M status=progress conv=fsync
 sync
 ```
 
 On Windows, try writing the `.img.xz` directly with Rufus or balenaEtcher. If the writer does not accept `.xz`, decompress it first and write the resulting `.img`.
+
+## Install The Full Display Kernel
+
+Boot the Debian 12 image first, then download these assets from
+[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display):
+
+- `linux-image-5.15.147-21.1-a733_5.15.147-21.1+display2_arm64.deb`
+- `deploy_a733_display_kernel.sh`
+- `SHA256SUMS`
+
+Verify and install on the A7Z:
+
+```bash
+sha256sum -c SHA256SUMS
+chmod +x deploy_a733_display_kernel.sh
+sudo ./deploy_a733_display_kernel.sh \
+  linux-image-5.15.147-21.1-a733_5.15.147-21.1+display2_arm64.deb \
+  --activate
+sudo reboot
+```
+
+The installer deliberately runs one foreground `dpkg`/DKMS sequence under a
+lock. Do not start another package or DKMS command while it is running, even if
+the terminal temporarily produces no output.
+
+After reboot:
+
+```bash
+uname -r
+dpkg -s linux-image-5.15.147-21.1-a733 | grep -E '^(Status|Version):'
+ip -brief address show wlan0
+sudo journalctl -b -k --no-pager \
+  | grep -E 'Configuration mode|drm hdmi mode set'
+```
+
+Expected on the tested small panel:
+
+```text
+5.15.147-21.1-a733
+Version: 5.15.147-21.1+display2
+HDMI-A-1: Configuration mode 1024x600@60Hz
+drm hdmi mode set: 1024*600
+```
+
+## Recovery
+
+The vendor kernel remains available as `l1`. If the custom entry does not
+boot, mount the SD card on another Linux system and change the default entry:
+
+```bash
+sudo mount /dev/<root-partition> /mnt/a7z-root
+sudo sed -i 's/^default l0$/default l1/' \
+  /mnt/a7z-root/boot/extlinux/extlinux.conf
+sync
+sudo umount /mnt/a7z-root
+```
+
+The full failure analysis, including the initramfs size issue and the DKMS
+concurrency incident, is recorded in
+[A733 Small HDMI Panel Mode Selection](docs/experiments/a733-small-hdmi-panel-mode-selection.md).
 
 ## First Successful Debian 12 KDE Boot
 
