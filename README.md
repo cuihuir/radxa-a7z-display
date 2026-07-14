@@ -74,6 +74,7 @@ This table is the short, practical view of what currently works and what still n
 - [Project Overview](docs/project-overview.md)
 - [Current Status](docs/status.md)
 - [Display Landscape Research](docs/research/a733-display-landscape.md)
+- [A733 GPU Acceleration Driver Feasibility](docs/research/a733-gpu-acceleration-feasibility.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)
 - [Contributing Guide](docs/contributing.md)
 - [Naming Conventions](docs/naming-conventions.md)
