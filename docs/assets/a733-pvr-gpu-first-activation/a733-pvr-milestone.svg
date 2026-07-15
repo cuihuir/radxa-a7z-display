@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Radxa A7Z project milestones</title>
+  <desc id="desc">A horizontal timeline from the first Debian 12 boot through native HDMI and PowerVR enablement to the current hardware-accelerated desktop milestone and future work.</desc>
+  <style>
+    .ink { fill: #17212b; }
+    .muted { fill: #667085; }
+    .accent { fill: #087f6d; }
+    .line { stroke: #b8c1cc; stroke-width: 2; }
+    .line-done { stroke: #087f6d; stroke-width: 3; }
+    .line-next { stroke: #b8c1cc; stroke-width: 2; stroke-dasharray: 7 7; }
+    .stem { stroke: #b8c1cc; stroke-width: 1.5; }
+    .stem-accent { stroke: #087f6d; stroke-width: 2; }
+    .node { fill: #ffffff; stroke: #8e9aa8; stroke-width: 2; }
+    .node-done { fill: #087f6d; stroke: #ffffff; stroke-width: 4; }
+    .node-next { fill: #ffffff; stroke: #8e9aa8; stroke-width: 2; stroke-dasharray: 4 3; }
+    .label { font-family: "Noto Sans", "Segoe UI", sans-serif; }
+    .technical { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+    @media (prefers-color-scheme: dark) {
+      .ink { fill: #edf2f7; }
+      .muted { fill: #a8b3c1; }
+      .accent { fill: #45d6bd; }
+      .line, .stem, .line-next { stroke: #687586; }
+      .line-done, .stem-accent { stroke: #45d6bd; }
+      .node { fill: #0d1117; stroke: #8491a2; }
+      .node-done { fill: #45d6bd; stroke: #0d1117; }
+      .node-next { fill: #0d1117; stroke: #8491a2; }
+    }
+  </style>
+
+  <text x="56" y="42" class="label ink" font-size="27" font-weight="700">A733 desktop milestones</text>
+  <text x="1144" y="41" text-anchor="end" class="technical muted" font-size="14">RADXA CUBIE A7Z · DEBIAN 12</text>
+
+  <line x1="88" y1="180" x2="842" y2="180" class="line-done"/>
+  <line x1="842" y1="180" x2="1088" y2="180" class="line-next"/>
+
+  <line x1="112" y1="174" x2="112" y2="124" class="stem"/>
+  <circle cx="112" cy="180" r="9" class="node"/>
+  <text x="112" y="84" text-anchor="middle" class="technical muted" font-size="13">2026-07-07</text>
+  <text x="112" y="106" text-anchor="middle" class="label ink" font-size="18" font-weight="700">Debian 12 boots</text>
+  <text x="112" y="128" text-anchor="middle" class="label muted" font-size="14">Plasma · Wayland</text>
+
+  <line x1="352" y1="186" x2="352" y2="236" class="stem"/>
+  <circle cx="352" cy="180" r="9" class="node"/>
+  <text x="352" y="257" text-anchor="middle" class="technical muted" font-size="13">2026-07-13</text>
+  <text x="352" y="282" text-anchor="middle" class="label ink" font-size="18" font-weight="700">Native HDMI</text>
+  <text x="352" y="304" text-anchor="middle" class="label muted" font-size="14">1024 × 600 · EDID</text>
+
+  <line x1="592" y1="174" x2="592" y2="124" class="stem"/>
+  <circle cx="592" cy="180" r="9" class="node"/>
+  <text x="592" y="84" text-anchor="middle" class="technical muted" font-size="13">2026-07-14</text>
+  <text x="592" y="106" text-anchor="middle" class="label ink" font-size="18" font-weight="700">PowerVR online</text>
+  <text x="592" y="128" text-anchor="middle" class="technical muted" font-size="14">BXM-4-64 · renderD128</text>
+
+  <line x1="832" y1="188" x2="832" y2="236" class="stem-accent"/>
+  <circle cx="832" cy="180" r="11" class="node-done"/>
+  <text x="832" y="253" text-anchor="middle" class="technical accent" font-size="12" font-weight="700">CURRENT · v0.3.0</text>
+  <text x="832" y="278" text-anchor="middle" class="label ink" font-size="19" font-weight="700">Accelerated desktop</text>
+  <text x="832" y="301" text-anchor="middle" class="label muted" font-size="14">Vulkan · OpenCL · KWin</text>
+
+  <line x1="1072" y1="174" x2="1072" y2="124" class="stem"/>
+  <circle cx="1072" cy="180" r="9" class="node-next"/>
+  <text x="1072" y="84" text-anchor="middle" class="technical muted" font-size="13">NEXT</text>
+  <text x="1072" y="106" text-anchor="middle" class="label ink" font-size="18" font-weight="700">Beyond graphics</text>
+  <text x="1072" y="128" text-anchor="middle" class="label muted" font-size="14">Audio · Bluetooth · NPU</text>
+
+  <text x="56" y="338" class="label muted" font-size="14">From the first visible desktop to a verified PowerVR-accelerated system.</text>
+</svg>

@@ -2,17 +2,20 @@
 
 [中文说明](README.zh-CN.md)
 
-Debian 12 KDE desktop image, native HDMI mode support, and reproducible A733
-display-kernel work for Radxa A7Z/Z7A boards.
+Debian 12 KDE Plasma Wayland, native HDMI output, and a reproducible PowerVR
+GPU stack for Radxa A7Z/Z7A boards powered by Allwinner A733.
 
 ![Radxa Cubie A7Z board, official product photo](https://docs.radxa.com/en/img/cubie/a7z/a7z-top.webp)
 
 Product photo source: [Radxa Cubie A7Z documentation](https://docs.radxa.com/en/cubie/a7z).
 
-## Latest Verified Release
+## Latest Verified Milestone
 
-The complete display kernel is available from
-[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
+`v0.3.0-a733-pvr-gpu` brings the PowerVR BXM GPU to the verified Debian 12
+desktop stack. The release candidate and checksums are staged under
+[`artifacts/releases/v0.3.0-a733-pvr-gpu`](artifacts/releases/v0.3.0-a733-pvr-gpu),
+with the full technical record in
+[A733 PowerVR GPU First Port](docs/releases/v0.3.0-a733-pvr-gpu.md).
 
 Verified on a physical Radxa Cubie A7Z:
 
@@ -20,13 +23,42 @@ Verified on a physical Radxa Cubie A7Z:
 | --- | --- |
 | Debian | Debian 12 Bookworm with KDE Plasma Wayland |
 | Kernel package | `5.15.147-21.1+display2` |
+| GPU package | `a733-pvr-gpu 24.2.6603887+gpu4` |
+| GPU | PowerVR B-Series BXM-4-64, DDK `24.2@6603887` |
+| Graphics APIs | Vulkan, OpenCL 3.0, EGL/GBM, OpenGL ES 3.2 |
+| Desktop renderer | PowerVR-accelerated KWin / Plasma Wayland |
 | Boot entry | Custom kernel on `l0`; vendor recovery kernel retained on `l1` |
 | Small HDMI panel | `FLY-HDMI-LCD7` at native `1024x600@60Hz` |
 | Network | AIC8800 Wi-Fi and SSH working |
 | Display policy | Uses the EDID preferred/native timing instead of forcing Full HD |
 
-Release assets include the installable `.deb`, a guarded deployment script,
-the BSP source patch, and SHA256 checksums.
+Release assets include the installable GPU `.deb`, a guarded deployment
+script, bilingual release notes, and SHA256 checksums.
+
+## Milestone: The A733 GPU Is Awake
+
+![A733 PowerVR GPU unlocked: Vulkan, OpenCL, and Plasma Wayland](docs/assets/a733-pvr-gpu-first-activation/a733-pvr-milestone.svg)
+
+**This is the moment the A7Z crossed from “it boots” to “the hardware is
+alive.”** The same Debian 12 desktop that originally rendered through
+`llvmpipe` now runs KWin on the PowerVR B-Series BXM-4-64. The kernel module,
+matched firmware, vendor userspace, render node, compute APIs, and real Plasma
+Wayland session have all passed validation on the physical board.
+
+| First desktop boot | PowerVR milestone |
+| --- | --- |
+| Software renderer: `llvmpipe` | Hardware renderer: `PowerVR B-Series BXM-4-64` |
+| Display-only `/dev/dri/card0` | Display KMS plus `card1` and `renderD128` acceleration nodes |
+| GPU power present but unused | `pvrsrvkm` and BVNC-matched firmware load automatically |
+| Desktop output proven | Vulkan, OpenCL 3.0, EGL/GBM, GLES 3.2, and KWin proven |
+
+![PowerVR-accelerated Plasma Wayland session running on the A733](docs/assets/a733-pvr-gpu-first-activation/a733-pvr-plasma-wayland.png)
+
+The GPU stack remains deliberately isolated under
+`/opt/a733-pvr/24.2.6603887`, preserves the distribution Xorg stack, keeps HDMI
+scanout on `/dev/dri/card0`, and retains the vendor kernel as the `l1` recovery
+path. This is not a one-off library replacement: it is packaged, deployable,
+reversible, and backed by a repeatable validation record.
 
 ## Project Background
 
@@ -36,7 +68,7 @@ The hardware was attractive, but the software situation was not. After buying th
 
 This project exists to unlock that hardware. The first goal was simple and concrete: make the Radxa A7Z / A733 boot a modern Debian desktop with HDMI output. We now have a Debian 12 Bookworm KDE image that boots, starts SDDM, reaches Plasma Wayland, and selects the connected display's EDID preferred mode. The initial 1080p desktop path and the corrected `FLY-HDMI-LCD7` native `1024x600` path have both run on real hardware; final-kernel regression coverage on additional monitors remains open.
 
-That first successful desktop boot was the point where this stopped being only a research note. The board still has unfinished work, especially GPU acceleration, NPU enablement, audio validation, and BSP cleanup, but the main path is now proven. If you bought this board for the same reason, or if you think the A733 still has more potential than its official software support suggests, this repository is meant to be a practical place to continue that work.
+That first successful desktop boot was the point where this stopped being only a research note. PowerVR acceleration is now the second major breakthrough: the board has moved from software-rendered pixels to a hardware-accelerated Plasma Wayland desktop with Vulkan and OpenCL. NPU enablement, audio validation, broader display testing, and BSP cleanup remain, but the most important desktop path is now real. If you bought this board for the same reason, or if you think the A733 still has more potential than its official software support suggests, this repository is meant to be a practical place to continue that work.
 
 ## Capability Status
 
@@ -55,7 +87,7 @@ This table is the short, practical view of what currently works and what still n
 | Small-screen native mode selection | Working | Verified on `FLY-HDMI-LCD7`: the native `1024x600@60Hz` timing is selected without stretching or cropping. |
 | Full display kernel package | Working | `5.15.147-21.1+display2` boots from `l0`; SSH, AIC8800 Wi-Fi, KDE, and native HDMI mode are verified. |
 | GPU acceleration | Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin/Plasma Wayland are verified on A7Z. |
-| DRM render node | Not solved | Only `/dev/dri/card0` was observed; no separate render node was seen in first validation. |
+| DRM render node | Working | PowerVR registers `/dev/dri/card1` and `/dev/dri/renderD128`; HDMI KMS remains on `/dev/dri/card0`. |
 | HDMI audio | Not validated | Audio devices are visible, but playback and HDMI audio quality still need testing. |
 | Bluetooth | Not validated | Controller visibility and pairing/audio profiles still need validation. |
 | NPU | Not started | A733 has NPU potential, but this project has not enabled or validated it yet. |
@@ -122,6 +154,7 @@ This table is the short, practical view of what currently works and what still n
 - Repository state: published and maintained on GitHub
 - Latest test release: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)
 - Latest full display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)
+- Latest verified GPU milestone: [`v0.3.0-a733-pvr-gpu`](docs/releases/v0.3.0-a733-pvr-gpu.md) (release candidate staged locally)
 
 ## Download
 
@@ -234,10 +267,10 @@ Evidence:
 
 ![A733 KDE desktop with terminal](docs/assets/a733-debian12-first-boot/debian12-kde-terminal-validation.png)
 
-Known gaps after first boot:
+Known gaps recorded at first boot (GPU items were resolved on 2026-07-14):
 
-- Graphics acceleration is not proven. `glxinfo` and Info Center report `llvmpipe`, so rendering is currently software-backed.
-- Only `/dev/dri/card0` is present; no separate render node was observed during this validation.
+- Graphics acceleration was not yet proven. `glxinfo` and Info Center reported `llvmpipe`; the PowerVR milestone above supersedes this result.
+- Only `/dev/dri/card0` was present in this historical validation; `card1` and `renderD128` are now created by the PowerVR stack.
 - `xdg-desktop-portal` and `xdg-desktop-portal-kde` were inactive in the user session during the first check.
 - Kernel logs contain vendor/BSP warnings, including debug-kernel notices, GPU power-domain probe timeout messages, audio/HDMI warnings, and some missing module entries.
 - Audio devices are visible through PipeWire/ALSA, but playback quality was not tested yet.
