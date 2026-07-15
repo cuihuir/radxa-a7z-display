@@ -1,10 +1,15 @@
 # A733 GPU Acceleration Driver Feasibility
 
+> Historical research snapshot from before driver activation. The recommended
+> vendor DDK path was implemented and verified later on 2026-07-14. See the
+> generated [current status](../status.md) and the
+> [activation record](../validation-records/2026-07-14-a733-pvr-gpu-first-activation.md).
+
 ## Scope
 
 - Date: 2026-07-14
 - Target: Radxa Cubie A7Z/A733, using Orange Pi 4 Pro and Zero 3W as references
-- Current system: Debian 12 Bookworm KDE on Allwinner/Radxa BSP Linux `5.15.147`
+- System inspected: Debian 12 Bookworm KDE on Allwinner/Radxa BSP Linux `5.15.147`
 - This pass studies source, packages, and upstream status only. It does not install a driver or modify an image.
 
 ## Conclusion
@@ -42,7 +47,7 @@ Buildable module source is present at
 `sources/linux-a733/bsp/modules/gpu/img-bxm/linux/rogue_km`. Its sunxi build fixes
 BVNC `36.56.104.183`, DDK `24.2@6603887`, `nulldrmws`, and `pvrsrvkm.ko`.
 
-The current image uses llvmpipe because:
+The image inspected during this research used llvmpipe because:
 
 - `linux-image-5.15.147-21-a733` has no `pvrsrvkm.ko`;
 - packaged Panfrost/Lima modules cannot drive BXM;
@@ -189,4 +194,3 @@ heavy kernel changes, keep it experimental and raise the upstream path priority.
 - Armbian Orange Pi 4 Pro support: https://github.com/armbian/build/pull/9967
 - Armbian Cubie A7Z support: https://github.com/armbian/build/pull/10036
 - Radxa A733 missing GPU issue: https://github.com/radxa-build/radxa-a733/issues/17
-

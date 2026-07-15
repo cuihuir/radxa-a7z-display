@@ -1,5 +1,9 @@
 # 2026-07-07 A733 Debian 12 KDE First Boot Validation
 
+> Historical first-boot record. Its `llvmpipe` GPU result was superseded by
+> the 2026-07-14 PowerVR activation. See the generated
+> [current status](../status.md).
+
 ## Validation Record
 
 - Date: 2026-07-07
@@ -103,7 +107,8 @@ spectacle -b -n -o /home/radxa/a733-validation/debian12-kde-hdmi-01.png
 
 ## Known Defects And Risks
 
-- Graphics acceleration is not working or not exposed through Mesa in this image. Current renderer is `llvmpipe`.
+- Graphics acceleration was not working or exposed through Mesa in this image;
+  the renderer observed during this validation was `llvmpipe`.
 - `/dev/dri` only showed `card0`; no `renderD*` node was present during validation.
 - `xdg-desktop-portal` and `xdg-desktop-portal-kde` were inactive in the user session, and PipeWire logged portal warnings.
 - Vendor kernel logs include a debug-kernel notice: `trace_printk() being used`.

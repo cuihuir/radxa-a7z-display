@@ -1,5 +1,9 @@
 # 2026-07-07 A733 Debian 12 KDE 首次启动验证
 
+> 这是首次启动的历史记录，其中 `llvmpipe` GPU 结论已被 2026-07-14 的
+> PowerVR 激活结果取代。当前进度见自动生成的
+> [当前状态](../status.zh-CN.md)。
+
 ## 验证记录
 
 - 日期：2026-07-07
@@ -103,7 +107,8 @@ spectacle -b -n -o /home/radxa/a733-validation/debian12-kde-hdmi-01.png
 
 ## 已知缺陷与风险
 
-- 图形加速没有工作，或没有通过 Mesa 暴露出来。当前 renderer 是 `llvmpipe`。
+- 该镜像当时没有工作的图形加速，或没有通过 Mesa 暴露出来；本次验证观察到的
+  renderer 是 `llvmpipe`。
 - `/dev/dri` 只看到 `card0`，本次验证中没有看到 `renderD*` 节点。
 - 用户会话中 `xdg-desktop-portal` 和 `xdg-desktop-portal-kde` 是 inactive，PipeWire 有 portal warning。
 - vendor kernel 日志中有 debug-kernel 提示：`trace_printk() being used`。

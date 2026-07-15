@@ -1,6 +1,10 @@
 # A7Z Debian 12 试验检查清单
 
-这是 Radxa Cubie A7Z 上 Debian 12 试验分支的动态检查清单。
+> 历史试验检查清单。本文记录 Debian 12 首次启动路径；当前能力状态以
+> [`docs/status.json`](../status.json) 为单一源，并生成到
+> [`docs/status.zh-CN.md`](../status.zh-CN.md)。
+
+除仍有历史构建参考价值的项目外，这份检查清单已经关闭。
 
 ## 当前假设
 
@@ -55,7 +59,7 @@
 - [x] Debian 12 是否能在 HDMI 上进入 SDDM/KDE？
 - [x] 保存第一次成功板端截图。
 - [x] 记录第一次成功板端验证。
-- [ ] Mesa 是否能暴露硬件 GPU 加速，而不是 `llvmpipe`？
+- [x] 桌面是否能暴露 PowerVR 硬件 GPU 加速，而不是 `llvmpipe`？
 - [ ] HDMI 音频播放是否工作？
 - [ ] 蓝牙配对是否工作？
 
@@ -86,12 +90,14 @@
 - 生成镜像已经可以从 SD 卡启动，并通过 HDMI 进入 KDE Plasma Wayland。
 - 本镜像观察到的默认登录是 `radxa` / `radxa`。
 - HDMI 连接为 `card0-HDMI-A-1`，GUI 工作在 1920x1080。
-- `glxinfo` 显示 `llvmpipe`；硬件 GPU 加速还没有解决。
+- 首次启动时 `glxinfo` 显示 `llvmpipe`。2026-07-14 完成的 PowerVR
+  移植随后启用了 BXM-4-64、Vulkan、OpenCL 和 KWin 硬件加速。
 - 第一次 SSH 检查没有发现 failed systemd system units。
 
-## 下一步
+## 当时的下一步
 
-- 优先梳理 GPU 加速，然后验证 HDMI 音频和蓝牙。
+- 当时的首要任务是 GPU 加速，目前已经完成。HDMI 音频和蓝牙验证继续由
+  自动生成的当前状态跟踪。
 
 ## 备注
 

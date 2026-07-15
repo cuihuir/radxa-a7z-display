@@ -1,41 +1,60 @@
 # 当前状态
 
-## 快照
+> 本文由 `docs/status.json` 生成。请修改 JSON 单一源，然后运行 `python3 tools/render_status.py`。
 
-日期：2026-07-14
+**2026-07-15**
 
-当前仓库已经从文档准备阶段进入真实板端启动验证阶段。
-本地构建的 Debian 12 KDE 镜像已经可以在 A733 板子上启动，并进入 HDMI Plasma 桌面。
+## 已验证基线
 
-## 已完成内容
+| 项目 | 验证结果 |
+| --- | --- |
+| 板卡 | Radxa Cubie A7Z / Allwinner A733 |
+| 操作系统 | Debian 12 Bookworm · KDE Plasma Wayland |
+| 内核 | `5.15.147-21.1-a733` · package `5.15.147-21.1+display2` |
+| GPU 包 | `a733-pvr-gpu 24.2.6603887+gpu4` |
+| GPU | PowerVR B-Series BXM-4-64 · DDK `24.2@6603887` |
+| 图形 API | Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2 |
+| 桌面渲染器 | PowerVR 加速的 KWin / Plasma Wayland |
+| 显示 | `FLY-HDMI-LCD7` · `1024x600@60Hz` · scale 100% |
+| 网络 | AIC8800 Wi-Fi 和 SSH 正常 |
+| 显示策略 | 使用 EDID preferred/native 时序，不再强制 Full HD |
+| 恢复路径 | 自定义栈使用 `l0` · 原厂内核保留在 `l1` |
 
-- 本地 git 仓库已初始化。
-- 英文主文档已创建。
-- 对应的中文翻译文档已创建。
-- 已建立贡献、命名、验证、决策和来源等治理类文档。
-- 已有 A733 源码对比工具。
-- 已有 A7Z Debian 12 迁移报告生成器。
-- 本地 Radxa RSDK 试验分支已经为 `radxa-a733` 暴露 `bookworm`。
-- 已有这次 A7Z Debian 12 试验改动的 patch 产物。
-- 已经从 RSDK 构建出 Debian 12 Bookworm KDE 镜像。
-- 生成镜像可以从 SD 卡在 A733 板子上启动。
-- HDMI 桌面输出工作在 1920x1080。
-- SDDM 和 KDE Plasma Wayland 可以成功启动。
-- 已通过 SSH 完成验证并保存截图证据。
-- 已在 `FLY-HDMI-LCD7` 小屏验证 HDMI 原生模式选择为 `1024x600@60Hz`。
-- 完整的 `5.15.147-21.1+display2` 内核包已从 `l0` 启动，SSH 和 AIC8800 Wi-Fi 正常。
+## 能力状态
 
-## 这意味着什么
+状态：✅ 已解决 · 📘 已文档化 · 🧪 待验证 · 🚧 进行中 · ⬜ 未开始
 
-- Debian 12 HDMI 桌面启动这个核心结论已经有真实板端证据支撑。
-- 后续技术工作应该转向缺陷修复和体验完善，而不是继续证明路线是否可行。
-- 等你后面创建 GitHub 仓库时，可以直接推送本地历史，不需要重新整理文档结构。
+| 能力 | 当前状态 | 说明 |
+| --- | --- | --- |
+| Debian 12 Bookworm 启动 | ✅ 已解决 | RSDK 路线镜像可从 SD 卡在 Radxa Cubie A7Z/A733 启动。 |
+| HDMI 桌面输出 | ✅ 已解决 | Plasma Wayland 可进入 HDMI-A-1，并使用 EDID preferred/native 时序。 |
+| 显示管理器 | ✅ 已解决 | SDDM 可以进入图形登录和桌面。 |
+| 默认用户 | ✅ 已解决 | 用户名和密码均为 `radxa`。 |
+| Wi-Fi 和 SSH | ✅ 已解决 | 完整显示/GPU 栈下 AIC8800 Wi-Fi 和 SSH 已验证。 |
+| 串口 | 📘 已文档化 | 已记录 40-pin 排针 UART0 的启动和恢复诊断方法。 |
+| 根文件系统扩容 | ✅ 已解决 | rootfs 可扩展到 SD 卡，并从 `mmcblk0p3` 挂载。 |
+| Windows 友好镜像 | ✅ 已解决 | `v0.1.1` 是未修改 GPT 的已验证原始镜像 XZ 压缩版本。 |
+| HDMI 小屏原生模式 | ✅ 已解决 | `FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。 |
+| 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
+| GPU 加速 | ✅ 第一版已解决 | 已验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
+| DRM render node | ✅ 已解决 | PowerVR 提供 `/dev/dri/card1` 和 `renderD128`，HDMI KMS 继续使用 `card0`。 |
+| HDMI 音频 | 🧪 未验证 | 可以看到音频设备，仍需验证播放和 HDMI 音质。 |
+| 蓝牙 | 🧪 未验证 | 仍需验证控制器、配对和音频 profile。 |
+| NPU | ⬜ 未开始 | A733 NPU 启用和验证尚未开始。 |
+| BSP/内核清理 | 🚧 进行中 | 厂商内核日志仍包含 warning 和缺失模块信息。 |
+| Debian 13/Trixie | ⬜ 未开始 | Debian 12 仍是当前优先级和已验证桌面目标。 |
+
+## 当前里程碑
+
+- 仓库：已发布到 GitHub 并持续维护。
+- 已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)。
+- 显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。
+- GPU 里程碑：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)，候选发布已在本地完成验证。
 
 ## 下一阶段
 
-- 修复或明确 GPU 加速状态；当前 renderer 是 `llvmpipe`。
-- 验证音频播放和蓝牙配对。
-- 梳理首次启动中出现的 vendor kernel warning。
-- 持续增加可复现的验证记录。
-- 用普通 1080p 显示器和更多小屏验证同一 EDID 策略。
-- 你准备好以后再创建 GitHub remote。
+- 发布已验证的 `v0.3.0-a733-pvr-gpu` 候选版本。
+- 验证 HDMI 音频播放以及蓝牙配对/音频 profile。
+- 梳理剩余的厂商 BSP/内核 warning。
+- 在普通 1080p 显示器和更多面板上回归验证 EDID 原生模式策略。
+- 桌面栈稳定后开始 A733 NPU 启用调研。

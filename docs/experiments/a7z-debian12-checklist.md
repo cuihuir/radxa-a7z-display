@@ -1,6 +1,11 @@
 # A7Z Debian 12 Trial Checklist
 
-This is a living checklist for the Debian 12 trial branch on Radxa Cubie A7Z.
+> Historical trial checklist. It records the path to the first Debian 12 boot;
+> current capability status is generated from [`docs/status.json`](../status.json)
+> into [`docs/status.md`](../status.md).
+
+This checklist is closed except where an item remains useful as historical
+build context.
 
 ## Current hypothesis
 
@@ -55,7 +60,7 @@ This is a living checklist for the Debian 12 trial branch on Radxa Cubie A7Z.
 - [x] Does Debian 12 reach SDDM/KDE on HDMI?
 - [x] Capture first successful board screenshots.
 - [x] Record first successful board validation note.
-- [ ] Does Mesa expose hardware GPU acceleration instead of `llvmpipe`?
+- [x] Does the desktop expose PowerVR hardware GPU acceleration instead of `llvmpipe`?
 - [ ] Does HDMI audio playback work?
 - [ ] Does Bluetooth pairing work?
 
@@ -86,12 +91,14 @@ This is a living checklist for the Debian 12 trial branch on Radxa Cubie A7Z.
 - The generated image booted from SD card and reached KDE Plasma Wayland over HDMI.
 - Default login observed on the image is `radxa` / `radxa`.
 - HDMI was connected as `card0-HDMI-A-1` and the GUI ran at 1920x1080.
-- `glxinfo` reports `llvmpipe`; hardware GPU acceleration is not solved yet.
+- At first boot, `glxinfo` reported `llvmpipe`. The 2026-07-14 PowerVR port
+  later resolved this with BXM-4-64 acceleration, Vulkan, OpenCL, and KWin.
 - No failed systemd system units were observed during first SSH inspection.
 
-## Next action
+## Historical next action
 
-- Triage GPU acceleration first, then validate HDMI audio and Bluetooth.
+- GPU acceleration was the next action at this point and is now complete.
+  HDMI audio and Bluetooth validation remain tracked in the generated current status.
 
 ## Notes
 

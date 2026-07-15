@@ -1,0 +1,208 @@
+{
+  "snapshot_date": "2026-07-15",
+  "baseline": [
+    {
+      "key": {"en": "Board", "zh": "板卡"},
+      "value": "Radxa Cubie A7Z / Allwinner A733"
+    },
+    {
+      "key": {"en": "Operating system", "zh": "操作系统"},
+      "value": {
+        "en": "Debian 12 Bookworm · KDE Plasma Wayland",
+        "zh": "Debian 12 Bookworm · KDE Plasma Wayland"
+      }
+    },
+    {
+      "key": {"en": "Kernel", "zh": "内核"},
+      "value": "`5.15.147-21.1-a733` · package `5.15.147-21.1+display2`"
+    },
+    {
+      "key": {"en": "GPU package", "zh": "GPU 包"},
+      "value": "`a733-pvr-gpu 24.2.6603887+gpu4`"
+    },
+    {
+      "key": {"en": "GPU", "zh": "GPU"},
+      "value": "PowerVR B-Series BXM-4-64 · DDK `24.2@6603887`"
+    },
+    {
+      "key": {"en": "Graphics APIs", "zh": "图形 API"},
+      "value": "Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2"
+    },
+    {
+      "key": {"en": "Desktop renderer", "zh": "桌面渲染器"},
+      "value": {
+        "en": "PowerVR-accelerated KWin / Plasma Wayland",
+        "zh": "PowerVR 加速的 KWin / Plasma Wayland"
+      }
+    },
+    {
+      "key": {"en": "Display", "zh": "显示"},
+      "value": "`FLY-HDMI-LCD7` · `1024x600@60Hz` · scale 100%"
+    },
+    {
+      "key": {"en": "Network", "zh": "网络"},
+      "value": {
+        "en": "AIC8800 Wi-Fi and SSH working",
+        "zh": "AIC8800 Wi-Fi 和 SSH 正常"
+      }
+    },
+    {
+      "key": {"en": "Display policy", "zh": "显示策略"},
+      "value": {
+        "en": "EDID preferred/native timing; no forced Full HD",
+        "zh": "使用 EDID preferred/native 时序，不再强制 Full HD"
+      }
+    },
+    {
+      "key": {"en": "Recovery", "zh": "恢复路径"},
+      "value": {
+        "en": "Custom stack on `l0` · vendor kernel retained on `l1`",
+        "zh": "自定义栈使用 `l0` · 原厂内核保留在 `l1`"
+      }
+    }
+  ],
+  "summary": [
+    {
+      "en": "Repository: published and maintained on GitHub.",
+      "zh": "仓库：已发布到 GitHub 并持续维护。"
+    },
+    {
+      "en": "Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).",
+      "zh": "已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)。"
+    },
+    {
+      "en": "Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).",
+      "zh": "显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。"
+    },
+    {
+      "en": "GPU milestone: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.md), verified release candidate staged locally.",
+      "zh": "GPU 里程碑：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)，候选发布已在本地完成验证。"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "debian_boot",
+      "status": "working",
+      "area": {"en": "Debian 12 Bookworm boot", "zh": "Debian 12 Bookworm 启动"},
+      "notes": {"en": "RSDK-based image boots from SD on Radxa Cubie A7Z/A733.", "zh": "RSDK 路线镜像可从 SD 卡在 Radxa Cubie A7Z/A733 启动。"}
+    },
+    {
+      "id": "hdmi_desktop",
+      "status": "working",
+      "area": {"en": "HDMI desktop output", "zh": "HDMI 桌面输出"},
+      "notes": {"en": "Plasma Wayland reaches HDMI-A-1 and follows the EDID preferred/native timing.", "zh": "Plasma Wayland 可进入 HDMI-A-1，并使用 EDID preferred/native 时序。"}
+    },
+    {
+      "id": "display_manager",
+      "status": "working",
+      "area": {"en": "Display manager", "zh": "显示管理器"},
+      "notes": {"en": "SDDM reaches the graphical login and desktop path.", "zh": "SDDM 可以进入图形登录和桌面。"}
+    },
+    {
+      "id": "default_login",
+      "status": "working",
+      "area": {"en": "Default user login", "zh": "默认用户"},
+      "notes": {"en": "Username and password are both `radxa`.", "zh": "用户名和密码均为 `radxa`。"}
+    },
+    {
+      "id": "network",
+      "status": "working",
+      "area": {"en": "Wi-Fi and SSH", "zh": "Wi-Fi 和 SSH"},
+      "notes": {"en": "AIC8800 Wi-Fi and SSH are verified with the full display/GPU stack.", "zh": "完整显示/GPU 栈下 AIC8800 Wi-Fi 和 SSH 已验证。"}
+    },
+    {
+      "id": "serial",
+      "status": "documented",
+      "area": {"en": "Serial console", "zh": "串口"},
+      "notes": {"en": "UART0 on the 40-pin header is documented for boot and recovery diagnostics.", "zh": "已记录 40-pin 排针 UART0 的启动和恢复诊断方法。"}
+    },
+    {
+      "id": "rootfs_expand",
+      "status": "working",
+      "area": {"en": "Root filesystem expansion", "zh": "根文件系统扩容"},
+      "notes": {"en": "Rootfs expands to the SD card and mounts from `mmcblk0p3`.", "zh": "rootfs 可扩展到 SD 卡，并从 `mmcblk0p3` 挂载。"}
+    },
+    {
+      "id": "image_release",
+      "status": "working",
+      "area": {"en": "Windows-friendly image release", "zh": "Windows 友好镜像"},
+      "notes": {"en": "`v0.1.1` is XZ-compressed from the verified raw image without modifying GPT.", "zh": "`v0.1.1` 是未修改 GPT 的已验证原始镜像 XZ 压缩版本。"}
+    },
+    {
+      "id": "native_mode",
+      "status": "working",
+      "area": {"en": "Small-screen native mode", "zh": "HDMI 小屏原生模式"},
+      "notes": {"en": "`FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping.", "zh": "`FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。"}
+    },
+    {
+      "id": "display_kernel",
+      "status": "working",
+      "area": {"en": "Full display kernel package", "zh": "完整显示内核包"},
+      "notes": {"en": "`5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`.", "zh": "`5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。"}
+    },
+    {
+      "id": "gpu",
+      "status": "working_first_port",
+      "area": {"en": "GPU acceleration", "zh": "GPU 加速"},
+      "notes": {"en": "`pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified.", "zh": "已验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。"}
+    },
+    {
+      "id": "render_node",
+      "status": "working",
+      "area": {"en": "DRM render node", "zh": "DRM render node"},
+      "notes": {"en": "PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`.", "zh": "PowerVR 提供 `/dev/dri/card1` 和 `renderD128`，HDMI KMS 继续使用 `card0`。"}
+    },
+    {
+      "id": "hdmi_audio",
+      "status": "not_validated",
+      "area": {"en": "HDMI audio", "zh": "HDMI 音频"},
+      "notes": {"en": "Audio devices are visible; playback and HDMI audio quality still need testing.", "zh": "可以看到音频设备，仍需验证播放和 HDMI 音质。"}
+    },
+    {
+      "id": "bluetooth",
+      "status": "not_validated",
+      "area": {"en": "Bluetooth", "zh": "蓝牙"},
+      "notes": {"en": "Controller visibility, pairing, and audio profiles still need validation.", "zh": "仍需验证控制器、配对和音频 profile。"}
+    },
+    {
+      "id": "npu",
+      "status": "not_started",
+      "area": {"en": "NPU", "zh": "NPU"},
+      "notes": {"en": "A733 NPU enablement and validation have not started.", "zh": "A733 NPU 启用和验证尚未开始。"}
+    },
+    {
+      "id": "bsp_cleanup",
+      "status": "in_progress",
+      "area": {"en": "BSP/kernel cleanup", "zh": "BSP/内核清理"},
+      "notes": {"en": "Vendor kernel logs still contain warnings and missing-module messages.", "zh": "厂商内核日志仍包含 warning 和缺失模块信息。"}
+    },
+    {
+      "id": "debian_13",
+      "status": "not_started",
+      "area": {"en": "Debian 13 / Trixie", "zh": "Debian 13/Trixie"},
+      "notes": {"en": "Debian 12 remains the current priority and verified desktop target.", "zh": "Debian 12 仍是当前优先级和已验证桌面目标。"}
+    }
+  ],
+  "next_milestones": [
+    {
+      "en": "Publish the verified `v0.3.0-a733-pvr-gpu` release candidate.",
+      "zh": "发布已验证的 `v0.3.0-a733-pvr-gpu` 候选版本。"
+    },
+    {
+      "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",
+      "zh": "验证 HDMI 音频播放以及蓝牙配对/音频 profile。"
+    },
+    {
+      "en": "Triage remaining vendor BSP/kernel warnings.",
+      "zh": "梳理剩余的厂商 BSP/内核 warning。"
+    },
+    {
+      "en": "Regression-test native EDID policy on a normal 1080p monitor and additional panels.",
+      "zh": "在普通 1080p 显示器和更多面板上回归验证 EDID 原生模式策略。"
+    },
+    {
+      "en": "Start A733 NPU enablement research after the desktop stack is stable.",
+      "zh": "桌面栈稳定后开始 A733 NPU 启用调研。"
+    }
+  ]
+}

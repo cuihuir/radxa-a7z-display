@@ -19,18 +19,21 @@ with the full technical record in
 
 Verified on a physical Radxa Cubie A7Z:
 
+<!-- status-baseline:start -->
 | Item | Verified result |
 | --- | --- |
-| Debian | Debian 12 Bookworm with KDE Plasma Wayland |
-| Kernel package | `5.15.147-21.1+display2` |
+| Board | Radxa Cubie A7Z / Allwinner A733 |
+| Operating system | Debian 12 Bookworm · KDE Plasma Wayland |
+| Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display2` |
 | GPU package | `a733-pvr-gpu 24.2.6603887+gpu4` |
-| GPU | PowerVR B-Series BXM-4-64, DDK `24.2@6603887` |
-| Graphics APIs | Vulkan, OpenCL 3.0, EGL/GBM, OpenGL ES 3.2 |
+| GPU | PowerVR B-Series BXM-4-64 · DDK `24.2@6603887` |
+| Graphics APIs | Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2 |
 | Desktop renderer | PowerVR-accelerated KWin / Plasma Wayland |
-| Boot entry | Custom kernel on `l0`; vendor recovery kernel retained on `l1` |
-| Small HDMI panel | `FLY-HDMI-LCD7` at native `1024x600@60Hz` |
+| Display | `FLY-HDMI-LCD7` · `1024x600@60Hz` · scale 100% |
 | Network | AIC8800 Wi-Fi and SSH working |
-| Display policy | Uses the EDID preferred/native timing instead of forcing Full HD |
+| Display policy | EDID preferred/native timing; no forced Full HD |
+| Recovery | Custom stack on `l0` · vendor kernel retained on `l1` |
+<!-- status-baseline:end -->
 
 Release assets include the installable GPU `.deb`, a guarded deployment
 script, bilingual release notes, and SHA256 checksums.
@@ -74,25 +77,29 @@ That first successful desktop boot was the point where this stopped being only a
 
 This table is the short, practical view of what currently works and what still needs work on the Debian 12 KDE image.
 
+<!-- status-table:start -->
+Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in progress · ⬜ not started
+
 | Area | Current status | Notes |
 | --- | --- | --- |
-| Debian 12 Bookworm boot | Working | Boots on Radxa Cubie A7Z / A733 from the RSDK-based image. |
-| HDMI desktop output | Working | KDE Plasma Wayland reaches HDMI-A-1 and follows the display's EDID preferred/native timing. |
-| Display manager | Working | SDDM starts and reaches the graphical login / desktop path. |
-| Default user login | Working | `radxa` / `radxa`. |
-| Wi-Fi and SSH | Working | AIC8800 Wi-Fi modules load under the full display kernel; SSH was verified at `192.168.123.210`. |
-| Serial console | Documented | UART0 is available on the 40-pin header for boot and recovery diagnostics. |
-| Root filesystem expansion | Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
-| Windows-friendly image release | Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
-| Small-screen native mode selection | Working | Verified on `FLY-HDMI-LCD7`: the native `1024x600@60Hz` timing is selected without stretching or cropping. |
-| Full display kernel package | Working | `5.15.147-21.1+display2` boots from `l0`; SSH, AIC8800 Wi-Fi, KDE, and native HDMI mode are verified. |
-| GPU acceleration | Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin/Plasma Wayland are verified on A7Z. |
-| DRM render node | Working | PowerVR registers `/dev/dri/card1` and `/dev/dri/renderD128`; HDMI KMS remains on `/dev/dri/card0`. |
-| HDMI audio | Not validated | Audio devices are visible, but playback and HDMI audio quality still need testing. |
-| Bluetooth | Not validated | Controller visibility and pairing/audio profiles still need validation. |
-| NPU | Not started | A733 has NPU potential, but this project has not enabled or validated it yet. |
-| BSP/kernel cleanup | Open issue | Vendor kernel logs still contain warnings and missing-module messages. |
-| Debian 13 / Trixie | Not started | Debian 12 is the current priority and the first working desktop target. |
+| Debian 12 Bookworm boot | ✅ Working | RSDK-based image boots from SD on Radxa Cubie A7Z/A733. |
+| HDMI desktop output | ✅ Working | Plasma Wayland reaches HDMI-A-1 and follows the EDID preferred/native timing. |
+| Display manager | ✅ Working | SDDM reaches the graphical login and desktop path. |
+| Default user login | ✅ Working | Username and password are both `radxa`. |
+| Wi-Fi and SSH | ✅ Working | AIC8800 Wi-Fi and SSH are verified with the full display/GPU stack. |
+| Serial console | 📘 Documented | UART0 on the 40-pin header is documented for boot and recovery diagnostics. |
+| Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
+| Windows-friendly image release | ✅ Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
+| Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
+| Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
+| GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified. |
+| DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
+| HDMI audio | 🧪 Not validated | Audio devices are visible; playback and HDMI audio quality still need testing. |
+| Bluetooth | 🧪 Not validated | Controller visibility, pairing, and audio profiles still need validation. |
+| NPU | ⬜ Not started | A733 NPU enablement and validation have not started. |
+| BSP/kernel cleanup | 🚧 In progress | Vendor kernel logs still contain warnings and missing-module messages. |
+| Debian 13 / Trixie | ⬜ Not started | Debian 12 remains the current priority and verified desktop target. |
+<!-- status-table:end -->
 
 ## What this repository is for
 
@@ -138,23 +145,26 @@ This table is the short, practical view of what currently works and what still n
 - `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko` builds and validates `pvrsrvkm`.
 - `tools/package_a733_gpu.sh MODULE.ko USERSPACE.deb OUTPUT.deb` builds a GPU package without replacing Xorg.
 - `sudo tools/deploy_a733_gpu.sh PACKAGE.deb --activate` installs it while preserving recovery entry `l1`.
+- `python3 tools/render_status.py` regenerates README status blocks and both current-status documents from `docs/status.json`.
+- `python3 tools/render_status.py --check` verifies that generated status documentation is current.
 
 ## Maintenance rules
 
 - English documents are the source of truth.
 - Every core document must have a matching `.zh-CN.md` translation.
+- `docs/status.json` is the only editable source for current progress; generated status blocks and documents must not be edited directly.
 - Keep decisions in the decision log, not scattered across notes.
 - Add sources for any hardware, BSP, or release claim before treating it as a project fact.
 - Keep the docs practical and lightweight. This is a personal project first, with collaborators welcome but not required.
 
 ## Current status
 
-- Project name: `radxa-a7z-display`
-- Scope: Debian 12 HDMI desktop bring-up and long-term maintenance on A733 boards
-- Repository state: published and maintained on GitHub
-- Latest test release: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)
-- Latest full display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)
-- Latest verified GPU milestone: [`v0.3.0-a733-pvr-gpu`](docs/releases/v0.3.0-a733-pvr-gpu.md) (release candidate staged locally)
+<!-- status-summary:start -->
+- Repository: published and maintained on GitHub.
+- Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).
+- Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
+- GPU milestone: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.md), verified release candidate staged locally.
+<!-- status-summary:end -->
 
 ## Download
 
