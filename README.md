@@ -54,7 +54,7 @@ This table is the short, practical view of what currently works and what still n
 | Windows-friendly image release | Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
 | Small-screen native mode selection | Working | Verified on `FLY-HDMI-LCD7`: the native `1024x600@60Hz` timing is selected without stretching or cropping. |
 | Full display kernel package | Working | `5.15.147-21.1+display2` boots from `l0`; SSH, AIC8800 Wi-Fi, KDE, and native HDMI mode are verified. |
-| GPU acceleration | Not solved | Current renderer is `llvmpipe`; hardware 3D acceleration is not enabled yet. |
+| GPU acceleration | Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin/Plasma Wayland are verified on A7Z. |
 | DRM render node | Not solved | Only `/dev/dri/card0` was observed; no separate render node was seen in first validation. |
 | HDMI audio | Not validated | Audio devices are visible, but playback and HDMI audio quality still need testing. |
 | Bluetooth | Not validated | Controller visibility and pairing/audio profiles still need validation. |
@@ -75,6 +75,8 @@ This table is the short, practical view of what currently works and what still n
 - [Current Status](docs/status.md)
 - [Display Landscape Research](docs/research/a733-display-landscape.md)
 - [A733 GPU Acceleration Driver Feasibility](docs/research/a733-gpu-acceleration-feasibility.md)
+- [A733 PowerVR GPU First Activation](docs/validation-records/2026-07-14-a733-pvr-gpu-first-activation.md)
+- [A733 PowerVR GPU First-Port Release](docs/releases/v0.3.0-a733-pvr-gpu.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)
 - [Contributing Guide](docs/contributing.md)
 - [Naming Conventions](docs/naming-conventions.md)
@@ -100,6 +102,10 @@ This table is the short, practical view of what currently works and what still n
 - `patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` removes A733's forced-FHD policy and makes the vendor DRM driver select the EDID preferred mode before falling back to the first advertised mode.
 - `tools/package_a733_kernel_display.sh INPUT.deb OUTPUT.deb` adds the A7Z initramfs size workaround and produces the installable `+display2` kernel package.
 - `sudo tools/deploy_a733_display_kernel.sh PACKAGE.deb --activate` installs one package under a lock and verifies DKMS and initramfs safety gates before selecting `l0`.
+- `tools/download_a733_gpu_vendor.sh DIR` downloads and verifies the pinned A733 PowerVR packages.
+- `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko` builds and validates `pvrsrvkm`.
+- `tools/package_a733_gpu.sh MODULE.ko USERSPACE.deb OUTPUT.deb` builds a GPU package without replacing Xorg.
+- `sudo tools/deploy_a733_gpu.sh PACKAGE.deb --activate` installs it while preserving recovery entry `l1`.
 
 ## Maintenance rules
 
