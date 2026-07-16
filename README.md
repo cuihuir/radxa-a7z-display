@@ -89,7 +89,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Wi-Fi and SSH | ✅ Working | AIC8800 Wi-Fi and SSH are verified with the full display/GPU stack. |
 | Serial console | 📘 Documented | UART0 on the 40-pin header is documented for boot and recovery diagnostics. |
 | Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
-| Windows-friendly image release | ✅ Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
+| Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
 | GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified. |
@@ -116,6 +116,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - [A733 GPU Acceleration Driver Feasibility](docs/research/a733-gpu-acceleration-feasibility.md)
 - [A733 PowerVR GPU First Activation](docs/validation-records/2026-07-14-a733-pvr-gpu-first-activation.md)
 - [A733 PowerVR GPU First-Port Release](docs/releases/v0.3.0-a733-pvr-gpu.md)
+- [A733 PowerVR GPU Hardening Roadmap](docs/roadmap/a733-pvr-gpu-hardening.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)
 - [Contributing Guide](docs/contributing.md)
 - [Naming Conventions](docs/naming-conventions.md)
@@ -163,12 +164,21 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - Repository: published and maintained on GitHub.
 - Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).
 - Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
-- GPU milestone: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.md), verified release candidate staged locally.
+- GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
 <!-- status-summary:end -->
 
 ## Download
 
-The verified install image is available from
+The current integrated GPU image is available from
+[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu):
+
+- Image: `radxa-a733-debian12-kde-pvr-20260716.img.xz`
+- Includes the `display2` kernel, PowerVR `gpu4` stack, KDE stability setting,
+  and an independent vendor-kernel `l1` recovery entry.
+- The filesystem and image layout pass offline validation. The assembled image
+  still needs a clean reflash test on a separate SD card.
+
+The original verified base image remains available from
 [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw):
 
 - Image: `radxa-a733-debian12-kde-20260713.img.xz`
@@ -179,11 +189,11 @@ The verified install image is available from
 `v0.1.0-a733-debian12-kde` remains withdrawn. Its PiShrink-processed image
 does not boot on the A7Z; do not flash it.
 
-On Linux, decompress and flash the verified release with:
+On Linux, decompress and flash either release with:
 
 ```bash
-xz -d radxa-a733-debian12-kde-20260713.img.xz
-sudo dd if=radxa-a733-debian12-kde-20260713.img of=/dev/<target-disk> bs=4M status=progress conv=fsync
+xz -d radxa-a733-debian12-kde-pvr-20260716.img.xz
+sudo dd if=radxa-a733-debian12-kde-pvr-20260716.img of=/dev/<target-disk> bs=4M status=progress conv=fsync
 sync
 ```
 

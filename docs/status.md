@@ -2,7 +2,7 @@
 
 > Generated from `docs/status.json`. Edit the JSON source, then run `python3 tools/render_status.py`.
 
-**2026-07-15**
+**2026-07-16**
 
 ## Verified Baseline
 
@@ -33,7 +33,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Wi-Fi and SSH | ✅ Working | AIC8800 Wi-Fi and SSH are verified with the full display/GPU stack. |
 | Serial console | 📘 Documented | UART0 on the 40-pin header is documented for boot and recovery diagnostics. |
 | Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
-| Windows-friendly image release | ✅ Working | `v0.1.1` is XZ-compressed from the verified raw image without modifying GPT. |
+| Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
 | GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified. |
@@ -49,11 +49,12 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - Repository: published and maintained on GitHub.
 - Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).
 - Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
-- GPU milestone: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.md), verified release candidate staged locally.
+- GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
 
 ## Next Milestones
 
-- Publish the verified `v0.3.0-a733-pvr-gpu` release candidate.
+- Isolate the PowerVR environment so ordinary Qt Wayland clients and KScreenLocker use the distribution graphics stack.
+- Investigate XWayland glamor fallback and Qt Quick GPU rendering.
 - Validate HDMI audio playback and Bluetooth pairing/audio profiles.
 - Triage remaining vendor BSP/kernel warnings.
 - Regression-test native EDID policy on a normal 1080p monitor and additional panels.

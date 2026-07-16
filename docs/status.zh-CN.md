@@ -2,7 +2,7 @@
 
 > 本文由 `docs/status.json` 生成。请修改 JSON 单一源，然后运行 `python3 tools/render_status.py`。
 
-**2026-07-15**
+**2026-07-16**
 
 ## 已验证基线
 
@@ -33,7 +33,7 @@
 | Wi-Fi 和 SSH | ✅ 已解决 | 完整显示/GPU 栈下 AIC8800 Wi-Fi 和 SSH 已验证。 |
 | 串口 | 📘 已文档化 | 已记录 40-pin 排针 UART0 的启动和恢复诊断方法。 |
 | 根文件系统扩容 | ✅ 已解决 | rootfs 可扩展到 SD 卡，并从 `mmcblk0p3` 挂载。 |
-| Windows 友好镜像 | ✅ 已解决 | `v0.1.1` 是未修改 GPT 的已验证原始镜像 XZ 压缩版本。 |
+| Windows 友好镜像 | ✅ 已解决 | `v0.3.0` 的 XZ 镜像整合 Debian 12 KDE、显示内核、PowerVR 加速和独立原厂恢复入口。 |
 | HDMI 小屏原生模式 | ✅ 已解决 | `FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。 |
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
 | GPU 加速 | ✅ 第一版已解决 | 已验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
@@ -49,11 +49,12 @@
 - 仓库：已发布到 GitHub 并持续维护。
 - 已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)。
 - 显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。
-- GPU 里程碑：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)，候选发布已在本地完成验证。
+- GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。
 
 ## 下一阶段
 
-- 发布已验证的 `v0.3.0-a733-pvr-gpu` 候选版本。
+- 隔离 PowerVR 环境，让普通 Qt Wayland 客户端和 KScreenLocker 使用发行版图形栈。
+- 排查 XWayland glamor 回退和 Qt Quick GPU 绘制。
 - 验证 HDMI 音频播放以及蓝牙配对/音频 profile。
 - 梳理剩余的厂商 BSP/内核 warning。
 - 在普通 1080p 显示器和更多面板上回归验证 EDID 原生模式策略。

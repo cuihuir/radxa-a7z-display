@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from datetime import date
 from pathlib import Path
 
 from tools.render_status import (
@@ -17,7 +18,7 @@ class RenderStatusTests(unittest.TestCase):
         data = load_status()
 
         self.assertGreater(len(data["capabilities"]), 10)
-        self.assertEqual(data["snapshot_date"], "2026-07-15")
+        self.assertEqual(date.fromisoformat(data["snapshot_date"]).isoformat(), data["snapshot_date"])
 
     def test_table_uses_localized_status_labels(self) -> None:
         data = load_status()

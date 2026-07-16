@@ -1,5 +1,5 @@
 {
-  "snapshot_date": "2026-07-15",
+  "snapshot_date": "2026-07-16",
   "baseline": [
     {
       "key": {"en": "Board", "zh": "板卡"},
@@ -75,8 +75,8 @@
       "zh": "显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。"
     },
     {
-      "en": "GPU milestone: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.md), verified release candidate staged locally.",
-      "zh": "GPU 里程碑：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)，候选发布已在本地完成验证。"
+      "en": "GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.",
+      "zh": "GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。"
     }
   ],
   "capabilities": [
@@ -126,7 +126,7 @@
       "id": "image_release",
       "status": "working",
       "area": {"en": "Windows-friendly image release", "zh": "Windows 友好镜像"},
-      "notes": {"en": "`v0.1.1` is XZ-compressed from the verified raw image without modifying GPT.", "zh": "`v0.1.1` 是未修改 GPT 的已验证原始镜像 XZ 压缩版本。"}
+      "notes": {"en": "`v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image.", "zh": "`v0.3.0` 的 XZ 镜像整合 Debian 12 KDE、显示内核、PowerVR 加速和独立原厂恢复入口。"}
     },
     {
       "id": "native_mode",
@@ -185,8 +185,12 @@
   ],
   "next_milestones": [
     {
-      "en": "Publish the verified `v0.3.0-a733-pvr-gpu` release candidate.",
-      "zh": "发布已验证的 `v0.3.0-a733-pvr-gpu` 候选版本。"
+      "en": "Isolate the PowerVR environment so ordinary Qt Wayland clients and KScreenLocker use the distribution graphics stack.",
+      "zh": "隔离 PowerVR 环境，让普通 Qt Wayland 客户端和 KScreenLocker 使用发行版图形栈。"
+    },
+    {
+      "en": "Investigate XWayland glamor fallback and Qt Quick GPU rendering.",
+      "zh": "排查 XWayland glamor 回退和 Qt Quick GPU 绘制。"
     },
     {
       "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",

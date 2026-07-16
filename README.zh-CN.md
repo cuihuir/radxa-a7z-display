@@ -83,7 +83,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 | Wi-Fi 和 SSH | ✅ 已解决 | 完整显示/GPU 栈下 AIC8800 Wi-Fi 和 SSH 已验证。 |
 | 串口 | 📘 已文档化 | 已记录 40-pin 排针 UART0 的启动和恢复诊断方法。 |
 | 根文件系统扩容 | ✅ 已解决 | rootfs 可扩展到 SD 卡，并从 `mmcblk0p3` 挂载。 |
-| Windows 友好镜像 | ✅ 已解决 | `v0.1.1` 是未修改 GPT 的已验证原始镜像 XZ 压缩版本。 |
+| Windows 友好镜像 | ✅ 已解决 | `v0.3.0` 的 XZ 镜像整合 Debian 12 KDE、显示内核、PowerVR 加速和独立原厂恢复入口。 |
 | HDMI 小屏原生模式 | ✅ 已解决 | `FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。 |
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
 | GPU 加速 | ✅ 第一版已解决 | 已验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
@@ -110,6 +110,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - [A733 GPU 加速驱动可行性调研](docs/research/a733-gpu-acceleration-feasibility.zh-CN.md)
 - [A733 PowerVR GPU 第一版激活验证](docs/validation-records/2026-07-14-a733-pvr-gpu-first-activation.zh-CN.md)
 - [A733 PowerVR GPU 第一版发布说明](docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)
+- [A733 PowerVR GPU 加固路线](docs/roadmap/a733-pvr-gpu-hardening.zh-CN.md)
 - [显示栈架构](docs/architecture/display-stack.zh-CN.md)
 - [贡献说明](docs/contributing.zh-CN.md)
 - [命名约定](docs/naming-conventions.zh-CN.md)
@@ -152,12 +153,21 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - 仓库：已发布到 GitHub 并持续维护。
 - 已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)。
 - 显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。
-- GPU 里程碑：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/blob/main/docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)，候选发布已在本地完成验证。
+- GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。
 <!-- status-summary:end -->
 
 ## 下载镜像
 
-已验证的 Debian 12 KDE 镜像发布于
+当前整合 GPU 的镜像发布于
+[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)：
+
+- 镜像：`radxa-a733-debian12-kde-pvr-20260716.img.xz`
+- 整合 `display2` 内核、PowerVR `gpu4` 栈、KDE 稳定配置和独立的原厂内核
+  `l1` 恢复入口。
+- 文件系统和镜像布局已通过离线验证；当前组装镜像仍需使用另一张 SD 卡做一次
+  全新烧录启动测试。
+
+原始的已验证基础镜像继续发布于
 [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)：
 
 - 镜像：`radxa-a733-debian12-kde-20260713.img.xz`
@@ -166,11 +176,11 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 
 `v0.1.0-a733-debian12-kde` 已撤回。该版本经过 PiShrink 处理，无法在 A7Z 启动，请勿使用。
 
-Linux 下解压和烧录：
+Linux 下解压和烧录任一镜像：
 
 ```bash
-xz -d radxa-a733-debian12-kde-20260713.img.xz
-sudo dd if=radxa-a733-debian12-kde-20260713.img \
+xz -d radxa-a733-debian12-kde-pvr-20260716.img.xz
+sudo dd if=radxa-a733-debian12-kde-pvr-20260716.img \
   of=/dev/<目标磁盘> bs=4M status=progress conv=fsync
 sync
 ```
