@@ -138,6 +138,8 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - `tools/download_a733_gpu_vendor.sh DIR`：下载并校验锁定版本的 A733 PowerVR 包。
 - `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko`：构建并检查 `pvrsrvkm`。
 - `tools/package_a733_gpu.sh MODULE.ko USERSPACE.deb OUTPUT.deb`：生成不覆盖 Xorg 的 GPU 包。
+- `tools/build_a733_kwin.sh KWIN.dsc OUTPUT_DIR`：为 KMS/render node 分离反馈构建带补丁的 ARM64 KWin Debian 包。
+- `tools/package_a733_xwayland.sh XWAYLAND OUTPUT.deb`：将锁定版本的 XWayland 24.1.6 GLES glamor 集成打包到 `/opt`。
 - `sudo tools/deploy_a733_gpu.sh PACKAGE.deb --activate`：安装 GPU 包并保留 `l1` 恢复项。
 - `python3 tools/render_status.py`：从 `docs/status.json` 重新生成 README 状态区块和两份当前状态文档。
 - `python3 tools/render_status.py --check`：检查生成的状态文档是否为最新。

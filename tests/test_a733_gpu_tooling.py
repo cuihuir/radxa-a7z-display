@@ -32,7 +32,7 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertIn('Option "kmsdev" "/dev/dri/card0"', script)
         self.assertIn("KWIN_DRM_DEVICES=/dev/dri/card0", script)
         self.assertIn("/usr/local/lib/a733-pvr/kwin_wayland", script)
-        self.assertIn("Version: 24.2.6603887+gpu6", script)
+        self.assertIn("Version: 24.2.6603887+gpu7", script)
         self.assertIn(
             'exec /usr/local/lib/a733-pvr/kwin_wayland "\\$@"', script
         )
@@ -41,6 +41,9 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertIn("dpkg-divert --package a733-pvr-gpu --add --rename", script)
         self.assertIn("kscreenlocker_greet.a733-pvr-distrib", script)
         self.assertIn('exec /usr/bin/Xwayland "\\$@"', script)
+        self.assertIn("/opt/a733-xwayland/24.1.6/Xwayland", script)
+        self.assertIn('"\\$@" -glamor es', script)
+        self.assertIn("4:5.27.5-3+a7331", script)
         self.assertGreaterEqual(
             script.count(
                 "unset LD_LIBRARY_PATH LIBGL_DRIVERS_PATH VK_DRIVER_FILES "
@@ -56,6 +59,29 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertNotRegex(script, re.compile(r"cp .*usr/bin/Xorg"))
         self.assertNotRegex(script, re.compile(r"cp .*modesetting_drv"))
         self.assertNotRegex(script, re.compile(r"cp .*libglamoregl"))
+
+    def test_xwayland_package_is_pinned_and_scoped(self) -> None:
+        script = (ROOT / "tools/package_a733_xwayland.sh").read_text()
+
+        self.assertIn(
+            "a58c2908da43d45bdf28f63b692c260452b9f455ce9aa36cd52a33190f389135",
+            script,
+        )
+        self.assertIn("/opt/a733-xwayland/$version", script)
+        self.assertIn("a733-pvr-gpu (>= 24.2.6603887+gpu7)", script)
+        self.assertIn("kwin-common (>= 4:5.27.5-3+a7331)", script)
+        self.assertIn("/usr/local/sbin/a733-pvr-control enable", script)
+        self.assertNotIn("/usr/bin/Xwayland", script)
+
+    def test_kwin_builder_uses_the_tracked_render_node_patch(self) -> None:
+        script = (ROOT / "tools/build_a733_kwin.sh").read_text()
+
+        self.assertIn("0001-linux-dmabuf-use-egl-render-node.patch", script)
+        self.assertIn("4:5.27.5-3+a7331", script)
+        self.assertIn("dpkg-buildpackage -b -uc -us", script)
+        self.assertIn("cuihuir <cuihuir@163.com>", script)
+        self.assertIn("sed 's#  \\./#  #' > SHA256SUMS", script)
+        self.assertNotIn('sha256sum "$output"/*.deb', script)
 
     def test_deployment_falls_back_before_package_install(self) -> None:
         script = (ROOT / "tools/deploy_a733_gpu.sh").read_text()

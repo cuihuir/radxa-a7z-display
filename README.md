@@ -149,6 +149,8 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - `tools/download_a733_gpu_vendor.sh DIR` downloads and verifies the pinned A733 PowerVR packages.
 - `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko` builds and validates `pvrsrvkm`.
 - `tools/package_a733_gpu.sh MODULE.ko USERSPACE.deb OUTPUT.deb` builds a GPU package without replacing Xorg.
+- `tools/build_a733_kwin.sh KWIN.dsc OUTPUT_DIR` builds the patched ARM64 KWin Debian packages for split KMS/render-node feedback.
+- `tools/package_a733_xwayland.sh XWAYLAND OUTPUT.deb` packages the pinned XWayland 24.1.6 GLES-glamor integration under `/opt`.
 - `sudo tools/deploy_a733_gpu.sh PACKAGE.deb --activate` installs it while preserving recovery entry `l1`.
 - `python3 tools/render_status.py` regenerates README status blocks and both current-status documents from `docs/status.json`.
 - `python3 tools/render_status.py --check` verifies that generated status documentation is current.

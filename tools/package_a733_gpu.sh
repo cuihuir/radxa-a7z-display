@@ -113,6 +113,13 @@ ENV
 	fi
 	cat > /usr/local/bin/Xwayland.new <<'ENV'
 #!/bin/sh
+kwin_version=\$(dpkg-query -W -f='\${Version}' kwin-common 2>/dev/null || true)
+if [ -x /opt/a733-xwayland/24.1.6/Xwayland ] && \
+	dpkg --compare-versions "\$kwin_version" ge 4:5.27.5-3+a7331; then
+	export LD_LIBRARY_PATH="$prefix/lib\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}"
+	export LIBGL_DRIVERS_PATH="$prefix/lib/dri"
+	exec /opt/a733-xwayland/24.1.6/Xwayland "\$@" -glamor es
+fi
 unset LD_LIBRARY_PATH LIBGL_DRIVERS_PATH VK_DRIVER_FILES OCL_ICD_VENDORS KWIN_DRM_DEVICES
 exec /usr/bin/Xwayland "\$@"
 ENV
@@ -181,7 +188,7 @@ chmod 0755 "$package/usr/local/sbin/a733-pvr-control"
 
 cat > "$package/DEBIAN/control" <<EOF
 Package: a733-pvr-gpu
-Version: 24.2.6603887+gpu6
+Version: 24.2.6603887+gpu7
 Section: non-free/kernel
 Priority: optional
 Architecture: arm64
@@ -189,8 +196,8 @@ Maintainer: radxa-a7z-display project
 Depends: linux-image-5.15.147-21.1-a733 (= 5.15.147-21.1+display2), kwin-wayland, libxcb-dri2-0, libdrm2, libx11-6, libx11-xcb1, libxcb1, libxcb-dri3-0, libxcb-present0, libxcb-randr0, libxcb-sync1, libxcb-xfixes0, libxshmfence1, libexpat1, libstdc++6, libudev1, zlib1g
 Description: A733 PowerVR BXM GPU activation for the verified A7Z kernel
  Installs pvrsrvkm, BVNC 36.56.104.183 firmware, and a vendor userspace scoped
- to KWin and explicit a733-pvr-run commands. It intentionally does not replace
- Xorg, modesetting, or glamor.
+ to KWin, an optional patched XWayland integration, and explicit a733-pvr-run
+ commands. It intentionally does not replace Xorg, modesetting, or glamor.
 EOF
 cat > "$package/DEBIAN/postinst" <<'EOF'
 #!/bin/sh
