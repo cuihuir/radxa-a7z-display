@@ -88,7 +88,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
 | GPU 加速 | ✅ 第一版已解决 | 已在隔离环境的 `gpu6` 上验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
 | GPU 桌面环境隔离 | ✅ 已解决 | Plasma、Discover、KScreenLocker 和 XWayland 不再继承 PowerVR 库环境，KWin 继续保持 GPU 加速。 |
-| XWayland 加速 | 🚧 进行中 | 将 linux-dmabuf feedback 修正为 render node 后，XWayland 24.1.6 不再报告缺少 render node，但 PowerVR EGL/glamor 仍会回退，GLX 继续使用 llvmpipe。 |
+| XWayland 加速 | 🚧 进行中 | 修正 render node feedback 后，XWayland 24.1.6 的 GLES glamor 已实现 GPU 加速；桌面 GLX 仍为 llvmpipe，X11 EGL/GLES context 绑定仍失败。 |
 | DRM render node | ✅ 已解决 | PowerVR 提供 `/dev/dri/card1` 和 `renderD128`，HDMI KMS 继续使用 `card0`。 |
 | HDMI 音频 | 🧪 未验证 | 可以看到音频设备，仍需验证播放和 HDMI 音质。 |
 | 蓝牙 | 🧪 未验证 | 仍需验证控制器、配对和音频 profile。 |

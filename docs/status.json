@@ -156,7 +156,7 @@
       "id": "xwayland_acceleration",
       "status": "in_progress",
       "area": {"en": "XWayland acceleration", "zh": "XWayland 加速"},
-      "notes": {"en": "A render-node linux-dmabuf feedback override removes XWayland 24.1.6's missing-render-node error, but PowerVR EGL/glamor still falls back and GLX uses llvmpipe.", "zh": "将 linux-dmabuf feedback 修正为 render node 后，XWayland 24.1.6 不再报告缺少 render node，但 PowerVR EGL/glamor 仍会回退，GLX 继续使用 llvmpipe。"}
+      "notes": {"en": "XWayland 24.1.6 GLES glamor is GPU-accelerated after render-node feedback is fixed; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails.", "zh": "修正 render node feedback 后，XWayland 24.1.6 的 GLES glamor 已实现 GPU 加速；桌面 GLX 仍为 llvmpipe，X11 EGL/GLES context 绑定仍失败。"}
     },
     {
       "id": "render_node",
@@ -197,8 +197,8 @@
   ],
   "next_milestones": [
     {
-      "en": "Complete the KWin render-node feedback patch, then investigate XWayland's PowerVR EGL context, glamor format, and DRI3 compatibility.",
-      "zh": "完成 KWin render node feedback 补丁，然后排查 XWayland 的 PowerVR EGL context、glamor format 和 DRI3 兼容性。"
+      "en": "Complete the KWin render-node patch and XWayland GLES-glamor integration, then investigate PowerVR X11 EGL context binding and desktop GLX support.",
+      "zh": "完成 KWin render node 补丁与 XWayland GLES glamor 集成，然后排查 PowerVR X11 EGL context 绑定和桌面 GLX 支持。"
     },
     {
       "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",

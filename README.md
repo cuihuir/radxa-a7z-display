@@ -94,7 +94,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
 | GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified with the isolated `gpu6` environment. |
 | GPU desktop environment isolation | ✅ Working | Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated. |
-| XWayland acceleration | 🚧 In progress | A render-node linux-dmabuf feedback override removes XWayland 24.1.6's missing-render-node error, but PowerVR EGL/glamor still falls back and GLX uses llvmpipe. |
+| XWayland acceleration | 🚧 In progress | XWayland 24.1.6 GLES glamor is GPU-accelerated after render-node feedback is fixed; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
 | HDMI audio | 🧪 Not validated | Audio devices are visible; playback and HDMI audio quality still need testing. |
 | Bluetooth | 🧪 Not validated | Controller visibility, pairing, and audio profiles still need validation. |
