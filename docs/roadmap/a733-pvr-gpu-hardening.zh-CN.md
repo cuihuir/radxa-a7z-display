@@ -45,8 +45,9 @@ SceneGraphBackend=software
   已在板卡上完成集成。离屏 X11 pixmap workload 已达到
   PowerVR 100% 利用率，确认 KWin 发布 `renderD128` 后服务端 glamor 可实现加速。
   `card0` 继续作为 KMS 设备，`card1` 仍不能作为 KWin 主 DRM 设备。客户端桌面
-  GLX 和 X11 EGL 需要单独处理：厂商栈没有桌面 `libGL.so`，其 DRI
-  `driBindContext` 当前会以 `EGL_BAD_MATCH` 拒绝 X11 EGL drawable。
+  GLX 和 X11 EGL 需要单独处理：窗口使用 config 的 `EGL_NATIVE_VISUAL_ID` 时，
+  X11 EGL/GLES 可通过 PowerVR 渲染；此前的 `EGL_BAD_MATCH` 来自不匹配的默认
+  X11 visual。厂商栈没有桌面 `libGL.so`，因此桌面 GLX 仍使用 llvmpipe。
 - 研究 Qt Quick 客户端能否通过兼容的 Wayland EGL 路径安全使用 GPU。
   `v0.3.0` 支持的配置是 Qt Quick 软件绘制加 PowerVR KWin 合成。
 - 单独验证 Firefox/Chromium 加速。视频解码属于另一套子系统，不能根据 3D

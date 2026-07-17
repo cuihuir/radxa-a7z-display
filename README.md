@@ -94,7 +94,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
 | GPU acceleration | ✅ Working (first port) | `gpu7` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths. |
 | GPU desktop environment isolation | ✅ Working | Ordinary Plasma clients, Discover, and KScreenLocker remain clean; only KWin and the compatible packaged XWayland receive scoped PowerVR libraries. |
-| XWayland acceleration | 🚧 In progress | The packaged XWayland 24.1.6 GLES-glamor integration is deployed and reaches 100% GPU utilization; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails. |
+| XWayland acceleration | ✅ Working | Packaged XWayland 24.1.6 GLES glamor reaches 100% GPU utilization, and native-visual X11 EGL/GLES renders on PowerVR; desktop GLX remains llvmpipe. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
 | HDMI audio | 🧪 Not validated | Audio devices are visible; playback and HDMI audio quality still need testing. |
 | Bluetooth | 🧪 Not validated | Controller visibility, pairing, and audio profiles still need validation. |
@@ -151,6 +151,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - `tools/package_a733_gpu.sh MODULE.ko USERSPACE.deb OUTPUT.deb` builds a GPU package without replacing Xorg.
 - `tools/build_a733_kwin.sh KWIN.dsc OUTPUT_DIR` builds the patched ARM64 KWin Debian packages for split KMS/render-node feedback.
 - `tools/package_a733_xwayland.sh XWAYLAND OUTPUT.deb` packages the pinned XWayland 24.1.6 GLES-glamor integration under `/opt`.
+- `tools/a733_x11_egl_probe.c` verifies X11 EGL configs, native visuals, GLES contexts, rendering, and swaps against the active XWayland session.
 - `sudo tools/deploy_a733_gpu.sh PACKAGE.deb --activate` installs it while preserving recovery entry `l1`.
 - `python3 tools/render_status.py` regenerates README status blocks and both current-status documents from `docs/status.json`.
 - `python3 tools/render_status.py --check` verifies that generated status documentation is current.

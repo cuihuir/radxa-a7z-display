@@ -49,9 +49,10 @@ enable/disable behavior. See the
   reached 100% PowerVR utilization, confirming that server-side glamor is
   accelerated once KWin advertises `renderD128`. Keep `card0` as the
   KMS device; `card1` still cannot act as KWin's primary DRM device. Treat
-  client-side desktop GLX and X11 EGL separately: the vendor stack has no
-  desktop `libGL.so`, and its DRI `driBindContext` currently rejects X11 EGL
-  drawables with `EGL_BAD_MATCH`.
+  client-side desktop GLX and X11 EGL separately. X11 EGL/GLES renders through
+  PowerVR when the window uses the config's `EGL_NATIVE_VISUAL_ID`; the earlier
+  `EGL_BAD_MATCH` came from a mismatched default X11 visual. Desktop GLX remains
+  on llvmpipe because the vendor stack has no desktop `libGL.so`.
 - Determine whether Qt Quick clients can safely use GPU rendering with a
   compatible Wayland EGL path. For `v0.3.0`, Qt Quick software rendering plus
   PowerVR KWin composition is the supported configuration.

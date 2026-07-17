@@ -154,9 +154,9 @@
     },
     {
       "id": "xwayland_acceleration",
-      "status": "in_progress",
+      "status": "working",
       "area": {"en": "XWayland acceleration", "zh": "XWayland 加速"},
-      "notes": {"en": "The packaged XWayland 24.1.6 GLES-glamor integration is deployed and reaches 100% GPU utilization; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails.", "zh": "打包版 XWayland 24.1.6 GLES glamor 集成已部署，GPU 利用率可达 100%；桌面 GLX 仍为 llvmpipe，X11 EGL/GLES context 绑定仍失败。"}
+      "notes": {"en": "Packaged XWayland 24.1.6 GLES glamor reaches 100% GPU utilization, and native-visual X11 EGL/GLES renders on PowerVR; desktop GLX remains llvmpipe.", "zh": "打包版 XWayland 24.1.6 GLES glamor 的 GPU 利用率可达 100%，使用原生 visual 的 X11 EGL/GLES 可由 PowerVR 渲染；桌面 GLX 仍为 llvmpipe。"}
     },
     {
       "id": "render_node",
@@ -197,8 +197,8 @@
   ],
   "next_milestones": [
     {
-      "en": "Rebuild the validated KWin integration with release optimization, extend stability coverage, and investigate PowerVR X11 EGL context binding and desktop GLX support.",
-      "zh": "使用发布优化重新构建已验证的 KWin 集成，扩展稳定性覆盖，并排查 PowerVR X11 EGL context 绑定和桌面 GLX 支持。"
+      "en": "Rebuild the validated KWin integration with release optimization, extend stability coverage, and determine the practical desktop GLX boundary of the GLES-only vendor stack.",
+      "zh": "使用发布优化重新构建已验证的 KWin 集成，扩展稳定性覆盖，并确认仅提供 GLES 的厂商栈在桌面 GLX 上的实际边界。"
     },
     {
       "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",

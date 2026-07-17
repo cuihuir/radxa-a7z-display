@@ -38,7 +38,7 @@
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
 | GPU 加速 | ✅ 第一版已解决 | `gpu7` 已集成通过验证的 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM、PowerVR 加速的 KWin 和打包版 XWayland GLES glamor 路径。 |
 | GPU 桌面环境隔离 | ✅ 已解决 | 普通 Plasma 客户端、Discover 和 KScreenLocker 保持清洁环境；只有 KWin 和兼容的打包版 XWayland 获得限定范围的 PowerVR 库。 |
-| XWayland 加速 | 🚧 进行中 | 打包版 XWayland 24.1.6 GLES glamor 集成已部署，GPU 利用率可达 100%；桌面 GLX 仍为 llvmpipe，X11 EGL/GLES context 绑定仍失败。 |
+| XWayland 加速 | ✅ 已解决 | 打包版 XWayland 24.1.6 GLES glamor 的 GPU 利用率可达 100%，使用原生 visual 的 X11 EGL/GLES 可由 PowerVR 渲染；桌面 GLX 仍为 llvmpipe。 |
 | DRM render node | ✅ 已解决 | PowerVR 提供 `/dev/dri/card1` 和 `renderD128`，HDMI KMS 继续使用 `card0`。 |
 | HDMI 音频 | 🧪 未验证 | 可以看到音频设备，仍需验证播放和 HDMI 音质。 |
 | 蓝牙 | 🧪 未验证 | 仍需验证控制器、配对和音频 profile。 |
@@ -55,7 +55,7 @@
 
 ## 下一阶段
 
-- 使用发布优化重新构建已验证的 KWin 集成，扩展稳定性覆盖，并排查 PowerVR X11 EGL context 绑定和桌面 GLX 支持。
+- 使用发布优化重新构建已验证的 KWin 集成，扩展稳定性覆盖，并确认仅提供 GLES 的厂商栈在桌面 GLX 上的实际边界。
 - 验证 HDMI 音频播放以及蓝牙配对/音频 profile。
 - 梳理剩余的厂商 BSP/内核 warning。
 - 在普通 1080p 显示器和更多面板上回归验证 EDID 原生模式策略。

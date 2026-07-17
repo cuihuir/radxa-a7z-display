@@ -83,6 +83,15 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertIn("sed 's#  \\./#  #' > SHA256SUMS", script)
         self.assertNotIn('sha256sum "$output"/*.deb', script)
 
+    def test_x11_egl_probe_uses_each_egl_native_visual(self) -> None:
+        source = (ROOT / "tools/a733_x11_egl_probe.c").read_text()
+
+        self.assertIn("EGL_NATIVE_VISUAL_ID", source)
+        self.assertIn("XGetVisualInfo", source)
+        self.assertIn("eglMakeCurrent(display, surface, surface, context)", source)
+        self.assertIn("glGetString(GL_RENDERER)", source)
+        self.assertIn("eglSwapBuffers(display, surface)", source)
+
     def test_deployment_falls_back_before_package_install(self) -> None:
         script = (ROOT / "tools/deploy_a733_gpu.sh").read_text()
 
