@@ -25,7 +25,7 @@ Verified on a physical Radxa Cubie A7Z:
 | Board | Radxa Cubie A7Z / Allwinner A733 |
 | Operating system | Debian 12 Bookworm · KDE Plasma Wayland |
 | Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display2` |
-| GPU package | `a733-pvr-gpu 24.2.6603887+gpu4` |
+| GPU package | `a733-pvr-gpu 24.2.6603887+gpu6` |
 | GPU | PowerVR B-Series BXM-4-64 · DDK `24.2@6603887` |
 | Graphics APIs | Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2 |
 | Desktop renderer | PowerVR-accelerated KWin / Plasma Wayland |
@@ -92,7 +92,8 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
-| GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified. |
+| GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified with the isolated `gpu6` environment. |
+| GPU desktop environment isolation | ✅ Working | Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
 | HDMI audio | 🧪 Not validated | Audio devices are visible; playback and HDMI audio quality still need testing. |
 | Bluetooth | 🧪 Not validated | Controller visibility, pairing, and audio profiles still need validation. |
@@ -115,6 +116,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - [Display Landscape Research](docs/research/a733-display-landscape.md)
 - [A733 GPU Acceleration Driver Feasibility](docs/research/a733-gpu-acceleration-feasibility.md)
 - [A733 PowerVR GPU First Activation](docs/validation-records/2026-07-14-a733-pvr-gpu-first-activation.md)
+- [A733 PowerVR Desktop Environment Isolation](docs/validation-records/2026-07-16-a733-pvr-environment-isolation.md)
 - [A733 PowerVR GPU First-Port Release](docs/releases/v0.3.0-a733-pvr-gpu.md)
 - [A733 PowerVR GPU Hardening Roadmap](docs/roadmap/a733-pvr-gpu-hardening.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)

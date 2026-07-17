@@ -32,6 +32,25 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertIn('Option "kmsdev" "/dev/dri/card0"', script)
         self.assertIn("KWIN_DRM_DEVICES=/dev/dri/card0", script)
         self.assertIn("/usr/local/lib/a733-pvr/kwin_wayland", script)
+        self.assertIn("Version: 24.2.6603887+gpu6", script)
+        self.assertIn(
+            'exec /usr/local/lib/a733-pvr/kwin_wayland "\\$@"', script
+        )
+        self.assertIn("kwin_wayland.new <<'ENV'", script)
+        self.assertIn('"\\$(readlink /usr/local/bin/kwin_wayland', script)
+        self.assertIn("dpkg-divert --package a733-pvr-gpu --add --rename", script)
+        self.assertIn("kscreenlocker_greet.a733-pvr-distrib", script)
+        self.assertIn('exec /usr/bin/Xwayland "\\$@"', script)
+        self.assertGreaterEqual(
+            script.count(
+                "unset LD_LIBRARY_PATH LIBGL_DRIVERS_PATH VK_DRIVER_FILES "
+                "OCL_ICD_VENDORS KWIN_DRM_DEVICES"
+            ),
+            2,
+        )
+        self.assertNotRegex(
+            script, re.compile(r"cat > /etc/(?:environment\.d|profile\.d)")
+        )
         self.assertNotIn('Environment="LD_LIBRARY_PATH=$prefix/lib"', script)
         self.assertIn("Unsafe Xorg payload entered the package", script)
         self.assertNotRegex(script, re.compile(r"cp .*usr/bin/Xorg"))

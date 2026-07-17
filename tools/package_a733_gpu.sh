@@ -74,31 +74,50 @@ prefix=$prefix
 
 enable()
 {
-	mkdir -p /etc/modules-load.d /etc/environment.d \
-		/etc/profile.d /etc/X11/xorg.conf.d /usr/local/lib/a733-pvr
+	mkdir -p /etc/modules-load.d /etc/X11/xorg.conf.d \
+		/usr/local/bin /usr/local/lib/a733-pvr
 	echo pvrsrvkm > /etc/modules-load.d/a733-pvr.conf
-	cat > /etc/environment.d/90-a733-pvr.conf <<ENV
-LD_LIBRARY_PATH=\$prefix/lib
-LIBGL_DRIVERS_PATH=\$prefix/lib/dri
-VK_DRIVER_FILES=\$prefix/share/vulkan/icd.d/img_icd.aarch64.json
-OCL_ICD_VENDORS=\$prefix/share/OpenCL/vendors
-KWIN_DRM_DEVICES=/dev/dri/card0
-ENV
-	cat > /etc/profile.d/a733-pvr.sh <<'ENV'
-export LD_LIBRARY_PATH="$prefix/lib\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}"
-export LIBGL_DRIVERS_PATH="$prefix/lib/dri"
-export VK_DRIVER_FILES="$prefix/share/vulkan/icd.d/img_icd.aarch64.json"
-export OCL_ICD_VENDORS="$prefix/share/OpenCL/vendors"
-export KWIN_DRM_DEVICES=/dev/dri/card0
-ENV
+	# Remove gpu4's global environment before installing the scoped KWin wrapper.
+	rm -f /etc/environment.d/90-a733-pvr.conf \
+		/etc/profile.d/a733-pvr.sh
 	if [ -x /usr/bin/kwin_wayland ]; then
 		install -m 0755 /usr/bin/kwin_wayland \
 			/usr/local/lib/a733-pvr/kwin_wayland.new
 		mv /usr/local/lib/a733-pvr/kwin_wayland.new \
 			/usr/local/lib/a733-pvr/kwin_wayland
-		ln -sfn /usr/local/lib/a733-pvr/kwin_wayland \
-			/usr/local/bin/kwin_wayland
+		cat > /usr/local/bin/kwin_wayland.new <<'ENV'
+#!/bin/sh
+export LD_LIBRARY_PATH="$prefix/lib\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}"
+export LIBGL_DRIVERS_PATH="$prefix/lib/dri"
+export KWIN_DRM_DEVICES=/dev/dri/card0
+exec /usr/local/lib/a733-pvr/kwin_wayland "\$@"
+ENV
+		chmod 0755 /usr/local/bin/kwin_wayland.new
+		mv /usr/local/bin/kwin_wayland.new /usr/local/bin/kwin_wayland
 	fi
+	if [ -e /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet ] && \
+		[ ! -e /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.a733-pvr-distrib ]; then
+		dpkg-divert --package a733-pvr-gpu --add --rename \
+			--divert /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.a733-pvr-distrib \
+			/usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet
+	fi
+	if [ -x /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.a733-pvr-distrib ]; then
+		cat > /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.new <<'ENV'
+#!/bin/sh
+unset LD_LIBRARY_PATH LIBGL_DRIVERS_PATH VK_DRIVER_FILES OCL_ICD_VENDORS KWIN_DRM_DEVICES
+exec /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.a733-pvr-distrib "\$@"
+ENV
+		chmod 0755 /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.new
+		mv /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.new \
+			/usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet
+	fi
+	cat > /usr/local/bin/Xwayland.new <<'ENV'
+#!/bin/sh
+unset LD_LIBRARY_PATH LIBGL_DRIVERS_PATH VK_DRIVER_FILES OCL_ICD_VENDORS KWIN_DRM_DEVICES
+exec /usr/bin/Xwayland "\$@"
+ENV
+	chmod 0755 /usr/local/bin/Xwayland.new
+	mv /usr/local/bin/Xwayland.new /usr/local/bin/Xwayland
 	cat > /etc/X11/xorg.conf.d/20-a733-display.conf <<'ENV'
 Section "Device"
     Identifier "A733 HDMI Display"
@@ -118,10 +137,27 @@ disable()
 		/etc/profile.d/a733-pvr.sh \
 		/etc/X11/xorg.conf.d/20-a733-display.conf \
 		/etc/systemd/system/sddm.service.d/90-a733-pvr.conf
-	if [ "$(readlink /usr/local/bin/kwin_wayland 2>/dev/null || true)" = \
+	if grep -Fq 'exec /usr/local/lib/a733-pvr/kwin_wayland' \
+		/usr/local/bin/kwin_wayland 2>/dev/null || \
+		[ "\$(readlink /usr/local/bin/kwin_wayland 2>/dev/null || true)" = \
 		/usr/local/lib/a733-pvr/kwin_wayland ]; then
 		rm -f /usr/local/bin/kwin_wayland
 	fi
+	rm -f /usr/local/bin/kwin_wayland.new
+	if grep -Fq 'kscreenlocker_greet.a733-pvr-distrib' \
+		/usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet 2>/dev/null; then
+		rm -f /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet
+	fi
+	rm -f /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.new
+	if [ -e /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.a733-pvr-distrib ]; then
+		dpkg-divert --package a733-pvr-gpu --remove --rename \
+			--divert /usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet.a733-pvr-distrib \
+			/usr/lib/aarch64-linux-gnu/libexec/kscreenlocker_greet
+	fi
+	if grep -Fq 'exec /usr/bin/Xwayland' /usr/local/bin/Xwayland 2>/dev/null; then
+		rm -f /usr/local/bin/Xwayland
+	fi
+	rm -f /usr/local/bin/Xwayland.new
 	rm -f /usr/local/lib/a733-pvr/kwin_wayland
 	rmdir /usr/local/lib/a733-pvr 2>/dev/null || true
 	systemctl daemon-reload 2>/dev/null || true
@@ -145,15 +181,16 @@ chmod 0755 "$package/usr/local/sbin/a733-pvr-control"
 
 cat > "$package/DEBIAN/control" <<EOF
 Package: a733-pvr-gpu
-Version: 24.2.6603887+gpu4
+Version: 24.2.6603887+gpu6
 Section: non-free/kernel
 Priority: optional
 Architecture: arm64
 Maintainer: radxa-a7z-display project
 Depends: linux-image-5.15.147-21.1-a733 (= 5.15.147-21.1+display2), kwin-wayland, libxcb-dri2-0, libdrm2, libx11-6, libx11-xcb1, libxcb1, libxcb-dri3-0, libxcb-present0, libxcb-randr0, libxcb-sync1, libxcb-xfixes0, libxshmfence1, libexpat1, libstdc++6, libudev1, zlib1g
 Description: A733 PowerVR BXM GPU activation for the verified A7Z kernel
- Installs pvrsrvkm, BVNC 36.56.104.183 firmware, and an isolated vendor
- userspace. It intentionally does not replace Xorg, modesetting, or glamor.
+ Installs pvrsrvkm, BVNC 36.56.104.183 firmware, and a vendor userspace scoped
+ to KWin and explicit a733-pvr-run commands. It intentionally does not replace
+ Xorg, modesetting, or glamor.
 EOF
 cat > "$package/DEBIAN/postinst" <<'EOF'
 #!/bin/sh

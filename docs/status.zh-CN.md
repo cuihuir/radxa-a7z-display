@@ -11,7 +11,7 @@
 | 板卡 | Radxa Cubie A7Z / Allwinner A733 |
 | 操作系统 | Debian 12 Bookworm · KDE Plasma Wayland |
 | 内核 | `5.15.147-21.1-a733` · package `5.15.147-21.1+display2` |
-| GPU 包 | `a733-pvr-gpu 24.2.6603887+gpu4` |
+| GPU 包 | `a733-pvr-gpu 24.2.6603887+gpu6` |
 | GPU | PowerVR B-Series BXM-4-64 · DDK `24.2@6603887` |
 | 图形 API | Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2 |
 | 桌面渲染器 | PowerVR 加速的 KWin / Plasma Wayland |
@@ -36,7 +36,8 @@
 | Windows 友好镜像 | ✅ 已解决 | `v0.3.0` 的 XZ 镜像整合 Debian 12 KDE、显示内核、PowerVR 加速和独立原厂恢复入口。 |
 | HDMI 小屏原生模式 | ✅ 已解决 | `FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。 |
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
-| GPU 加速 | ✅ 第一版已解决 | 已验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
+| GPU 加速 | ✅ 第一版已解决 | 已在隔离环境的 `gpu6` 上验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
+| GPU 桌面环境隔离 | ✅ 已解决 | Plasma、Discover、KScreenLocker 和 XWayland 不再继承 PowerVR 库环境，KWin 继续保持 GPU 加速。 |
 | DRM render node | ✅ 已解决 | PowerVR 提供 `/dev/dri/card1` 和 `renderD128`，HDMI KMS 继续使用 `card0`。 |
 | HDMI 音频 | 🧪 未验证 | 可以看到音频设备，仍需验证播放和 HDMI 音质。 |
 | 蓝牙 | 🧪 未验证 | 仍需验证控制器、配对和音频 profile。 |
@@ -53,8 +54,7 @@
 
 ## 下一阶段
 
-- 隔离 PowerVR 环境，让普通 Qt Wayland 客户端和 KScreenLocker 使用发行版图形栈。
-- 排查 XWayland glamor 回退和 Qt Quick GPU 绘制。
+- 测试更新版 XWayland，并跟踪 glamor 与闭源 PVR DRI 路径之间的 EGL config 不匹配。
 - 验证 HDMI 音频播放以及蓝牙配对/音频 profile。
 - 梳理剩余的厂商 BSP/内核 warning。
 - 在普通 1080p 显示器和更多面板上回归验证 EDID 原生模式策略。

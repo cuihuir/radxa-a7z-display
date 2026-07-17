@@ -12,7 +12,7 @@ A7Z PowerVR 第一版移植已经在实机正常运行并完成验证：
 
 这只是第一版移植，并不代表 GPU 工作已经全部结束。下面按发布风险排列剩余任务。
 
-## P0：桌面环境隔离
+## P0：桌面环境隔离——已在 `gpu6` 完成
 
 `gpu4` 包通过 `/etc/profile.d/a733-pvr.sh` 导出厂商库路径。这样可以让
 KWin 使用 PowerVR，但普通 Qt Wayland 客户端也会看到厂商 EGL 栈。
@@ -26,18 +26,26 @@ Qt Quick scene graph backend 强制设为 OpenGL 时，KScreenLocker greeter
 SceneGraphBackend=software
 ```
 
-下一版 GPU 包应当：
+`24.2.6603887+gpu6` 已完成第一轮隔离：
 
-1. 移除全局 PowerVR `LD_LIBRARY_PATH` 和 `LIBGL_DRIVERS_PATH`；
-2. 只在 KWin 启动路径中注入厂商环境；
-3. 使用干净的 Mesa 环境启动 `kscreenlocker_greet`；
-4. Vulkan/OpenCL 检查继续通过 `a733-pvr-run` 运行；
-5. 增加登录、锁屏/解锁、注销和切换用户回归测试。
+1. 移除全局 PowerVR `LD_LIBRARY_PATH`、`LIBGL_DRIVERS_PATH`、Vulkan 和
+   OpenCL 环境变量；
+2. 只由 KWin wrapper 注入厂商 EGL/GLES 环境；
+3. 通过清洁环境 wrapper 启动 `kscreenlocker_greet`；
+4. 通过清洁环境 wrapper 启动 XWayland；
+5. Vulkan/OpenCL 检查继续通过 `a733-pvr-run` 运行。
+
+实机已经通过 PowerVR KWin 合成、Plasma 清洁环境、锁屏、Discover 启动、
+注销和 enable/disable 可逆性验证。详见
+[环境隔离验证记录](../validation-records/2026-07-16-a733-pvr-environment-isolation.zh-CN.md)。
 
 ## P1：加速覆盖范围
 
 - 排查 XWayland 的 `Failed to initialize glamor, falling back to sw`。原生
-  Wayland 合成已加速，但 X11 应用仍可能使用软件渲染。
+  XWayland 清除 PowerVR 环境变量后仍然出现该问题，说明全局环境污染并非
+  唯一原因。原生 Wayland 合成已加速，但 X11 应用仍可能使用软件渲染。
+  下一步测试更新版 XWayland，并跟踪厂商 `pvr_dri.so` 路径被拒绝时所缺少的
+  EGL config 条件。
 - 研究 Qt Quick 客户端能否通过兼容的 Wayland EGL 路径安全使用 GPU。
   `v0.3.0` 支持的配置是 Qt Quick 软件绘制加 PowerVR KWin 合成。
 - 单独验证 Firefox/Chromium 加速。视频解码属于另一套子系统，不能根据 3D

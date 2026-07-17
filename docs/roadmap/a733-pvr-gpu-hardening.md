@@ -13,7 +13,7 @@ The first A7Z PowerVR port is functional and verified on real hardware:
 This is a first port, not the end of GPU work. The remaining tasks below are
 ordered by release risk.
 
-## P0: Desktop Environment Isolation
+## P0: Desktop Environment Isolation - Completed In `gpu6`
 
 The `gpu4` package exports the vendor library paths through
 `/etc/profile.d/a733-pvr.sh`. This makes KWin use PowerVR, but also exposes
@@ -28,19 +28,28 @@ forced to OpenGL. The stable setting for the first release is:
 SceneGraphBackend=software
 ```
 
-The next package revision should:
+`24.2.6603887+gpu6` completes the first isolation pass:
 
-1. remove global PowerVR `LD_LIBRARY_PATH` and `LIBGL_DRIVERS_PATH` exports;
-2. inject the vendor environment only into the KWin launch path;
-3. launch `kscreenlocker_greet` with a clean Mesa environment;
-4. keep Vulkan/OpenCL probes behind `a733-pvr-run`;
-5. add login, lock/unlock, logout, and user-switch regression tests.
+1. global PowerVR `LD_LIBRARY_PATH`, `LIBGL_DRIVERS_PATH`, Vulkan, and OpenCL
+   exports are removed;
+2. the vendor EGL/GLES environment is injected only by the KWin wrapper;
+3. `kscreenlocker_greet` is diverted through a clean-environment wrapper;
+4. XWayland is launched through a clean-environment wrapper;
+5. Vulkan/OpenCL probes remain behind `a733-pvr-run`.
+
+Real-hardware validation confirms PowerVR KWin composition, a clean Plasma
+environment, a stable lock screen, Discover startup, logout, and reversible
+enable/disable behavior. See the
+[environment-isolation validation record](../validation-records/2026-07-16-a733-pvr-environment-isolation.md).
 
 ## P1: Acceleration Coverage
 
 - Investigate XWayland's `Failed to initialize glamor, falling back to sw`
-  result. Native Wayland composition is accelerated, but X11 applications may
-  still use software rendering.
+  result. It still occurs after XWayland's PowerVR variables are removed, so
+  global environment contamination is not its sole cause. Native Wayland
+  composition is accelerated, but X11 applications may still use software
+  rendering. The next experiment is a newer XWayland build plus tracing the
+  EGL config requirements that reject the vendor `pvr_dri.so` path.
 - Determine whether Qt Quick clients can safely use GPU rendering with a
   compatible Wayland EGL path. For `v0.3.0`, Qt Quick software rendering plus
   PowerVR KWin composition is the supported configuration.

@@ -18,7 +18,7 @@
     },
     {
       "key": {"en": "GPU package", "zh": "GPU 包"},
-      "value": "`a733-pvr-gpu 24.2.6603887+gpu4`"
+      "value": "`a733-pvr-gpu 24.2.6603887+gpu6`"
     },
     {
       "key": {"en": "GPU", "zh": "GPU"},
@@ -144,7 +144,13 @@
       "id": "gpu",
       "status": "working_first_port",
       "area": {"en": "GPU acceleration", "zh": "GPU 加速"},
-      "notes": {"en": "`pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified.", "zh": "已验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。"}
+      "notes": {"en": "`pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified with the isolated `gpu6` environment.", "zh": "已在隔离环境的 `gpu6` 上验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。"}
+    },
+    {
+      "id": "gpu_environment_isolation",
+      "status": "working",
+      "area": {"en": "GPU desktop environment isolation", "zh": "GPU 桌面环境隔离"},
+      "notes": {"en": "Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated.", "zh": "Plasma、Discover、KScreenLocker 和 XWayland 不再继承 PowerVR 库环境，KWin 继续保持 GPU 加速。"}
     },
     {
       "id": "render_node",
@@ -185,12 +191,8 @@
   ],
   "next_milestones": [
     {
-      "en": "Isolate the PowerVR environment so ordinary Qt Wayland clients and KScreenLocker use the distribution graphics stack.",
-      "zh": "隔离 PowerVR 环境，让普通 Qt Wayland 客户端和 KScreenLocker 使用发行版图形栈。"
-    },
-    {
-      "en": "Investigate XWayland glamor fallback and Qt Quick GPU rendering.",
-      "zh": "排查 XWayland glamor 回退和 Qt Quick GPU 绘制。"
+      "en": "Test a newer XWayland and trace the glamor EGL config mismatch with the proprietary PVR DRI path.",
+      "zh": "测试更新版 XWayland，并跟踪 glamor 与闭源 PVR DRI 路径之间的 EGL config 不匹配。"
     },
     {
       "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",
