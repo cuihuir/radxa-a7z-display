@@ -1,0 +1,75 @@
+--- a/src/platformsupport/scenes/opengl/egl_dmabuf.cpp
++++ b/src/platformsupport/scenes/opengl/egl_dmabuf.cpp
+@@ -15,6 +15,7 @@
+ #include "wayland_server.h"
+ 
+ #include <drm_fourcc.h>
++#include <sys/stat.h>
+ #include <unistd.h>
+ 
+ namespace KWin
+@@ -256,9 +257,42 @@
+     }
+ };
+ 
++#ifndef EGL_DRM_RENDER_NODE_FILE_EXT
++#define EGL_DRM_RENDER_NODE_FILE_EXT 0x3377
++#endif
++
++static dev_t eglRenderDeviceId(EGLDisplay display, dev_t fallbackDevice)
++{
++    const char *clientExtensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
++    if (!clientExtensions || !QByteArray(clientExtensions).split(' ').contains(QByteArrayLiteral("EGL_EXT_device_query"))) {
++        return fallbackDevice;
++    }
++
++    EGLAttrib deviceAttribute = 0;
++    if (!eglQueryDisplayAttribEXT(display, EGL_DEVICE_EXT, &deviceAttribute)) {
++        return fallbackDevice;
++    }
++
++    const auto device = reinterpret_cast<EGLDeviceEXT>(deviceAttribute);
++    const char *deviceExtensions = eglQueryDeviceStringEXT(device, EGL_EXTENSIONS);
++    if (!deviceExtensions || !QByteArray(deviceExtensions).split(' ').contains(QByteArrayLiteral("EGL_EXT_device_drm_render_node"))) {
++        return fallbackDevice;
++    }
++
++    const char *renderNode = eglQueryDeviceStringEXT(device, EGL_DRM_RENDER_NODE_FILE_EXT);
++    struct stat renderNodeStat;
++    if (!renderNode || stat(renderNode, &renderNodeStat) != 0 || !S_ISCHR(renderNodeStat.st_mode)) {
++        return fallbackDevice;
++    }
++
++    qCDebug(KWIN_OPENGL) << "Using EGL render node" << renderNode << "for linux-dmabuf feedback";
++    return renderNodeStat.st_rdev;
++}
++
+ void EglDmabuf::setSupportedFormatsAndModifiers()
+ {
+     const EGLDisplay eglDisplay = m_backend->eglDisplay();
++    const dev_t feedbackDevice = eglRenderDeviceId(eglDisplay, m_backend->deviceId());
+     EGLint count = 0;
+     EGLBoolean success = eglQueryDmaBufFormatsEXT(eglDisplay, 0, nullptr, &count);
+ 
+@@ -310,18 +344,18 @@
+     };
+     if (m_backend->prefer10bpc()) {
+         m_tranches.append({
+-            .device = m_backend->deviceId(),
++            .device = feedbackDevice,
+             .flags = {},
+             .formatTable = filterFormats(10),
+         });
+     }
+     m_tranches.append({
+-        .device = m_backend->deviceId(),
++        .device = feedbackDevice,
+         .flags = {},
+         .formatTable = filterFormats(8),
+     });
+     m_tranches.append({
+-        .device = m_backend->deviceId(),
++        .device = feedbackDevice,
+         .flags = {},
+         .formatTable = filterFormats(-1),
+     });

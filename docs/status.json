@@ -1,5 +1,5 @@
 {
-  "snapshot_date": "2026-07-16",
+  "snapshot_date": "2026-07-17",
   "baseline": [
     {
       "key": {"en": "Board", "zh": "板卡"},
@@ -156,7 +156,7 @@
       "id": "xwayland_acceleration",
       "status": "in_progress",
       "area": {"en": "XWayland acceleration", "zh": "XWayland 加速"},
-      "notes": {"en": "Both XWayland 22.1.9 and a native 24.1.6 build fall back to software; the remaining issue is KWin linux-dmabuf feedback for the split display/render devices.", "zh": "XWayland 22.1.9 和原生构建的 24.1.6 都会回退软件绘制；剩余问题是分离显示/渲染设备下的 KWin linux-dmabuf feedback。"}
+      "notes": {"en": "A render-node linux-dmabuf feedback override removes XWayland 24.1.6's missing-render-node error, but PowerVR EGL/glamor still falls back and GLX uses llvmpipe.", "zh": "将 linux-dmabuf feedback 修正为 render node 后，XWayland 24.1.6 不再报告缺少 render node，但 PowerVR EGL/glamor 仍会回退，GLX 继续使用 llvmpipe。"}
     },
     {
       "id": "render_node",
@@ -197,8 +197,8 @@
   ],
   "next_milestones": [
     {
-      "en": "Investigate KWin linux-dmabuf feedback for the `card0` display and `renderD128` PowerVR split topology.",
-      "zh": "研究 `card0` 显示与 `renderD128` PowerVR 分离拓扑下的 KWin linux-dmabuf feedback。"
+      "en": "Complete the KWin render-node feedback patch, then investigate XWayland's PowerVR EGL context, glamor format, and DRI3 compatibility.",
+      "zh": "完成 KWin render node feedback 补丁，然后排查 XWayland 的 PowerVR EGL context、glamor format 和 DRI3 兼容性。"
     },
     {
       "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",
