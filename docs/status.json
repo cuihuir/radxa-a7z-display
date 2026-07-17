@@ -153,6 +153,12 @@
       "notes": {"en": "Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated.", "zh": "Plasma、Discover、KScreenLocker 和 XWayland 不再继承 PowerVR 库环境，KWin 继续保持 GPU 加速。"}
     },
     {
+      "id": "xwayland_acceleration",
+      "status": "in_progress",
+      "area": {"en": "XWayland acceleration", "zh": "XWayland 加速"},
+      "notes": {"en": "Both XWayland 22.1.9 and a native 24.1.6 build fall back to software; the remaining issue is KWin linux-dmabuf feedback for the split display/render devices.", "zh": "XWayland 22.1.9 和原生构建的 24.1.6 都会回退软件绘制；剩余问题是分离显示/渲染设备下的 KWin linux-dmabuf feedback。"}
+    },
+    {
       "id": "render_node",
       "status": "working",
       "area": {"en": "DRM render node", "zh": "DRM render node"},
@@ -191,8 +197,8 @@
   ],
   "next_milestones": [
     {
-      "en": "Test a newer XWayland and trace the glamor EGL config mismatch with the proprietary PVR DRI path.",
-      "zh": "测试更新版 XWayland，并跟踪 glamor 与闭源 PVR DRI 路径之间的 EGL config 不匹配。"
+      "en": "Investigate KWin linux-dmabuf feedback for the `card0` display and `renderD128` PowerVR split topology.",
+      "zh": "研究 `card0` 显示与 `renderD128` PowerVR 分离拓扑下的 KWin linux-dmabuf feedback。"
     },
     {
       "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",

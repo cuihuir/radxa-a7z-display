@@ -48,8 +48,12 @@ enable/disable behavior. See the
   result. It still occurs after XWayland's PowerVR variables are removed, so
   global environment contamination is not its sole cause. Native Wayland
   composition is accelerated, but X11 applications may still use software
-  rendering. The next experiment is a newer XWayland build plus tracing the
-  EGL config requirements that reject the vendor `pvr_dri.so` path.
+  rendering. XWayland `24.1.6` was built and tested, but also falls back: with
+  the vendor stack it reports that the main linux-dmabuf device has no render
+  node. Making PowerVR `card1` KWin's primary DRM device is not viable because
+  it lacks the required KMS/atomic and multi-GPU framebuffer behavior. The next
+  investigation belongs in KWin's linux-dmabuf feedback and the split
+  `card0`-display/`renderD128` topology, not another XWayland version bump.
 - Determine whether Qt Quick clients can safely use GPU rendering with a
   compatible Wayland EGL path. For `v0.3.0`, Qt Quick software rendering plus
   PowerVR KWin composition is the supported configuration.

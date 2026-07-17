@@ -88,6 +88,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
 | GPU 加速 | ✅ 第一版已解决 | 已在隔离环境的 `gpu6` 上验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
 | GPU 桌面环境隔离 | ✅ 已解决 | Plasma、Discover、KScreenLocker 和 XWayland 不再继承 PowerVR 库环境，KWin 继续保持 GPU 加速。 |
+| XWayland 加速 | 🚧 进行中 | XWayland 22.1.9 和原生构建的 24.1.6 都会回退软件绘制；剩余问题是分离显示/渲染设备下的 KWin linux-dmabuf feedback。 |
 | DRM render node | ✅ 已解决 | PowerVR 提供 `/dev/dri/card1` 和 `renderD128`，HDMI KMS 继续使用 `card0`。 |
 | HDMI 音频 | 🧪 未验证 | 可以看到音频设备，仍需验证播放和 HDMI 音质。 |
 | 蓝牙 | 🧪 未验证 | 仍需验证控制器、配对和音频 profile。 |
@@ -111,6 +112,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - [A733 GPU 加速驱动可行性调研](docs/research/a733-gpu-acceleration-feasibility.zh-CN.md)
 - [A733 PowerVR GPU 第一版激活验证](docs/validation-records/2026-07-14-a733-pvr-gpu-first-activation.zh-CN.md)
 - [A733 PowerVR 桌面环境隔离验证](docs/validation-records/2026-07-16-a733-pvr-environment-isolation.zh-CN.md)
+- [A733 XWayland 24.1.6 Glamor 测试](docs/validation-records/2026-07-16-a733-xwayland-24.1.6-test.zh-CN.md)
 - [A733 PowerVR GPU 第一版发布说明](docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)
 - [A733 PowerVR GPU 加固路线](docs/roadmap/a733-pvr-gpu-hardening.zh-CN.md)
 - [显示栈架构](docs/architecture/display-stack.zh-CN.md)

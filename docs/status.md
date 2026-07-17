@@ -38,6 +38,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
 | GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified with the isolated `gpu6` environment. |
 | GPU desktop environment isolation | ✅ Working | Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated. |
+| XWayland acceleration | 🚧 In progress | Both XWayland 22.1.9 and a native 24.1.6 build fall back to software; the remaining issue is KWin linux-dmabuf feedback for the split display/render devices. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
 | HDMI audio | 🧪 Not validated | Audio devices are visible; playback and HDMI audio quality still need testing. |
 | Bluetooth | 🧪 Not validated | Controller visibility, pairing, and audio profiles still need validation. |
@@ -54,7 +55,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 
 ## Next Milestones
 
-- Test a newer XWayland and trace the glamor EGL config mismatch with the proprietary PVR DRI path.
+- Investigate KWin linux-dmabuf feedback for the `card0` display and `renderD128` PowerVR split topology.
 - Validate HDMI audio playback and Bluetooth pairing/audio profiles.
 - Triage remaining vendor BSP/kernel warnings.
 - Regression-test native EDID policy on a normal 1080p monitor and additional panels.

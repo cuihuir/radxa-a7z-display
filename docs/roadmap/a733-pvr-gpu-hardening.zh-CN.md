@@ -44,8 +44,11 @@ SceneGraphBackend=software
 - 排查 XWayland 的 `Failed to initialize glamor, falling back to sw`。原生
   XWayland 清除 PowerVR 环境变量后仍然出现该问题，说明全局环境污染并非
   唯一原因。原生 Wayland 合成已加速，但 X11 应用仍可能使用软件渲染。
-  下一步测试更新版 XWayland，并跟踪厂商 `pvr_dri.so` 路径被拒绝时所缺少的
-  EGL config 条件。
+  已构建并测试 XWayland `24.1.6`，但仍然回退；使用厂商栈时，它明确报告
+  linux-dmabuf 主设备没有 render node。把 PowerVR `card1` 设为 KWin 主 DRM
+  设备也不可行，因为该节点缺少所需的 KMS/atomic 和多 GPU framebuffer 能力。
+  下一步应研究 KWin linux-dmabuf feedback 和 `card0` 显示、`renderD128` 渲染的
+  分离拓扑，而不是继续单纯升级 XWayland。
 - 研究 Qt Quick 客户端能否通过兼容的 Wayland EGL 路径安全使用 GPU。
   `v0.3.0` 支持的配置是 Qt Quick 软件绘制加 PowerVR KWin 合成。
 - 单独验证 Firefox/Chromium 加速。视频解码属于另一套子系统，不能根据 3D

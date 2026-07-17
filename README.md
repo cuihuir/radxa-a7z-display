@@ -94,6 +94,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
 | GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified with the isolated `gpu6` environment. |
 | GPU desktop environment isolation | ✅ Working | Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated. |
+| XWayland acceleration | 🚧 In progress | Both XWayland 22.1.9 and a native 24.1.6 build fall back to software; the remaining issue is KWin linux-dmabuf feedback for the split display/render devices. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
 | HDMI audio | 🧪 Not validated | Audio devices are visible; playback and HDMI audio quality still need testing. |
 | Bluetooth | 🧪 Not validated | Controller visibility, pairing, and audio profiles still need validation. |
@@ -117,6 +118,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - [A733 GPU Acceleration Driver Feasibility](docs/research/a733-gpu-acceleration-feasibility.md)
 - [A733 PowerVR GPU First Activation](docs/validation-records/2026-07-14-a733-pvr-gpu-first-activation.md)
 - [A733 PowerVR Desktop Environment Isolation](docs/validation-records/2026-07-16-a733-pvr-environment-isolation.md)
+- [A733 XWayland 24.1.6 Glamor Test](docs/validation-records/2026-07-16-a733-xwayland-24.1.6-test.md)
 - [A733 PowerVR GPU First-Port Release](docs/releases/v0.3.0-a733-pvr-gpu.md)
 - [A733 PowerVR GPU Hardening Roadmap](docs/roadmap/a733-pvr-gpu-hardening.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)

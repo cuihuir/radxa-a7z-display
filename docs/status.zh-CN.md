@@ -38,6 +38,7 @@
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。 |
 | GPU 加速 | ✅ 第一版已解决 | 已在隔离环境的 `gpu6` 上验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。 |
 | GPU 桌面环境隔离 | ✅ 已解决 | Plasma、Discover、KScreenLocker 和 XWayland 不再继承 PowerVR 库环境，KWin 继续保持 GPU 加速。 |
+| XWayland 加速 | 🚧 进行中 | XWayland 22.1.9 和原生构建的 24.1.6 都会回退软件绘制；剩余问题是分离显示/渲染设备下的 KWin linux-dmabuf feedback。 |
 | DRM render node | ✅ 已解决 | PowerVR 提供 `/dev/dri/card1` 和 `renderD128`，HDMI KMS 继续使用 `card0`。 |
 | HDMI 音频 | 🧪 未验证 | 可以看到音频设备，仍需验证播放和 HDMI 音质。 |
 | 蓝牙 | 🧪 未验证 | 仍需验证控制器、配对和音频 profile。 |
@@ -54,7 +55,7 @@
 
 ## 下一阶段
 
-- 测试更新版 XWayland，并跟踪 glamor 与闭源 PVR DRI 路径之间的 EGL config 不匹配。
+- 研究 `card0` 显示与 `renderD128` PowerVR 分离拓扑下的 KWin linux-dmabuf feedback。
 - 验证 HDMI 音频播放以及蓝牙配对/音频 profile。
 - 梳理剩余的厂商 BSP/内核 warning。
 - 在普通 1080p 显示器和更多面板上回归验证 EDID 原生模式策略。
