@@ -41,8 +41,8 @@ SceneGraphBackend=software
 
 ## P1：加速覆盖范围
 
-- 将 XWayland `24.1.6` 与已通过编译验证的 KWin render node feedback 补丁
-  集成，并强制使用已支持的 GLES glamor 路径。离屏 X11 pixmap workload 已达到
+- 打包版 XWayland `24.1.6`、KWin render node feedback 补丁和 `gpu7` wrapper
+  已在板卡上完成集成。离屏 X11 pixmap workload 已达到
   PowerVR 100% 利用率，确认 KWin 发布 `renderD128` 后服务端 glamor 可实现加速。
   `card0` 继续作为 KMS 设备，`card1` 仍不能作为 KWin 主 DRM 设备。客户端桌面
   GLX 和 X11 EGL 需要单独处理：厂商栈没有桌面 `libGL.so`，其 DRI
@@ -75,4 +75,5 @@ SceneGraphBackend=software
 
 `v0.3.0-a733-pvr-gpu` 发布已经验证的第一版移植。支持的桌面配置让 Qt Quick
 scene graph 使用软件绘制，最终桌面合成由 PowerVR GPU 上的 KWin 完成。环境
-隔离和 XWayland 加速属于下一版 GPU 包工作。
+隔离和 XWayland 加速已在后续 `gpu7` 集成候选版中实现，不属于已发布的
+`v0.3.0` 边界。

@@ -44,10 +44,10 @@ enable/disable behavior. See the
 
 ## P1: Acceleration Coverage
 
-- Integrate XWayland `24.1.6` with the compile-validated KWin render-node
-  feedback patch and force its supported GLES glamor path. An off-screen X11
-  pixmap workload reached 100% PowerVR utilization, confirming that server-side
-  glamor is accelerated once KWin advertises `renderD128`. Keep `card0` as the
+- The packaged XWayland `24.1.6`, KWin render-node feedback patch, and `gpu7`
+  wrapper are now integrated on the board. An off-screen X11 pixmap workload
+  reached 100% PowerVR utilization, confirming that server-side glamor is
+  accelerated once KWin advertises `renderD128`. Keep `card0` as the
   KMS device; `card1` still cannot act as KWin's primary DRM device. Treat
   client-side desktop GLX and X11 EGL separately: the vendor stack has no
   desktop `libGL.so`, and its DRI `driBindContext` currently rejects X11 EGL
@@ -84,5 +84,6 @@ enable/disable behavior. See the
 
 `v0.3.0-a733-pvr-gpu` publishes the verified first port. Its supported desktop
 configuration keeps the Qt Quick scene graph on software rendering while KWin
-performs final composition with the PowerVR GPU. The environment-isolation and
-XWayland work belongs to the next GPU package revision.
+performs final composition with the PowerVR GPU. Environment isolation and
+XWayland acceleration are implemented in the later `gpu7` integration
+candidate and remain outside the published `v0.3.0` boundary.

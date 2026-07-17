@@ -36,9 +36,9 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
-| GPU acceleration | ✅ Working (first port) | `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified with the isolated `gpu6` environment. |
-| GPU desktop environment isolation | ✅ Working | Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated. |
-| XWayland acceleration | 🚧 In progress | XWayland 24.1.6 GLES glamor is GPU-accelerated after render-node feedback is fixed; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails. |
+| GPU acceleration | ✅ Working (first port) | `gpu7` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths. |
+| GPU desktop environment isolation | ✅ Working | Ordinary Plasma clients, Discover, and KScreenLocker remain clean; only KWin and the compatible packaged XWayland receive scoped PowerVR libraries. |
+| XWayland acceleration | 🚧 In progress | The packaged XWayland 24.1.6 GLES-glamor integration is deployed and reaches 100% GPU utilization; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
 | HDMI audio | 🧪 Not validated | Audio devices are visible; playback and HDMI audio quality still need testing. |
 | Bluetooth | 🧪 Not validated | Controller visibility, pairing, and audio profiles still need validation. |
@@ -55,7 +55,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 
 ## Next Milestones
 
-- Complete the KWin render-node patch and XWayland GLES-glamor integration, then investigate PowerVR X11 EGL context binding and desktop GLX support.
+- Rebuild the validated KWin integration with release optimization, extend stability coverage, and investigate PowerVR X11 EGL context binding and desktop GLX support.
 - Validate HDMI audio playback and Bluetooth pairing/audio profiles.
 - Triage remaining vendor BSP/kernel warnings.
 - Regression-test native EDID policy on a normal 1080p monitor and additional panels.

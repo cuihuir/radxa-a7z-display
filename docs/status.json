@@ -144,19 +144,19 @@
       "id": "gpu",
       "status": "working_first_port",
       "area": {"en": "GPU acceleration", "zh": "GPU 加速"},
-      "notes": {"en": "`pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, and PowerVR-accelerated KWin are verified with the isolated `gpu6` environment.", "zh": "已在隔离环境的 `gpu6` 上验证 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM 和 PowerVR 加速的 KWin。"}
+      "notes": {"en": "`gpu7` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths.", "zh": "`gpu7` 已集成通过验证的 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM、PowerVR 加速的 KWin 和打包版 XWayland GLES glamor 路径。"}
     },
     {
       "id": "gpu_environment_isolation",
       "status": "working",
       "area": {"en": "GPU desktop environment isolation", "zh": "GPU 桌面环境隔离"},
-      "notes": {"en": "Plasma, Discover, KScreenLocker, and XWayland no longer inherit the PowerVR library environment; KWin remains accelerated.", "zh": "Plasma、Discover、KScreenLocker 和 XWayland 不再继承 PowerVR 库环境，KWin 继续保持 GPU 加速。"}
+      "notes": {"en": "Ordinary Plasma clients, Discover, and KScreenLocker remain clean; only KWin and the compatible packaged XWayland receive scoped PowerVR libraries.", "zh": "普通 Plasma 客户端、Discover 和 KScreenLocker 保持清洁环境；只有 KWin 和兼容的打包版 XWayland 获得限定范围的 PowerVR 库。"}
     },
     {
       "id": "xwayland_acceleration",
       "status": "in_progress",
       "area": {"en": "XWayland acceleration", "zh": "XWayland 加速"},
-      "notes": {"en": "XWayland 24.1.6 GLES glamor is GPU-accelerated after render-node feedback is fixed; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails.", "zh": "修正 render node feedback 后，XWayland 24.1.6 的 GLES glamor 已实现 GPU 加速；桌面 GLX 仍为 llvmpipe，X11 EGL/GLES context 绑定仍失败。"}
+      "notes": {"en": "The packaged XWayland 24.1.6 GLES-glamor integration is deployed and reaches 100% GPU utilization; desktop GLX remains llvmpipe and X11 EGL/GLES context binding still fails.", "zh": "打包版 XWayland 24.1.6 GLES glamor 集成已部署，GPU 利用率可达 100%；桌面 GLX 仍为 llvmpipe，X11 EGL/GLES context 绑定仍失败。"}
     },
     {
       "id": "render_node",
@@ -197,8 +197,8 @@
   ],
   "next_milestones": [
     {
-      "en": "Complete the KWin render-node patch and XWayland GLES-glamor integration, then investigate PowerVR X11 EGL context binding and desktop GLX support.",
-      "zh": "完成 KWin render node 补丁与 XWayland GLES glamor 集成，然后排查 PowerVR X11 EGL context 绑定和桌面 GLX 支持。"
+      "en": "Rebuild the validated KWin integration with release optimization, extend stability coverage, and investigate PowerVR X11 EGL context binding and desktop GLX support.",
+      "zh": "使用发布优化重新构建已验证的 KWin 集成，扩展稳定性覆盖，并排查 PowerVR X11 EGL context 绑定和桌面 GLX 支持。"
     },
     {
       "en": "Validate HDMI audio playback and Bluetooth pairing/audio profiles.",
