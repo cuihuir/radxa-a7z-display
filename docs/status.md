@@ -2,7 +2,7 @@
 
 > Generated from `docs/status.json`. Edit the JSON source, then run `python3 tools/render_status.py`.
 
-**2026-07-17**
+**2026-07-20**
 
 ## Verified Baseline
 
@@ -10,8 +10,8 @@
 | --- | --- |
 | Board | Radxa Cubie A7Z / Allwinner A733 |
 | Operating system | Debian 12 Bookworm · KDE Plasma Wayland |
-| Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display2` |
-| GPU package | `a733-pvr-gpu 24.2.6603887+gpu6` |
+| Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display3` |
+| GPU package | `a733-pvr-gpu 24.2.6603887+gpu8` |
 | GPU | PowerVR B-Series BXM-4-64 · DDK `24.2@6603887` |
 | Graphics APIs | Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2 |
 | Desktop renderer | PowerVR-accelerated KWin / Plasma Wayland |
@@ -35,8 +35,9 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
 | Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
-| Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
-| GPU acceleration | ✅ Working (first port) | `gpu7` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths. |
+| HDMI hotplug recovery | ✅ Working | `display3` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround. |
+| Full display kernel package | ✅ Working | `5.15.147-21.1+display3` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`. |
+| GPU acceleration | ✅ Working (first port) | `gpu8` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths, with a compatible display-kernel dependency range. |
 | GPU desktop environment isolation | ✅ Working | Ordinary Plasma clients, Discover, and KScreenLocker remain clean; only KWin and the compatible packaged XWayland receive scoped PowerVR libraries. |
 | XWayland acceleration | ✅ Working | Packaged XWayland 24.1.6 GLES glamor reaches 100% GPU utilization, and native-visual X11 EGL/GLES renders on PowerVR; desktop GLX remains llvmpipe. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
@@ -52,6 +53,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).
 - Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
 - GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
+- Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.
 
 ## Next Milestones
 

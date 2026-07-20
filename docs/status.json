@@ -1,5 +1,5 @@
 {
-  "snapshot_date": "2026-07-17",
+  "snapshot_date": "2026-07-20",
   "baseline": [
     {
       "key": {"en": "Board", "zh": "板卡"},
@@ -14,11 +14,11 @@
     },
     {
       "key": {"en": "Kernel", "zh": "内核"},
-      "value": "`5.15.147-21.1-a733` · package `5.15.147-21.1+display2`"
+      "value": "`5.15.147-21.1-a733` · package `5.15.147-21.1+display3`"
     },
     {
       "key": {"en": "GPU package", "zh": "GPU 包"},
-      "value": "`a733-pvr-gpu 24.2.6603887+gpu6`"
+      "value": "`a733-pvr-gpu 24.2.6603887+gpu8`"
     },
     {
       "key": {"en": "GPU", "zh": "GPU"},
@@ -77,6 +77,10 @@
     {
       "en": "GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.",
       "zh": "GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。"
+    },
+    {
+      "en": "Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.",
+      "zh": "热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。"
     }
   ],
   "capabilities": [
@@ -135,16 +139,22 @@
       "notes": {"en": "`FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping.", "zh": "`FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。"}
     },
     {
+      "id": "hdmi_hotplug",
+      "status": "working",
+      "area": {"en": "HDMI hotplug recovery", "zh": "HDMI 热插拔恢复"},
+      "notes": {"en": "`display3` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround.", "zh": "`display3` 让 HDMI 硬件变化与 DRM atomic 状态保持同步；在 SDDM 下拔插可自动恢复，无需 xrandr 或 udev workaround。"}
+    },
+    {
       "id": "display_kernel",
       "status": "working",
       "area": {"en": "Full display kernel package", "zh": "完整显示内核包"},
-      "notes": {"en": "`5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`.", "zh": "`5.15.147-21.1+display2` 从 `l0` 启动，`l1` 保留恢复路径。"}
+      "notes": {"en": "`5.15.147-21.1+display3` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`.", "zh": "`5.15.147-21.1+display3` 从 `l0` 启动，包内包含 A7Z DTB，并在恢复项 `l1` 保留显式 vendor DTB 和 GPU 黑名单。"}
     },
     {
       "id": "gpu",
       "status": "working_first_port",
       "area": {"en": "GPU acceleration", "zh": "GPU 加速"},
-      "notes": {"en": "`gpu7` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths.", "zh": "`gpu7` 已集成通过验证的 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM、PowerVR 加速的 KWin 和打包版 XWayland GLES glamor 路径。"}
+      "notes": {"en": "`gpu8` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths, with a compatible display-kernel dependency range.", "zh": "`gpu8` 已集成通过验证的 `pvrsrvkm`、Vulkan、OpenCL、EGL/GBM、PowerVR 加速的 KWin 和打包版 XWayland GLES glamor 路径，并使用兼容的显示内核依赖范围。"}
     },
     {
       "id": "gpu_environment_isolation",

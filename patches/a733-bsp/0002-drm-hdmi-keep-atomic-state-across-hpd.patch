@@ -1,0 +1,21 @@
+diff --git a/drivers/drm/sunxi_drm_hdmi.c b/drivers/drm/sunxi_drm_hdmi.c
+index 4c09323..02b2118 100644
+--- a/drivers/drm/sunxi_drm_hdmi.c
++++ b/drivers/drm/sunxi_drm_hdmi.c
+@@ -1358,2 +1357,0 @@ static int _sunxi_drv_hdmi_hpd_plugout(struct sunxi_drm_hdmi *hdmi)
+-	int ret = 0;
+-
+@@ -1362,5 +1359,0 @@ static int _sunxi_drv_hdmi_hpd_plugout(struct sunxi_drm_hdmi *hdmi)
+-	/* clean drm info */
+-	hdmi->hdmi_ctrl.drm_enable   = 0x0;
+-	hdmi->hdmi_ctrl.drm_mode_set = 0x0;
+-	memset(&hdmi->drm_mode, 0x0, sizeof(struct drm_display_mode));
+-
+@@ -1373,3 +1366,4 @@ static int _sunxi_drv_hdmi_hpd_plugout(struct sunxi_drm_hdmi *hdmi)
+-	ret = _sunxi_drv_hdmi_disable(hdmi);
+-	if (ret != 0)
+-		hdmi_err("sunxi hdmi driver disable failed when plugout.\n");
++	/*
++	 * Keep the hardware state synchronized with the DRM atomic state.
++	 * Userspace will disable the encoder if it changes the output layout.
++	 */

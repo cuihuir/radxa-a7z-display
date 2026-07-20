@@ -188,12 +188,12 @@ chmod 0755 "$package/usr/local/sbin/a733-pvr-control"
 
 cat > "$package/DEBIAN/control" <<EOF
 Package: a733-pvr-gpu
-Version: 24.2.6603887+gpu7
+Version: 24.2.6603887+gpu8
 Section: non-free/kernel
 Priority: optional
 Architecture: arm64
 Maintainer: radxa-a7z-display project
-Depends: linux-image-5.15.147-21.1-a733 (= 5.15.147-21.1+display2), kwin-wayland, libxcb-dri2-0, libdrm2, libx11-6, libx11-xcb1, libxcb1, libxcb-dri3-0, libxcb-present0, libxcb-randr0, libxcb-sync1, libxcb-xfixes0, libxshmfence1, libexpat1, libstdc++6, libudev1, zlib1g
+Depends: linux-image-5.15.147-21.1-a733 (>= 5.15.147-21.1+display2), linux-image-5.15.147-21.1-a733 (<< 5.15.147-21.2), kwin-wayland, libxcb-dri2-0, libdrm2, libx11-6, libx11-xcb1, libxcb1, libxcb-dri3-0, libxcb-present0, libxcb-randr0, libxcb-sync1, libxcb-xfixes0, libxshmfence1, libexpat1, libstdc++6, libudev1, zlib1g
 Description: A733 PowerVR BXM GPU activation for the verified A7Z kernel
  Installs pvrsrvkm, BVNC 36.56.104.183 firmware, and a vendor userspace scoped
  to KWin, an optional patched XWayland integration, and explicit a733-pvr-run

@@ -32,7 +32,9 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertIn('Option "kmsdev" "/dev/dri/card0"', script)
         self.assertIn("KWIN_DRM_DEVICES=/dev/dri/card0", script)
         self.assertIn("/usr/local/lib/a733-pvr/kwin_wayland", script)
-        self.assertIn("Version: 24.2.6603887+gpu7", script)
+        self.assertIn("Version: 24.2.6603887+gpu8", script)
+        self.assertIn("5.15.147-21.1+display2", script)
+        self.assertIn("5.15.147-21.2", script)
         self.assertIn(
             'exec /usr/local/lib/a733-pvr/kwin_wayland "\\$@"', script
         )
@@ -95,11 +97,42 @@ class A733GpuToolingTests(unittest.TestCase):
     def test_deployment_falls_back_before_package_install(self) -> None:
         script = (ROOT / "tools/deploy_a733_gpu.sh").read_text()
 
+        self.assertIn('ge 5.15.147-21.1+display2', script)
+        self.assertIn('lt 5.15.147-21.2', script)
         fallback = script.index("sed -i 's/^default l0$/default l1/'")
-        install = script.index('apt-get install -y "$package"')
+        install = script.index('apt-get install --fix-broken -y "$package"')
         activate = script.rindex("sed -i 's/^default l1$/default l0/'")
         self.assertLess(fallback, install)
         self.assertLess(install, activate)
+        self.assertIn("repair_recovery_entry", script)
+        self.assertIn("sun60i-a733-cubie-a7z.dtb", script)
+        self.assertIn("module_blacklist=pvrsrvkm", script)
+
+    def test_hdmi_hotplug_patch_preserves_drm_atomic_state(self) -> None:
+        patch = (
+            ROOT
+            / "patches/a733-bsp/0002-drm-hdmi-keep-atomic-state-across-hpd.patch"
+        ).read_text()
+
+        self.assertIn("_sunxi_drv_hdmi_hpd_plugout", patch)
+        self.assertIn("Keep the hardware state synchronized", patch)
+        self.assertIn("-\tret = _sunxi_drv_hdmi_disable(hdmi)", patch)
+        self.assertIn("-\thdmi->hdmi_ctrl.drm_enable", patch)
+
+    def test_display_package_advances_for_hotplug_fix(self) -> None:
+        script = (ROOT / "tools/package_a733_kernel_display.sh").read_text()
+
+        self.assertIn("5.15.147-21.1+display3", script)
+        self.assertIn("INPUT.deb A7Z.dtb OUTPUT.deb", script)
+        self.assertIn("sun60i-a733-cubie-a7z.dtb", script)
+        self.assertIn('install -D -m 0644 "$dtb"', script)
+
+    def test_display_deployment_preserves_recovery_entry(self) -> None:
+        script = (ROOT / "tools/deploy_a733_display_kernel.sh").read_text()
+
+        self.assertIn("repair_recovery_entry", script)
+        self.assertIn("sun60i-a733-cubie-a7z.dtb", script)
+        self.assertIn("module_blacklist=pvrsrvkm", script)
 
 
 if __name__ == "__main__":

@@ -11,11 +11,11 @@ Product photo source: [Radxa Cubie A7Z documentation](https://docs.radxa.com/en/
 
 ## Latest Verified Milestone
 
-`v0.3.0-a733-pvr-gpu` brings the PowerVR BXM GPU to the verified Debian 12
-desktop stack. The release candidate and checksums are staged under
-[`artifacts/releases/v0.3.0-a733-pvr-gpu`](artifacts/releases/v0.3.0-a733-pvr-gpu),
-with the full technical record in
-[A733 PowerVR GPU First Port](docs/releases/v0.3.0-a733-pvr-gpu.md).
+`v0.3.1-a733-hdmi-hotplug` makes the verified Debian 12 + PowerVR desktop
+resilient to HDMI disconnect/reconnect and hardens both `l0` and `l1` boot
+entries. The update packages and checksums are published on GitHub, with the
+full technical record in
+[A733 HDMI Hotplug And Boot Recovery Update](docs/releases/v0.3.1-a733-hdmi-hotplug.md).
 
 Verified on a physical Radxa Cubie A7Z:
 
@@ -24,8 +24,8 @@ Verified on a physical Radxa Cubie A7Z:
 | --- | --- |
 | Board | Radxa Cubie A7Z / Allwinner A733 |
 | Operating system | Debian 12 Bookworm · KDE Plasma Wayland |
-| Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display2` |
-| GPU package | `a733-pvr-gpu 24.2.6603887+gpu6` |
+| Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display3` |
+| GPU package | `a733-pvr-gpu 24.2.6603887+gpu8` |
 | GPU | PowerVR B-Series BXM-4-64 · DDK `24.2@6603887` |
 | Graphics APIs | Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2 |
 | Desktop renderer | PowerVR-accelerated KWin / Plasma Wayland |
@@ -35,8 +35,8 @@ Verified on a physical Radxa Cubie A7Z:
 | Recovery | Custom stack on `l0` · vendor kernel retained on `l1` |
 <!-- status-baseline:end -->
 
-Release assets include the installable GPU `.deb`, a guarded deployment
-script, bilingual release notes, and SHA256 checksums.
+Release assets include the `display3` kernel and `gpu8` packages, guarded
+deployment scripts, bilingual release notes, and SHA256 checksums.
 
 ## Milestone: The A733 GPU Is Awake
 
@@ -91,8 +91,9 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
 | Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
-| Full display kernel package | ✅ Working | `5.15.147-21.1+display2` boots from `l0`; recovery remains on `l1`. |
-| GPU acceleration | ✅ Working (first port) | `gpu7` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths. |
+| HDMI hotplug recovery | ✅ Working | `display3` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround. |
+| Full display kernel package | ✅ Working | `5.15.147-21.1+display3` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`. |
+| GPU acceleration | ✅ Working (first port) | `gpu8` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths, with a compatible display-kernel dependency range. |
 | GPU desktop environment isolation | ✅ Working | Ordinary Plasma clients, Discover, and KScreenLocker remain clean; only KWin and the compatible packaged XWayland receive scoped PowerVR libraries. |
 | XWayland acceleration | ✅ Working | Packaged XWayland 24.1.6 GLES glamor reaches 100% GPU utilization, and native-visual X11 EGL/GLES renders on PowerVR; desktop GLX remains llvmpipe. |
 | DRM render node | ✅ Working | PowerVR provides `/dev/dri/card1` and `renderD128`; HDMI KMS remains on `card0`. |
@@ -120,6 +121,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - [A733 PowerVR Desktop Environment Isolation](docs/validation-records/2026-07-16-a733-pvr-environment-isolation.md)
 - [A733 XWayland 24.1.6 Glamor Test](docs/validation-records/2026-07-16-a733-xwayland-24.1.6-test.md)
 - [A733 PowerVR GPU First-Port Release](docs/releases/v0.3.0-a733-pvr-gpu.md)
+- [A733 HDMI Hotplug And Boot Recovery Update](docs/releases/v0.3.1-a733-hdmi-hotplug.md)
 - [A733 PowerVR GPU Hardening Roadmap](docs/roadmap/a733-pvr-gpu-hardening.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)
 - [Contributing Guide](docs/contributing.md)
@@ -144,7 +146,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - `python3 tools/a7z_debian12_report.py <radxa-rsdk-tree> <orangepi-build-tree> --output report.md`
 - This tool turns the Radxa/Orange Pi source trees into an A7Z Debian 12 migration report.
 - `patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` removes A733's forced-FHD policy and makes the vendor DRM driver select the EDID preferred mode before falling back to the first advertised mode.
-- `tools/package_a733_kernel_display.sh INPUT.deb OUTPUT.deb` adds the A7Z initramfs size workaround and produces the installable `+display2` kernel package.
+- `tools/package_a733_kernel_display.sh INPUT.deb A7Z.dtb OUTPUT.deb` adds the A7Z initramfs size workaround and required board DTB, then produces the installable `+display3` kernel package.
 - `sudo tools/deploy_a733_display_kernel.sh PACKAGE.deb --activate` installs one package under a lock and verifies DKMS and initramfs safety gates before selecting `l0`.
 - `tools/download_a733_gpu_vendor.sh DIR` downloads and verifies the pinned A733 PowerVR packages.
 - `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko` builds and validates `pvrsrvkm`.
@@ -172,6 +174,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).
 - Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
 - GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
+- Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.
 <!-- status-summary:end -->
 
 ## Download
@@ -180,8 +183,9 @@ The current integrated GPU image is available from
 [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu):
 
 - Image: `radxa-a733-debian12-kde-pvr-20260716.img.xz`
-- Includes the `display2` kernel, PowerVR `gpu4` stack, KDE stability setting,
-  and an independent vendor-kernel `l1` recovery entry.
+- The image contains the original `display2`/`gpu4` stack. Install the
+  `v0.3.1-a733-hdmi-hotplug` update after first boot for `display3`/`gpu8`,
+  automatic HDMI reconnect, and hardened recovery entries.
 - The filesystem and image layout pass offline validation. The assembled image
   still needs a clean reflash test on a separate SD card.
 
@@ -209,10 +213,12 @@ On Windows, try writing the `.img.xz` directly with Rufus or balenaEtcher. If th
 ## Install The Full Display Kernel
 
 Boot the Debian 12 image first, then download these assets from
-[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display):
+[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug):
 
-- `linux-image-5.15.147-21.1-a733_5.15.147-21.1+display2_arm64.deb`
+- `linux-image-5.15.147-21.1-a733_5.15.147-21.1+display3_arm64.deb`
+- `a733-pvr-gpu_24.2.6603887+gpu8_arm64.deb`
 - `deploy_a733_display_kernel.sh`
+- `deploy_a733_gpu.sh`
 - `SHA256SUMS`
 
 Verify and install on the A7Z:
@@ -221,7 +227,10 @@ Verify and install on the A7Z:
 sha256sum -c SHA256SUMS
 chmod +x deploy_a733_display_kernel.sh
 sudo ./deploy_a733_display_kernel.sh \
-  linux-image-5.15.147-21.1-a733_5.15.147-21.1+display2_arm64.deb \
+  linux-image-5.15.147-21.1-a733_5.15.147-21.1+display3_arm64.deb \
+  --activate
+sudo ./deploy_a733_gpu.sh \
+  a733-pvr-gpu_24.2.6603887+gpu8_arm64.deb \
   --activate
 sudo reboot
 ```
@@ -244,7 +253,7 @@ Expected on the tested small panel:
 
 ```text
 5.15.147-21.1-a733
-Version: 5.15.147-21.1+display2
+Version: 5.15.147-21.1+display3
 HDMI-A-1: Configuration mode 1024x600@60Hz
 drm hdmi mode set: 1024*600
 ```

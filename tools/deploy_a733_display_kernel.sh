@@ -19,6 +19,15 @@ activate=${2:-}
 kernel=5.15.147-21.1-a733
 extlinux=/boot/extlinux/extlinux.conf
 initrd=/boot/initrd.img-$kernel
+recovery_initrd=/boot/initrd.img-5.15.147-21-a733.vendor
+recovery_dtb=/usr/lib/linux-image-5.15.147-21-a733-vendor/allwinner/sun60i-a733-cubie-a7z.dtb
+
+repair_recovery_entry()
+{
+	sed -i '/^label l1$/,/^label l2$/{/^[[:space:]]*fdt .*linux-image-5\.15\.147-21-a733-vendor/d}' "$extlinux"
+	sed -i "\\|^[[:space:]]*initrd $recovery_initrd\$|a\\\tfdt $recovery_dtb" "$extlinux"
+	sed -i '/^label l1$/,/^label l2$/{/^[[:space:]]*append /{/module_blacklist=pvrsrvkm/!s/$/ module_blacklist=pvrsrvkm/}}' "$extlinux"
+}
 
 exec 9>/run/lock/a7z-display-kernel-deploy.lock
 flock -n 9 || {
@@ -48,6 +57,7 @@ if [ "$initrd_size" -gt 42300000 ]; then
 fi
 
 u-boot-update
+repair_recovery_entry
 sed -i 's/^default l0$/default l1/' "$extlinux"
 
 if [ "$activate" = "--activate" ]; then

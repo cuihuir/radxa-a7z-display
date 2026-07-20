@@ -19,6 +19,15 @@ package=$(readlink -f "$package")
 kernel=5.15.147-21.1-a733
 extlinux=/boot/extlinux/extlinux.conf
 initrd=/boot/initrd.img-$kernel
+recovery_initrd=/boot/initrd.img-5.15.147-21-a733.vendor
+recovery_dtb=/usr/lib/linux-image-5.15.147-21-a733-vendor/allwinner/sun60i-a733-cubie-a7z.dtb
+
+repair_recovery_entry()
+{
+	sed -i '/^label l1$/,/^label l2$/{/^[[:space:]]*fdt .*linux-image-5\.15\.147-21-a733-vendor/d}' "$extlinux"
+	sed -i "\\|^[[:space:]]*initrd $recovery_initrd\$|a\\\tfdt $recovery_dtb" "$extlinux"
+	sed -i '/^label l1$/,/^label l2$/{/^[[:space:]]*append /{/module_blacklist=pvrsrvkm/!s/$/ module_blacklist=pvrsrvkm/}}' "$extlinux"
+}
 
 exec 9>/run/lock/a7z-gpu-deploy.lock
 flock -n 9 || {
@@ -28,11 +37,13 @@ flock -n 9 || {
 
 test "$(dpkg-deb -f "$package" Package)" = a733-pvr-gpu
 grep -Fq 'radxa,cubie-a7z' /proc/device-tree/compatible
-dpkg-query -W -f='${Version}\n' linux-image-5.15.147-21.1-a733 \
-	| grep -qx '5.15.147-21.1+display2'
+kernel_package_version=$(dpkg-query -W -f='${Version}\n' \
+	linux-image-5.15.147-21.1-a733)
+dpkg --compare-versions "$kernel_package_version" ge 5.15.147-21.1+display2
+dpkg --compare-versions "$kernel_package_version" lt 5.15.147-21.2
 
 sed -i 's/^default l0$/default l1/' "$extlinux"
-apt-get install -y "$package"
+apt-get install --fix-broken -y "$package"
 
 module=/lib/modules/$kernel/updates/a733/pvrsrvkm.ko
 test "$(modinfo -F vermagic "$module" | awk '{print $1}')" = "$kernel"
@@ -48,6 +59,7 @@ if [ "$initrd_size" -gt 42300000 ]; then
 fi
 
 u-boot-update
+repair_recovery_entry
 sed -i 's/^default l0$/default l1/' "$extlinux"
 if [ "$activate" = --activate ]; then
 	sed -i 's/^default l1$/default l0/' "$extlinux"
