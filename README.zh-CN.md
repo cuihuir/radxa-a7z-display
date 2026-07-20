@@ -4,6 +4,10 @@
 
 面向 Radxa A7Z/Z7A 的 Debian 12 KDE Plasma Wayland、HDMI 原生显示，以及可重复部署的 A733 PowerVR GPU 栈。
 
+[![最新版本](https://img.shields.io/github/v/release/cuihuir/radxa-a7z-display?label=latest)](https://github.com/cuihuir/radxa-a7z-display/releases/latest)
+[![Debian 12](https://img.shields.io/badge/Debian-12%20Bookworm-A81D33)](https://www.debian.org/releases/bookworm/)
+[![实机验证](https://img.shields.io/badge/A7Z-%E5%AE%9E%E6%9C%BA%E9%AA%8C%E8%AF%81-2E8B57)](docs/status.zh-CN.md)
+
 ![Radxa Cubie A7Z 开发板官方图片](https://docs.radxa.com/en/img/cubie/a7z/a7z-top.webp)
 
 产品图片来源：[Radxa Cubie A7Z 文档](https://docs.radxa.com/en/cubie/a7z)。
@@ -35,6 +39,22 @@ HDMI 断开与重连，并强化 `l0` 和 `l1` 启动项。更新包和校验文
 
 发布资产包括 `display3` 内核包、`gpu8` 包、带安全检查的部署脚本、中英文发布说明和
 SHA256 校验文件。
+
+## 从这里开始
+
+| 当前情况 | 推荐路径 |
+| --- | --- |
+| 全新 SD 卡 | [烧录 `v0.3.0` GPU 镜像](#下载镜像)，首次启动后再[安装 `v0.3.1` 更新](#更新到-display3--gpu8)。 |
+| 已安装 `v0.3.0` | [安装 `display3` 和 `gpu8`](#更新到-display3--gpu8)。 |
+| 自定义内核无法启动 | 选择原厂恢复项 `l1`，或使用[离线恢复方法](#恢复方法)。 |
+| 准备研究或重新构建 | 从[文档索引](#文档索引)和[工具](#工具)开始。 |
+
+当前实机验证路径包括：
+
+- PowerVR 加速的 KWin/Plasma Wayland，以及 Vulkan、OpenCL、EGL/GBM 和 GLES；
+- `FLY-HDMI-LCD7` 原生 `1024x600@60Hz` 输出；
+- HDMI 拔出并重新插入后自动恢复，不需要 udev 或 xrandr workaround；
+- 独立的原厂内核 `l1` 恢复项，并对 PowerVR 模块进行隔离。
 
 ## 里程碑：A733 GPU，醒了
 
@@ -156,7 +176,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - 硬件、BSP 和发布结论必须有来源或实机证据。
 - 文档保持实用和轻量；这是个人项目，也欢迎其他贡献者参与。
 
-## 当前状态
+## 发布历史
 
 <!-- status-summary:start -->
 - 仓库：已发布到 GitHub 并持续维护。
@@ -198,7 +218,7 @@ sync
 
 Windows 下可以先尝试使用 Rufus 或 balenaEtcher 直接写入 `.img.xz`。如果工具不支持 XZ，请先解压为 `.img` 再烧录。
 
-## 安装完整显示内核
+## 更新到 `display3` + `gpu8`
 
 先启动 Debian 12 镜像，然后从
 [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug)
@@ -224,16 +244,20 @@ sudo ./deploy_a733_gpu.sh \
 sudo reboot
 ```
 
-部署脚本使用单实例锁，并等待唯一的前台 `dpkg`/DKMS 流程完成。即使终端暂时没有输出，也不要再启动第二个包管理或 DKMS 命令。
+> 部署脚本运行时请保持供电，不要启动第二个包管理或 DKMS 命令。内核安装会重新
+> 构建 Wi-Fi 和 overlay DKMS 模块，中间可能暂时没有终端输出。
 
 重启后验证：
 
 ```bash
 uname -r
 dpkg -s linux-image-5.15.147-21.1-a733 | grep -E '^(Status|Version):'
+dpkg -s a733-pvr-gpu | grep -E '^(Status|Version):'
 ip -brief address show wlan0
+cat /sys/class/drm/card0-HDMI-A-1/status
+cat /sys/class/drm/card0-HDMI-A-1/enabled
 sudo journalctl -b -k --no-pager \
-  | grep -E 'Configuration mode|drm hdmi mode set'
+  | grep -E 'Configuration mode|drm hdmi mode set|hpd (connect|disconnect)'
 ```
 
 测试小屏的预期输出：
@@ -241,9 +265,15 @@ sudo journalctl -b -k --no-pager \
 ```text
 5.15.147-21.1-a733
 Version: 5.15.147-21.1+display3
+Version: 24.2.6603887+gpu8
+connected
+enabled
 HDMI-A-1: Configuration mode 1024x600@60Hz
 drm hdmi mode set: 1024*600
 ```
+
+热插拔验证时，拔出 HDMI，等待 3 秒后重新插入，确认原桌面自动返回，并且不需要
+执行任何恢复命令。
 
 ## 恢复方法
 

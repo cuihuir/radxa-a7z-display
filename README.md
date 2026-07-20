@@ -5,6 +5,10 @@
 Debian 12 KDE Plasma Wayland, native HDMI output, and a reproducible PowerVR
 GPU stack for Radxa A7Z/Z7A boards powered by Allwinner A733.
 
+[![Latest release](https://img.shields.io/github/v/release/cuihuir/radxa-a7z-display?label=latest)](https://github.com/cuihuir/radxa-a7z-display/releases/latest)
+[![Debian 12](https://img.shields.io/badge/Debian-12%20Bookworm-A81D33)](https://www.debian.org/releases/bookworm/)
+[![Hardware tested](https://img.shields.io/badge/A7Z-hardware%20tested-2E8B57)](docs/status.md)
+
 ![Radxa Cubie A7Z board, official product photo](https://docs.radxa.com/en/img/cubie/a7z/a7z-top.webp)
 
 Product photo source: [Radxa Cubie A7Z documentation](https://docs.radxa.com/en/cubie/a7z).
@@ -37,6 +41,22 @@ Verified on a physical Radxa Cubie A7Z:
 
 Release assets include the `display3` kernel and `gpu8` packages, guarded
 deployment scripts, bilingual release notes, and SHA256 checksums.
+
+## Start Here
+
+| Your starting point | Recommended path |
+| --- | --- |
+| Fresh SD card | [Flash the `v0.3.0` GPU image](#download), boot once, then [apply the `v0.3.1` update](#update-to-display3--gpu8). |
+| Existing `v0.3.0` installation | [Install `display3` and `gpu8`](#update-to-display3--gpu8). |
+| Custom kernel does not boot | Select vendor recovery entry `l1`, or follow the [offline recovery procedure](#recovery). |
+| Investigating or rebuilding | Start with the [document map](#document-map) and [tools](#tools). |
+
+The current tested path provides:
+
+- PowerVR-accelerated KWin/Plasma Wayland with Vulkan, OpenCL, EGL/GBM, and GLES;
+- native `1024x600@60Hz` output on `FLY-HDMI-LCD7`;
+- automatic HDMI unplug/replug recovery without udev or xrandr workarounds;
+- independent `l1` vendor-kernel recovery protected from the PowerVR module.
 
 ## Milestone: The A733 GPU Is Awake
 
@@ -167,7 +187,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - Add sources for any hardware, BSP, or release claim before treating it as a project fact.
 - Keep the docs practical and lightweight. This is a personal project first, with collaborators welcome but not required.
 
-## Current status
+## Release History
 
 <!-- status-summary:start -->
 - Repository: published and maintained on GitHub.
@@ -210,7 +230,7 @@ sync
 
 On Windows, try writing the `.img.xz` directly with Rufus or balenaEtcher. If the writer does not accept `.xz`, decompress it first and write the resulting `.img`.
 
-## Install The Full Display Kernel
+## Update To `display3` + `gpu8`
 
 Boot the Debian 12 image first, then download these assets from
 [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug):
@@ -235,18 +255,21 @@ sudo ./deploy_a733_gpu.sh \
 sudo reboot
 ```
 
-The installer deliberately runs one foreground `dpkg`/DKMS sequence under a
-lock. Do not start another package or DKMS command while it is running, even if
-the terminal temporarily produces no output.
+> Keep the board powered and do not start another package or DKMS command while
+> either deployment script is running. Kernel installation rebuilds Wi-Fi and
+> overlay DKMS modules and may temporarily stop printing output.
 
 After reboot:
 
 ```bash
 uname -r
 dpkg -s linux-image-5.15.147-21.1-a733 | grep -E '^(Status|Version):'
+dpkg -s a733-pvr-gpu | grep -E '^(Status|Version):'
 ip -brief address show wlan0
+cat /sys/class/drm/card0-HDMI-A-1/status
+cat /sys/class/drm/card0-HDMI-A-1/enabled
 sudo journalctl -b -k --no-pager \
-  | grep -E 'Configuration mode|drm hdmi mode set'
+  | grep -E 'Configuration mode|drm hdmi mode set|hpd (connect|disconnect)'
 ```
 
 Expected on the tested small panel:
@@ -254,9 +277,15 @@ Expected on the tested small panel:
 ```text
 5.15.147-21.1-a733
 Version: 5.15.147-21.1+display3
+Version: 24.2.6603887+gpu8
+connected
+enabled
 HDMI-A-1: Configuration mode 1024x600@60Hz
 drm hdmi mode set: 1024*600
 ```
+
+For the hotplug check, unplug HDMI, wait three seconds, reconnect it, and
+confirm that the same desktop returns without running a recovery command.
 
 ## Recovery
 
