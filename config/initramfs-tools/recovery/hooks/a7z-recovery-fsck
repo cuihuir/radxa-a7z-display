@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+PREREQ=""
+
+prereqs()
+{
+	echo "$PREREQ"
+}
+
+case "$1" in
+prereqs)
+	prereqs
+	exit 0
+	;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+for program in fsck fsck.ext4 e2fsck logsave; do
+	path=$(command -v "$program" || true)
+	[ -n "$path" ] || {
+		echo "Required recovery program is missing: $program" >&2
+		exit 1
+	}
+	copy_exec "$path"
+done

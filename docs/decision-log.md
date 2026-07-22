@@ -72,3 +72,21 @@ Record durable project decisions here. Keep notes short and explicit.
 - Decision: Package an initramfs hook that removes early fsck binaries and their ext2fs-only libraries from the A7Z display kernel initramfs.
 - Reason: Valid 42.67 MB initramfs images failed before persistent kernel logging, while 42.25 MB images booted with the same kernel, DTB, modules, and command line.
 - Impact: The `+display2` package generates a 42,251,173-byte initramfs and boots successfully. System and offline filesystem repair tools remain installed on the root filesystem.
+
+### 2026-07-21: Require serial evidence for early boot failures
+
+- Decision: Do not classify an A7Z boot as failed from HDMI or SSH timeout alone; capture UART0 at `115200 8N1` through kernel start and the login prompt.
+- Reason: The exact 42,251,056-byte initramfs completed the captured `l0` boot. Earlier incidents also included confirmed ext4 corruption and broken boot entries, so an SSH timeout alone cannot distinguish a slow network from a genuine boot failure.
+- Impact: Kernel and initramfs experiments must preserve `l1`, record serial output, and use an explicit UART failure boundary before changing the SD card.
+
+### 2026-07-21: Reject the `MODULES=dep` early-fsck initramfs
+
+- Decision: Keep the verified full-module initramfs and the existing offline rootfs repair path; do not ship the experimental `MODULES=dep` plus early `e2fsck` configuration.
+- Reason: The 14 MB image contained the intended fsck tools, but its earlier test lacked UART evidence and therefore did not establish a reliable failure boundary.
+- Impact: The repository returns to the `display3` initramfs policy. The experimental image may only be retested as an isolated U-Boot entry with serial capture; a persistent postinst hook repairs the independent `l1` DTB and PowerVR blacklist after `u-boot-update`.
+
+### 2026-07-21: Keep early-fsck as a recovery-only candidate
+
+- Decision: The 14 MB `fsck-final-test` initramfs is bootable, but it remains an isolated recovery candidate rather than replacing the normal `display3` initramfs.
+- Reason: UART capture proved that U-Boot loaded the 14,701,871-byte image, initramfs ran `fsck.ext4 -a` on `/dev/mmcblk0p3` before mounting root, reported the clean filesystem, and reached the `ttyAS0` login prompt. This disproves the earlier unobserved assumption that the small image could not boot, but it does not yet prove repair behavior on a deliberately damaged filesystem.
+- Impact: Keep `l0` as the known-good default and preserve offline `e2fsck` as the supported repair method. A future packaged recovery entry must be optional, verbose on UART, and tested against a reproducible filesystem fault before it is supported.

@@ -15,11 +15,12 @@ Product photo source: [Radxa Cubie A7Z documentation](https://docs.radxa.com/en/
 
 ## Latest Verified Milestone
 
-`v0.3.1-a733-hdmi-hotplug` makes the verified Debian 12 + PowerVR desktop
-resilient to HDMI disconnect/reconnect and hardens both `l0` and `l1` boot
-entries. The update packages and checksums are published on GitHub, with the
-full technical record in
-[A733 HDMI Hotplug And Boot Recovery Update](docs/releases/v0.3.1-a733-hdmi-hotplug.md).
+`v0.3.2-a733-power-loss-recovery` is the new ready-to-flash Debian 12 +
+PowerVR image. It combines the verified `display3`/`gpu8` desktop, packaged
+XWayland/KWin acceleration, protected `l0`/`l1` boot paths, UART diagnostics,
+and a hardware-tested `a7z-recovery` initramfs that repairs eligible ext4
+errors before mounting root. Full details are in
+[A733 Power-loss Recovery Full Image](docs/releases/v0.3.2-a733-power-loss-recovery.md).
 
 Verified on a physical Radxa Cubie A7Z:
 
@@ -36,19 +37,18 @@ Verified on a physical Radxa Cubie A7Z:
 | Display | `FLY-HDMI-LCD7` · `1024x600@60Hz` · scale 100% |
 | Network | AIC8800 Wi-Fi and SSH working |
 | Display policy | EDID preferred/native timing; no forced Full HD |
-| Recovery | Custom stack on `l0` · vendor kernel retained on `l1` |
+| Recovery | Normal desktop on `l0` · vendor fallback on `l1` · early-fsck recovery on `a7z-recovery` |
 <!-- status-baseline:end -->
 
-Release assets include the `display3` kernel and `gpu8` packages, guarded
-deployment scripts, bilingual release notes, and SHA256 checksums.
+Release assets include a ready-to-flash integrated XZ image, the hardened `display3` kernel, `gpu8`, recovery tooling, bilingual release notes, and SHA256 checksums.
 
 ## Start Here
 
 | Your starting point | Recommended path |
 | --- | --- |
-| Fresh SD card | [Flash the `v0.3.0` GPU image](#download), boot once, then [apply the `v0.3.1` update](#update-to-display3--gpu8). |
-| Existing `v0.3.0` installation | [Install `display3` and `gpu8`](#update-to-display3--gpu8). |
-| Custom kernel does not boot | Select vendor recovery entry `l1`, or follow the [offline recovery procedure](#recovery). |
+| Fresh SD card | [Flash the integrated `v0.3.2` recovery image](#download). |
+| Existing installation | Use the `v0.3.2` kernel and recovery assets, or flash the full image. |
+| Root filesystem does not mount | Use UART to select `a7z-recovery`; use `l1` for vendor-kernel fallback. |
 | Investigating or rebuilding | Start with the [document map](#document-map) and [tools](#tools). |
 
 The current tested path provides:
@@ -106,10 +106,11 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | HDMI desktop output | ✅ Working | Plasma Wayland reaches HDMI-A-1 and follows the EDID preferred/native timing. |
 | Display manager | ✅ Working | SDDM reaches the graphical login and desktop path. |
 | Default user login | ✅ Working | Username and password are both `radxa`. |
+| Power-loss filesystem recovery | ✅ Working | An isolated 14.7 MB recovery initramfs repaired an injected ext4 group-descriptor fault before root mount and continued to a complete boot; unrecoverable errors still require offline fsck. |
 | Wi-Fi and SSH | ✅ Working | AIC8800 Wi-Fi and SSH are verified with the full display/GPU stack. |
 | Serial console | 📘 Documented | UART0 on the 40-pin header is documented for boot and recovery diagnostics. |
 | Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
-| Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
+| Windows-friendly image release | ✅ Working | `v0.3.2` integrates Debian 12 KDE, `display3`, `gpu8`, packaged XWayland/KWin acceleration, vendor `l1`, and the tested `a7z-recovery` early-fsck entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
 | HDMI hotplug recovery | ✅ Working | `display3` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround. |
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display3` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`. |
@@ -141,6 +142,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - [A733 PowerVR Desktop Environment Isolation](docs/validation-records/2026-07-16-a733-pvr-environment-isolation.md)
 - [A733 XWayland 24.1.6 Glamor Test](docs/validation-records/2026-07-16-a733-xwayland-24.1.6-test.md)
 - [A733 PowerVR GPU First-Port Release](docs/releases/v0.3.0-a733-pvr-gpu.md)
+- [A733 Power-loss Recovery Full Image](docs/releases/v0.3.2-a733-power-loss-recovery.md)
 - [A733 HDMI Hotplug And Boot Recovery Update](docs/releases/v0.3.1-a733-hdmi-hotplug.md)
 - [A733 PowerVR GPU Hardening Roadmap](docs/roadmap/a733-pvr-gpu-hardening.md)
 - [Display Stack Architecture](docs/architecture/display-stack.md)
@@ -172,6 +174,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko` builds and validates `pvrsrvkm`.
 - `tools/package_a733_gpu.sh MODULE.ko USERSPACE.deb OUTPUT.deb` builds a GPU package without replacing Xorg.
 - `tools/build_a733_kwin.sh KWIN.dsc OUTPUT_DIR` builds the patched ARM64 KWin Debian packages for split KMS/render-node feedback.
+- `tools/a733_desktop_soak_test.sh smoke|regression|soak` collects DRM, PowerVR, process, memory, thermal, frequency, and journal evidence during board stability tests.
 - `tools/package_a733_xwayland.sh XWAYLAND OUTPUT.deb` packages the pinned XWayland 24.1.6 GLES-glamor integration under `/opt`.
 - `tools/a733_x11_egl_probe.c` verifies X11 EGL configs, native visuals, GLES contexts, rendering, and swaps against the active XWayland session.
 - `sudo tools/deploy_a733_gpu.sh PACKAGE.deb --activate` installs it while preserving recovery entry `l1`.
@@ -195,19 +198,19 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
 - GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
 - Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.
+- Power-loss recovery image: [`v0.3.2-a733-power-loss-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.2-a733-power-loss-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.
 <!-- status-summary:end -->
 
 ## Download
 
-The current integrated GPU image is available from
-[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu):
+The current integrated image is available from
+[`v0.3.2-a733-power-loss-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.2-a733-power-loss-recovery):
 
-- Image: `radxa-a733-debian12-kde-pvr-20260716.img.xz`
-- The image contains the original `display2`/`gpu4` stack. Install the
-  `v0.3.1-a733-hdmi-hotplug` update after first boot for `display3`/`gpu8`,
-  automatic HDMI reconnect, and hardened recovery entries.
-- The filesystem and image layout pass offline validation. The assembled image
-  still needs a clean reflash test on a separate SD card.
+- Image: `radxa-a733-debian12-kde-pvr-recovery-20260722.img.xz`
+- Includes `display3`, `gpu8`, packaged XWayland/KWin acceleration, vendor
+  fallback `l1`, and the tested `a7z-recovery` early-fsck entry.
+- The image was built from and reflashed through a separate SD-card validation
+  path, including an injected ext4 fault repaired during recovery boot.
 
 The original verified base image remains available from
 [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw):
@@ -223,8 +226,8 @@ does not boot on the A7Z; do not flash it.
 On Linux, decompress and flash either release with:
 
 ```bash
-xz -d radxa-a733-debian12-kde-pvr-20260716.img.xz
-sudo dd if=radxa-a733-debian12-kde-pvr-20260716.img of=/dev/<target-disk> bs=4M status=progress conv=fsync
+xz -d radxa-a733-debian12-kde-pvr-recovery-20260722.img.xz
+sudo dd if=radxa-a733-debian12-kde-pvr-recovery-20260722.img of=/dev/<target-disk> bs=4M status=progress conv=fsync
 sync
 ```
 

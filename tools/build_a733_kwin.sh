@@ -26,6 +26,13 @@ test -f "$patch_file"
 grep -Fq 'Source: kwin' "$dsc"
 grep -Fq 'Version: 4:5.27.5-3' "$dsc"
 
+case " ${DEB_BUILD_OPTIONS:-} " in
+	*" noopt "*)
+		echo "Release KWin builds must use Debian's default optimization." >&2
+		exit 1
+		;;
+esac
+
 dpkg-source -x "$dsc" "$source_dir"
 patch -d "$source_dir" -p1 < "$patch_file"
 

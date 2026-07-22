@@ -14,10 +14,11 @@
 
 ## 最新验证里程碑
 
-`v0.3.1-a733-hdmi-hotplug` 让已验证的 Debian 12 + PowerVR 桌面能够可靠处理
-HDMI 断开与重连，并强化 `l0` 和 `l1` 启动项。更新包和校验文件发布于 GitHub，
-完整技术记录见
-[A733 HDMI 热插拔与启动恢复更新](docs/releases/v0.3.1-a733-hdmi-hotplug.zh-CN.md)。
+`v0.3.2-a733-power-loss-recovery` 是新的可直接烧录 Debian 12 + PowerVR
+完整镜像。它整合已验证的 `display3`/`gpu8` 桌面、打包版 XWayland/KWin
+加速、受保护的 `l0`/`l1` 启动路径、UART 诊断，以及已通过实机故障注入
+验证的 `a7z-recovery` 挂载前 ext4 修复路径。完整记录见
+[A733 异常断电恢复完整镜像](docs/releases/v0.3.2-a733-power-loss-recovery.zh-CN.md)。
 
 已在 Radxa Cubie A7Z 实机验证：
 
@@ -34,19 +35,18 @@ HDMI 断开与重连，并强化 `l0` 和 `l1` 启动项。更新包和校验文
 | 显示 | `FLY-HDMI-LCD7` · `1024x600@60Hz` · scale 100% |
 | 网络 | AIC8800 Wi-Fi 和 SSH 正常 |
 | 显示策略 | 使用 EDID preferred/native 时序，不再强制 Full HD |
-| 恢复路径 | 自定义栈使用 `l0` · 原厂内核保留在 `l1` |
+| 恢复路径 | 正常桌面使用 `l0` · 原厂回退使用 `l1` · 早期 fsck 恢复使用 `a7z-recovery` |
 <!-- status-baseline:end -->
 
-发布资产包括 `display3` 内核包、`gpu8` 包、带安全检查的部署脚本、中英文发布说明和
-SHA256 校验文件。
+发布资产包括可直接烧录的整合 XZ 镜像、强化后的 `display3` 内核、`gpu8`、recovery 工具、中英文发布说明和 SHA256 校验文件。
 
 ## 从这里开始
 
 | 当前情况 | 推荐路径 |
 | --- | --- |
-| 全新 SD 卡 | [烧录 `v0.3.0` GPU 镜像](#下载镜像)，首次启动后再[安装 `v0.3.1` 更新](#更新到-display3--gpu8)。 |
-| 已安装 `v0.3.0` | [安装 `display3` 和 `gpu8`](#更新到-display3--gpu8)。 |
-| 自定义内核无法启动 | 选择原厂恢复项 `l1`，或使用[离线恢复方法](#恢复方法)。 |
+| 全新 SD 卡 | [烧录整合的 `v0.3.2` recovery 镜像](#下载镜像)。 |
+| 已有安装 | 使用 `v0.3.2` 内核与 recovery 资产，或直接烧录完整镜像。 |
+| 根文件系统无法挂载 | 通过 UART 选择 `a7z-recovery`；原厂内核回退使用 `l1`。 |
 | 准备研究或重新构建 | 从[文档索引](#文档索引)和[工具](#工具)开始。 |
 
 当前实机验证路径包括：
@@ -100,10 +100,11 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 | HDMI 桌面输出 | ✅ 已解决 | Plasma Wayland 可进入 HDMI-A-1，并使用 EDID preferred/native 时序。 |
 | 显示管理器 | ✅ 已解决 | SDDM 可以进入图形登录和桌面。 |
 | 默认用户 | ✅ 已解决 | 用户名和密码均为 `radxa`。 |
+| 异常断电文件系统恢复 | ✅ 已解决 | 独立的 14.7 MB recovery initramfs 已在挂载根分区前修复注入的 ext4 块组描述符故障并继续完整启动；无法自动修复的错误仍需离线 fsck。 |
 | Wi-Fi 和 SSH | ✅ 已解决 | 完整显示/GPU 栈下 AIC8800 Wi-Fi 和 SSH 已验证。 |
 | 串口 | 📘 已文档化 | 已记录 40-pin 排针 UART0 的启动和恢复诊断方法。 |
 | 根文件系统扩容 | ✅ 已解决 | rootfs 可扩展到 SD 卡，并从 `mmcblk0p3` 挂载。 |
-| Windows 友好镜像 | ✅ 已解决 | `v0.3.0` 的 XZ 镜像整合 Debian 12 KDE、显示内核、PowerVR 加速和独立原厂恢复入口。 |
+| Windows 友好镜像 | ✅ 已解决 | `v0.3.2` 的 XZ 镜像整合 Debian 12 KDE、`display3`、`gpu8`、打包版 XWayland/KWin 加速、原厂 `l1` 和已验证的 `a7z-recovery` early-fsck 启动项。 |
 | HDMI 小屏原生模式 | ✅ 已解决 | `FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。 |
 | HDMI 热插拔恢复 | ✅ 已解决 | `display3` 让 HDMI 硬件变化与 DRM atomic 状态保持同步；在 SDDM 下拔插可自动恢复，无需 xrandr 或 udev workaround。 |
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display3` 从 `l0` 启动，包内包含 A7Z DTB，并在恢复项 `l1` 保留显式 vendor DTB 和 GPU 黑名单。 |
@@ -135,6 +136,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - [A733 PowerVR 桌面环境隔离验证](docs/validation-records/2026-07-16-a733-pvr-environment-isolation.zh-CN.md)
 - [A733 XWayland 24.1.6 Glamor 测试](docs/validation-records/2026-07-16-a733-xwayland-24.1.6-test.zh-CN.md)
 - [A733 PowerVR GPU 第一版发布说明](docs/releases/v0.3.0-a733-pvr-gpu.zh-CN.md)
+- [A733 异常断电恢复完整镜像](docs/releases/v0.3.2-a733-power-loss-recovery.zh-CN.md)
 - [A733 HDMI 热插拔与启动恢复更新](docs/releases/v0.3.1-a733-hdmi-hotplug.zh-CN.md)
 - [A733 PowerVR GPU 加固路线](docs/roadmap/a733-pvr-gpu-hardening.zh-CN.md)
 - [显示栈架构](docs/architecture/display-stack.zh-CN.md)
@@ -161,6 +163,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko`：构建并检查 `pvrsrvkm`。
 - `tools/package_a733_gpu.sh MODULE.ko USERSPACE.deb OUTPUT.deb`：生成不覆盖 Xorg 的 GPU 包。
 - `tools/build_a733_kwin.sh KWIN.dsc OUTPUT_DIR`：为 KMS/render node 分离反馈构建带补丁的 ARM64 KWin Debian 包。
+- `tools/a733_desktop_soak_test.sh smoke|regression|soak`：在板端稳定性测试期间采集 DRM、PowerVR、进程、内存、温度、频率和 journal 证据。
 - `tools/package_a733_xwayland.sh XWAYLAND OUTPUT.deb`：将锁定版本的 XWayland 24.1.6 GLES glamor 集成打包到 `/opt`。
 - `tools/a733_x11_egl_probe.c`：在当前 XWayland 会话上验证 X11 EGL config、原生 visual、GLES context、绘制和 swap。
 - `sudo tools/deploy_a733_gpu.sh PACKAGE.deb --activate`：安装 GPU 包并保留 `l1` 恢复项。
@@ -184,6 +187,7 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 - 显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。
 - GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。
 - 热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。
+- 断电恢复镜像：[`v0.3.2-a733-power-loss-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.2-a733-power-loss-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。
 <!-- status-summary:end -->
 
 ## 下载镜像
@@ -210,8 +214,8 @@ Xorg；HDMI 扫描输出继续固定在 `/dev/dri/card0`，原厂内核继续作
 Linux 下解压和烧录任一镜像：
 
 ```bash
-xz -d radxa-a733-debian12-kde-pvr-20260716.img.xz
-sudo dd if=radxa-a733-debian12-kde-pvr-20260716.img \
+xz -d radxa-a733-debian12-kde-pvr-recovery-20260722.img.xz
+sudo dd if=radxa-a733-debian12-kde-pvr-recovery-20260722.img \
   of=/dev/<目标磁盘> bs=4M status=progress conv=fsync
 sync
 ```

@@ -16,8 +16,10 @@ prereqs)
 	;;
 esac
 
-# The A733 initramfs can reach the SD rootfs before fsck can reliably resolve
-# its UUID. Leave filesystem checks to the mounted system and offline recovery.
+# The normal A733 initramfs leaves filesystem checks to the separate recovery
+# image. It also excludes discrete PCI GPU payloads that this fixed A733 board
+# cannot use; keeping them made the gzip result fluctuate around U-Boot's
+# verified size boundary when otherwise identical initramfs images were rebuilt.
 rm -f \
 	"${DESTDIR}/usr/sbin/fsck" \
 	"${DESTDIR}/usr/sbin/fsck.ext4" \
@@ -26,3 +28,11 @@ rm -f \
 	"${DESTDIR}"/usr/lib/*/libcom_err.so.2* \
 	"${DESTDIR}"/usr/lib/*/libe2p.so.2* \
 	"${DESTDIR}"/usr/lib/*/libext2fs.so.2*
+
+rm -rf \
+	"${DESTDIR}/usr/lib/firmware/amdgpu" \
+	"${DESTDIR}/usr/lib/firmware/nvidia"
+
+find "${DESTDIR}/usr/lib/modules" -type f \
+	\( -name 'amdgpu.ko*' -o -name 'nouveau.ko*' -o -name 'radeon.ko*' \) \
+	-delete

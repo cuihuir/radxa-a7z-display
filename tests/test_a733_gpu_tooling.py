@@ -121,11 +121,25 @@ class A733GpuToolingTests(unittest.TestCase):
 
     def test_display_package_advances_for_hotplug_fix(self) -> None:
         script = (ROOT / "tools/package_a733_kernel_display.sh").read_text()
+        initramfs_hook = (
+            ROOT / "config/initramfs-tools/hooks/zz-a7z-skip-early-fsck"
+        ).read_text()
+        recovery_postinst = (
+            ROOT / "config/kernel/postinst.d/zzz-a7z-repair-recovery-entry"
+        ).read_text()
 
         self.assertIn("5.15.147-21.1+display3", script)
         self.assertIn("INPUT.deb A7Z.dtb OUTPUT.deb", script)
         self.assertIn("sun60i-a733-cubie-a7z.dtb", script)
         self.assertIn('install -D -m 0644 "$dtb"', script)
+        self.assertIn("zzz-a7z-repair-recovery-entry", script)
+        self.assertIn("module_blacklist=pvrsrvkm", recovery_postinst)
+        self.assertIn("sun60i-a733-cubie-a7z.dtb", recovery_postinst)
+        self.assertIn('"${DESTDIR}/usr/lib/firmware/amdgpu"', initramfs_hook)
+        self.assertIn('"${DESTDIR}/usr/lib/firmware/nvidia"', initramfs_hook)
+        self.assertIn("amdgpu.ko*", initramfs_hook)
+        self.assertIn("nouveau.ko*", initramfs_hook)
+        self.assertIn("radeon.ko*", initramfs_hook)
 
     def test_display_deployment_preserves_recovery_entry(self) -> None:
         script = (ROOT / "tools/deploy_a733_display_kernel.sh").read_text()
@@ -133,6 +147,53 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertIn("repair_recovery_entry", script)
         self.assertIn("sun60i-a733-cubie-a7z.dtb", script)
         self.assertIn("module_blacklist=pvrsrvkm", script)
+
+    def test_recovery_initramfs_is_built_separately(self) -> None:
+        script = (ROOT / "tools/build_a733_recovery_initramfs.sh").read_text()
+        config = (
+            ROOT / "config/initramfs-tools/recovery/conf.d/a7z-recovery"
+        ).read_text()
+        hook = (
+            ROOT / "config/initramfs-tools/recovery/hooks/a7z-recovery-fsck"
+        ).read_text()
+
+        self.assertIn('mkinitramfs -d "$workdir"', script)
+        self.assertIn("zz-a7z-skip-early-fsck", script)
+        self.assertIn("20971520", script)
+        self.assertIn("MODULES=dep", config)
+        self.assertIn("BUSYBOX=n", config)
+        self.assertIn("FSTYPE=ext4", config)
+        self.assertIn('copy_exec "$path"', hook)
+        self.assertIn("fsck.ext4", hook)
+
+    def test_recovery_entry_never_changes_default(self) -> None:
+        script = (ROOT / "tools/install_a733_recovery_entry.sh").read_text()
+
+        self.assertIn("label a7z-recovery", script)
+        self.assertIn("default_before", script)
+        self.assertIn('"$default_after" = "$default_before"', script)
+        self.assertIn("console=ttyAS0,115200n8", script)
+        self.assertNotIn("quiet", script)
+        self.assertNotIn("splash", script)
+
+    def test_recovery_fsck_uses_regular_file_image(self) -> None:
+        script = (ROOT / "tools/test_a733_recovery_fsck.sh").read_text()
+
+        self.assertIn("truncate -s 64M", script)
+        self.assertIn("set_bg 0 free_blocks_count 1", script)
+        self.assertIn('repair_status" -eq 1', script)
+        self.assertNotIn("losetup", script)
+        self.assertNotIn("mount ", script)
+
+    def test_release_image_regenerates_ssh_host_keys(self) -> None:
+        service = (
+            ROOT / "config/systemd/system/a7z-ssh-host-keys.service"
+        ).read_text()
+
+        self.assertIn("ConditionPathExists=!/etc/ssh/ssh_host_ed25519_key", service)
+        self.assertIn("Before=ssh.service", service)
+        self.assertIn("ExecStart=/usr/bin/ssh-keygen -A", service)
+        self.assertIn("WantedBy=multi-user.target", service)
 
 
 if __name__ == "__main__":

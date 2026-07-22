@@ -34,8 +34,10 @@ class RenderStatusTests(unittest.TestCase):
     def test_baseline_is_localized_from_the_same_source(self) -> None:
         data = load_status()
 
-        self.assertIn("vendor kernel retained on `l1`", render_baseline_table(data, "en"))
-        self.assertIn("原厂内核保留在 `l1`", render_baseline_table(data, "zh"))
+        self.assertIn("vendor fallback on `l1`", render_baseline_table(data, "en"))
+        self.assertIn("early-fsck recovery on `a7z-recovery`", render_baseline_table(data, "en"))
+        self.assertIn("原厂回退使用 `l1`", render_baseline_table(data, "zh"))
+        self.assertIn("早期 fsck 恢复使用 `a7z-recovery`", render_baseline_table(data, "zh"))
 
     def test_unknown_status_is_rejected(self) -> None:
         data = json.loads(Path("docs/status.json").read_text(encoding="utf-8"))

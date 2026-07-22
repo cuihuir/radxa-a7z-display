@@ -2,7 +2,7 @@
 
 > Generated from `docs/status.json`. Edit the JSON source, then run `python3 tools/render_status.py`.
 
-**2026-07-20**
+**2026-07-22**
 
 ## Verified Baseline
 
@@ -18,7 +18,7 @@
 | Display | `FLY-HDMI-LCD7` · `1024x600@60Hz` · scale 100% |
 | Network | AIC8800 Wi-Fi and SSH working |
 | Display policy | EDID preferred/native timing; no forced Full HD |
-| Recovery | Custom stack on `l0` · vendor kernel retained on `l1` |
+| Recovery | Normal desktop on `l0` · vendor fallback on `l1` · early-fsck recovery on `a7z-recovery` |
 
 ## Capability Status
 
@@ -30,10 +30,11 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | HDMI desktop output | ✅ Working | Plasma Wayland reaches HDMI-A-1 and follows the EDID preferred/native timing. |
 | Display manager | ✅ Working | SDDM reaches the graphical login and desktop path. |
 | Default user login | ✅ Working | Username and password are both `radxa`. |
+| Power-loss filesystem recovery | ✅ Working | An isolated 14.7 MB recovery initramfs repaired an injected ext4 group-descriptor fault before root mount and continued to a complete boot; unrecoverable errors still require offline fsck. |
 | Wi-Fi and SSH | ✅ Working | AIC8800 Wi-Fi and SSH are verified with the full display/GPU stack. |
 | Serial console | 📘 Documented | UART0 on the 40-pin header is documented for boot and recovery diagnostics. |
 | Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
-| Windows-friendly image release | ✅ Working | `v0.3.0` packages Debian 12 KDE, the display kernel, PowerVR acceleration, and an independent vendor recovery entry in one XZ image. |
+| Windows-friendly image release | ✅ Working | `v0.3.2` integrates Debian 12 KDE, `display3`, `gpu8`, packaged XWayland/KWin acceleration, vendor `l1`, and the tested `a7z-recovery` early-fsck entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
 | HDMI hotplug recovery | ✅ Working | `display3` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround. |
 | Full display kernel package | ✅ Working | `5.15.147-21.1+display3` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`. |
@@ -54,6 +55,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
 - GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
 - Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.
+- Power-loss recovery image: [`v0.3.2-a733-power-loss-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.2-a733-power-loss-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.
 
 ## Next Milestones
 

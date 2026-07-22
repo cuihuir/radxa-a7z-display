@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+extlinux=/boot/extlinux/extlinux.conf
+recovery_initrd=/boot/initrd.img-5.15.147-21-a733.vendor
+recovery_dtb=/usr/lib/linux-image-5.15.147-21-a733-vendor/allwinner/sun60i-a733-cubie-a7z.dtb
+
+[ -f "$extlinux" ] || exit 0
+[ -f "$recovery_initrd" ] || exit 0
+[ -f "$recovery_dtb" ] || exit 0
+
+sed -i '/^label l1$/,/^label l2$/{/^[[:space:]]*fdt .*linux-image-5\.15\.147-21-a733-vendor/d}' "$extlinux"
+sed -i "\|^[[:space:]]*initrd $recovery_initrd\$|a\\	fdt $recovery_dtb" "$extlinux"
+sed -i '/^label l1$/,/^label l2$/{/^[[:space:]]*append /{/module_blacklist=pvrsrvkm/!s/$/ module_blacklist=pvrsrvkm/}}' "$extlinux"

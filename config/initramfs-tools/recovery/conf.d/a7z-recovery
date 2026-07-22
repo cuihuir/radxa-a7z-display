@@ -1,0 +1,3 @@
+MODULES=dep
+BUSYBOX=n
+FSTYPE=ext4

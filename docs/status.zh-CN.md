@@ -2,7 +2,7 @@
 
 > 本文由 `docs/status.json` 生成。请修改 JSON 单一源，然后运行 `python3 tools/render_status.py`。
 
-**2026-07-20**
+**2026-07-22**
 
 ## 已验证基线
 
@@ -18,7 +18,7 @@
 | 显示 | `FLY-HDMI-LCD7` · `1024x600@60Hz` · scale 100% |
 | 网络 | AIC8800 Wi-Fi 和 SSH 正常 |
 | 显示策略 | 使用 EDID preferred/native 时序，不再强制 Full HD |
-| 恢复路径 | 自定义栈使用 `l0` · 原厂内核保留在 `l1` |
+| 恢复路径 | 正常桌面使用 `l0` · 原厂回退使用 `l1` · 早期 fsck 恢复使用 `a7z-recovery` |
 
 ## 能力状态
 
@@ -30,10 +30,11 @@
 | HDMI 桌面输出 | ✅ 已解决 | Plasma Wayland 可进入 HDMI-A-1，并使用 EDID preferred/native 时序。 |
 | 显示管理器 | ✅ 已解决 | SDDM 可以进入图形登录和桌面。 |
 | 默认用户 | ✅ 已解决 | 用户名和密码均为 `radxa`。 |
+| 异常断电文件系统恢复 | ✅ 已解决 | 独立的 14.7 MB recovery initramfs 已在挂载根分区前修复注入的 ext4 块组描述符故障并继续完整启动；无法自动修复的错误仍需离线 fsck。 |
 | Wi-Fi 和 SSH | ✅ 已解决 | 完整显示/GPU 栈下 AIC8800 Wi-Fi 和 SSH 已验证。 |
 | 串口 | 📘 已文档化 | 已记录 40-pin 排针 UART0 的启动和恢复诊断方法。 |
 | 根文件系统扩容 | ✅ 已解决 | rootfs 可扩展到 SD 卡，并从 `mmcblk0p3` 挂载。 |
-| Windows 友好镜像 | ✅ 已解决 | `v0.3.0` 的 XZ 镜像整合 Debian 12 KDE、显示内核、PowerVR 加速和独立原厂恢复入口。 |
+| Windows 友好镜像 | ✅ 已解决 | `v0.3.2` 的 XZ 镜像整合 Debian 12 KDE、`display3`、`gpu8`、打包版 XWayland/KWin 加速、原厂 `l1` 和已验证的 `a7z-recovery` early-fsck 启动项。 |
 | HDMI 小屏原生模式 | ✅ 已解决 | `FLY-HDMI-LCD7` 以原生 `1024x600@60Hz` 工作，无拉伸和裁切。 |
 | HDMI 热插拔恢复 | ✅ 已解决 | `display3` 让 HDMI 硬件变化与 DRM atomic 状态保持同步；在 SDDM 下拔插可自动恢复，无需 xrandr 或 udev workaround。 |
 | 完整显示内核包 | ✅ 已解决 | `5.15.147-21.1+display3` 从 `l0` 启动，包内包含 A7Z DTB，并在恢复项 `l1` 保留显式 vendor DTB 和 GPU 黑名单。 |
@@ -54,6 +55,7 @@
 - 显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。
 - GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。
 - 热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。
+- 断电恢复镜像：[`v0.3.2-a733-power-loss-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.2-a733-power-loss-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。
 
 ## 下一阶段
 

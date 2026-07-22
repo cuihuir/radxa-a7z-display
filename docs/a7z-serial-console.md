@@ -41,6 +41,22 @@ On a Linux host, first find the adapter:
 ls /dev/ttyUSB* /dev/ttyACM*
 ```
 
+The adapter validated on July 21, 2026 is a CH341/CH340 device with USB ID
+`1a86:7523`. It appears as:
+
+```text
+/dev/ttyUSB0
+/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+```
+
+The stable `/dev/serial/by-id/` path is preferable in scripts. On systems
+where the device is owned by `root:dialout`, add the user to `dialout` and
+start a new login session:
+
+```bash
+sudo usermod -aG dialout "$USER"
+```
+
 Then open it, for example:
 
 ```bash
@@ -53,9 +69,26 @@ Or:
 screen /dev/ttyUSB0 115200
 ```
 
-The image configures the kernel console as `console=ttyS0,115200`, with
+For a read-only capture that does not transmit characters to the board:
+
+```bash
+stty -F /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0 \
+  115200 cs8 -cstopb -parenb -ixon -ixoff -crtscts raw -echo
+timeout 120 cat /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0 \
+  | tee a7z-serial-boot.log
+```
+
+The verified image configures the kernel console as `console=ttyAS0,115200n8`, with
 `earlyprintk=sunxi-uart,0x02500000`. A successful boot should therefore print
 bootloader output followed by kernel messages and eventually a login prompt.
+
+The July 21 validation captured a clean shutdown, the following `l1` boot,
+systemd startup, Wi-Fi initialization, SDDM startup, and the final prompt:
+
+```text
+Debian GNU/Linux 12 radxa-cubie-a7z ttyAS0
+radxa-cubie-a7z login:
+```
 
 ## Current Recovery Use
 
@@ -72,6 +105,36 @@ credentials or Wi-Fi secrets. The most useful parts are the boot source,
 kernel command line, root filesystem mount, DRM/HDMI lines, and Wi-Fi/DKMS
 errors.
 
+## Optional Early-fsck Recovery Entry
+
+The normal `l0` initramfs intentionally remains on the verified `display3`
+policy. Build a separate recovery image on the A7Z instead of changing the
+normal image:
+
+```bash
+sudo ./tools/build_a733_recovery_initramfs.sh \
+  5.15.147-21.1-a733 \
+  /boot/initrd.img-5.15.147-21.1-a733.a7z-recovery.new
+sudo ./tools/install_a733_recovery_entry.sh \
+  5.15.147-21.1-a733 \
+  /boot/initrd.img-5.15.147-21.1-a733.a7z-recovery.new
+```
+
+The installer adds `a7z-recovery`, keeps the existing default entry unchanged,
+and writes a timestamped extlinux backup. Select the recovery item numerically
+from the UART U-Boot menu. It uses verbose kernel output and checks ext4 before
+the root filesystem is mounted.
+
+Validate the repair policy without a block device or mounted filesystem:
+
+```bash
+./tools/test_a733_recovery_fsck.sh
+```
+
+The test creates a disposable regular-file ext4 image, introduces a block-group
+descriptor inconsistency, requires `e2fsck -p` status `1`, then requires a clean
+read-only follow-up check. It never touches the active SD card.
+
 ## Evidence And Sources
 
 - Official GPIO pin table: <https://docs.radxa.com/en/cubie/a7z/hardware-use/pin-gpio>
@@ -80,4 +143,3 @@ errors.
   specifies `uart_debug_port = 0`, `PB09` as TX, and `PB10` as RX.
 - A733 boot environment: `radxa/device-a733` `configs/cubie_a7z/debian/env.cfg`
   specifies `console=ttyS0,115200`.
-
