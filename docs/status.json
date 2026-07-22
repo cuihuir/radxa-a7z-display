@@ -23,7 +23,7 @@
         "en": "Kernel",
         "zh": "内核"
       },
-      "value": "`5.15.147-21.1-a733` · package `5.15.147-21.1+display3`"
+      "value": "`5.15.147-21.1-a733` · package `5.15.147-21.1+display4`"
     },
     {
       "key": {
@@ -116,8 +116,8 @@
       "zh": "热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。"
     },
     {
-      "en": "Power-loss recovery image: [`v0.3.2-a733-power-loss-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.2-a733-power-loss-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.",
-      "zh": "断电恢复镜像：[`v0.3.2-a733-power-loss-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.2-a733-power-loss-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。"
+      "en": "Power-loss recovery image: [`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.",
+      "zh": "断电恢复镜像：[`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。"
     }
   ],
   "capabilities": [
@@ -225,8 +225,8 @@
         "zh": "Windows 友好镜像"
       },
       "notes": {
-        "en": "`v0.3.2` integrates Debian 12 KDE, `display3`, `gpu8`, packaged XWayland/KWin acceleration, vendor `l1`, and the tested `a7z-recovery` early-fsck entry in one XZ image.",
-        "zh": "`v0.3.2` 的 XZ 镜像整合 Debian 12 KDE、`display3`、`gpu8`、打包版 XWayland/KWin 加速、原厂 `l1` 和已验证的 `a7z-recovery` early-fsck 启动项。"
+        "en": "`v0.3.3` integrates Debian 12 KDE, `display4`, `gpu8`, packaged XWayland/KWin acceleration, vendor `l1`, and the tested `a7z-recovery` early-fsck entry in one XZ image.",
+        "zh": "`v0.3.3` 的 XZ 镜像整合 Debian 12 KDE、`display4`、`gpu8`、打包版 XWayland/KWin 加速、原厂 `l1` 和已验证的 `a7z-recovery` early-fsck 启动项。"
       }
     },
     {
@@ -249,8 +249,8 @@
         "zh": "HDMI 热插拔恢复"
       },
       "notes": {
-        "en": "`display3` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround.",
-        "zh": "`display3` 让 HDMI 硬件变化与 DRM atomic 状态保持同步；在 SDDM 下拔插可自动恢复，无需 xrandr 或 udev workaround。"
+        "en": "`display4` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround.",
+        "zh": "`display4` 让 HDMI 硬件变化与 DRM atomic 状态保持同步；在 SDDM 下拔插可自动恢复，无需 xrandr 或 udev workaround。"
       }
     },
     {
@@ -261,8 +261,8 @@
         "zh": "完整显示内核包"
       },
       "notes": {
-        "en": "`5.15.147-21.1+display3` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`.",
-        "zh": "`5.15.147-21.1+display3` 从 `l0` 启动，包内包含 A7Z DTB，并在恢复项 `l1` 保留显式 vendor DTB 和 GPU 黑名单。"
+        "en": "`5.15.147-21.1+display4` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`.",
+        "zh": "`5.15.147-21.1+display4` 从 `l0` 启动，包内包含 A7Z DTB，并在恢复项 `l1` 保留显式 vendor DTB 和 GPU 黑名单。"
       }
     },
     {

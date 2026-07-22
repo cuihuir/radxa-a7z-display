@@ -127,9 +127,16 @@ class A733GpuToolingTests(unittest.TestCase):
         recovery_postinst = (
             ROOT / "config/kernel/postinst.d/zzz-a7z-repair-recovery-entry"
         ).read_text()
+        touchscreen_config = (
+            ROOT / "config/kernel/a733-touchscreen.config"
+        ).read_text()
 
-        self.assertIn("5.15.147-21.1+display3", script)
-        self.assertIn("INPUT.deb A7Z.dtb OUTPUT.deb", script)
+        self.assertIn("5.15.147-21.1+display4", script)
+        self.assertIn("INPUT.deb A7Z.dtb Image KERNEL.config OUTPUT.deb", script)
+        self.assertIn("a733-touchscreen.config", script)
+        self.assertEqual(touchscreen_config.strip(), "CONFIG_HID_MULTITOUCH=y")
+        self.assertIn('install -m 0644 "$image"', script)
+        self.assertIn('install -m 0644 "$kernel_config"', script)
         self.assertIn("sun60i-a733-cubie-a7z.dtb", script)
         self.assertIn('install -D -m 0644 "$dtb"', script)
         self.assertIn("zzz-a7z-repair-recovery-entry", script)

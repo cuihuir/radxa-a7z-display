@@ -128,6 +128,15 @@ new machine ID. A dedicated systemd unit was then hardware-tested to generate
 unique SSH host keys before starting SSH, eliminating the sanitized-image SSH
 failure without publishing shared keys.
 
+## HID Touchscreen Regression Retest — July 22, 2026
+
+The first release candidate booted but its kernel configuration contained
+`# CONFIG_HID_MULTITOUCH is not set`, leaving the USB HID touchscreen unusable.
+The release was immediately moved back to draft. The kernel was rebuilt with
+`CONFIG_HID_MULTITOUCH=y`, written to the spare SD card, booted on the target
+A7Z, and the touchscreen was confirmed working before repacking the image as
+the `5.15.147-21.1+display4` kernel package.
+
 ## Conclusion
 
 The exact historical `l0` initramfs remains bootable in this captured test.
