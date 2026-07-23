@@ -16,7 +16,7 @@ Product photo source: [Radxa Cubie A7Z documentation](https://docs.radxa.com/en/
 ## Latest Verified Milestone
 
 `v0.3.3-a733-touchscreen-recovery` is the new ready-to-flash Debian 12 +
-PowerVR image. It combines the verified `display4`/`gpu8` desktop, packaged
+PowerVR image. It combines the verified `display5`/`gpu8` desktop, packaged
 XWayland/KWin acceleration, protected `l0`/`l1` boot paths, UART diagnostics,
 and a hardware-tested `a7z-recovery` initramfs that repairs eligible ext4
 errors before mounting root. Full details are in
@@ -29,7 +29,7 @@ Verified on a physical Radxa Cubie A7Z:
 | --- | --- |
 | Board | Radxa Cubie A7Z / Allwinner A733 |
 | Operating system | Debian 12 Bookworm · KDE Plasma Wayland |
-| Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display4` |
+| Kernel | `5.15.147-21.1-a733` · package `5.15.147-21.1+display5` |
 | GPU package | `a733-pvr-gpu 24.2.6603887+gpu8` |
 | GPU | PowerVR B-Series BXM-4-64 · DDK `24.2@6603887` |
 | Graphics APIs | Vulkan · OpenCL 3.0 · EGL/GBM · OpenGL ES 3.2 |
@@ -40,7 +40,7 @@ Verified on a physical Radxa Cubie A7Z:
 | Recovery | Normal desktop on `l0` · vendor fallback on `l1` · early-fsck recovery on `a7z-recovery` |
 <!-- status-baseline:end -->
 
-Release assets include a ready-to-flash integrated XZ image, the hardened `display4` kernel, `gpu8`, recovery tooling, bilingual release notes, and SHA256 checksums.
+Release assets include a ready-to-flash integrated XZ image, the hardened `display5` kernel, `gpu8`, recovery tooling, bilingual release notes, and SHA256 checksums.
 
 ## Start Here
 
@@ -110,10 +110,10 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 | Wi-Fi and SSH | ✅ Working | AIC8800 Wi-Fi and SSH are verified with the full display/GPU stack. |
 | Serial console | 📘 Documented | UART0 on the 40-pin header is documented for boot and recovery diagnostics. |
 | Root filesystem expansion | ✅ Working | Rootfs expands to the SD card and mounts from `mmcblk0p3`. |
-| Windows-friendly image release | ✅ Working | `v0.3.3` integrates Debian 12 KDE, `display4`, `gpu8`, packaged XWayland/KWin acceleration, vendor `l1`, and the tested `a7z-recovery` early-fsck entry in one XZ image. |
+| Windows-friendly image release | ✅ Working | `v0.3.3` integrates Debian 12 KDE, `display5`, `gpu8`, packaged XWayland/KWin acceleration, vendor `l1`, and the tested `a7z-recovery` early-fsck entry in one XZ image. |
 | Small-screen native mode | ✅ Working | `FLY-HDMI-LCD7` runs at native `1024x600@60Hz` without stretching or cropping. |
-| HDMI hotplug recovery | ✅ Working | `display4` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround. |
-| Full display kernel package | ✅ Working | `5.15.147-21.1+display4` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`. |
+| HDMI hotplug recovery | ✅ Working | `display5` keeps HDMI hardware changes synchronized with DRM atomic state; unplug/replug recovers automatically at SDDM without an xrandr or udev workaround. |
+| Full display kernel package | ✅ Working | `5.15.147-21.1+display5` boots from `l0`, includes the A7Z DTB, and preserves the explicit vendor DTB and GPU blacklist on recovery entry `l1`. |
 | GPU acceleration | ✅ Working (first port) | `gpu8` integrates the verified `pvrsrvkm`, Vulkan, OpenCL, EGL/GBM, PowerVR-accelerated KWin, and packaged XWayland GLES-glamor paths, with a compatible display-kernel dependency range. |
 | GPU desktop environment isolation | ✅ Working | Ordinary Plasma clients, Discover, and KScreenLocker remain clean; only KWin and the compatible packaged XWayland receive scoped PowerVR libraries. |
 | XWayland acceleration | ✅ Working | Packaged XWayland 24.1.6 GLES glamor reaches 100% GPU utilization, and native-visual X11 EGL/GLES renders on PowerVR; desktop GLX remains llvmpipe. |
@@ -168,7 +168,7 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 - `python3 tools/a7z_debian12_report.py <radxa-rsdk-tree> <orangepi-build-tree> --output report.md`
 - This tool turns the Radxa/Orange Pi source trees into an A7Z Debian 12 migration report.
 - `patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch` removes A733's forced-FHD policy and makes the vendor DRM driver select the EDID preferred mode before falling back to the first advertised mode.
-- `tools/package_a733_kernel_display.sh INPUT.deb A7Z.dtb Image KERNEL.config OUTPUT.deb` adds the A7Z initramfs size workaround and required board DTB, then produces the installable `+display4` kernel package.
+- `tools/package_a733_kernel_display.sh INPUT.deb A7Z.dtb Image KERNEL.config OUTPUT.deb` adds the A7Z initramfs size workaround and required board DTB, then produces the installable `+display5` kernel package.
 - `sudo tools/deploy_a733_display_kernel.sh PACKAGE.deb --activate` installs one package under a lock and verifies DKMS and initramfs safety gates before selecting `l0`.
 - `tools/download_a733_gpu_vendor.sh DIR` downloads and verifies the pinned A733 PowerVR packages.
 - `tools/build_a733_gpu_module.sh DKMS.deb KERNEL_TREE OUTPUT.ko` builds and validates `pvrsrvkm`.
@@ -207,7 +207,7 @@ The current integrated image is available from
 [`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery):
 
 - Image: `radxa-a733-debian12-kde-pvr-recovery-20260722.img.xz`
-- Includes `display4`, `gpu8`, packaged XWayland/KWin acceleration, vendor
+- Includes `display5`, `gpu8`, packaged XWayland/KWin acceleration, vendor
   fallback `l1`, and the tested `a7z-recovery` early-fsck entry.
 - The image was built from and reflashed through a separate SD-card validation
   path, including an injected ext4 fault repaired during recovery boot.
@@ -233,12 +233,12 @@ sync
 
 On Windows, try writing the `.img.xz` directly with Rufus or balenaEtcher. If the writer does not accept `.xz`, decompress it first and write the resulting `.img`.
 
-## Update To `display4` + `gpu8`
+## Update To `display5` + `gpu8`
 
 Boot the Debian 12 image first, then download these assets from
-[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug):
+[`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery):
 
-- `linux-image-5.15.147-21.1-a733_5.15.147-21.1+display4_arm64.deb`
+- `linux-image-5.15.147-21.1-a733_5.15.147-21.1+display5_arm64.deb`
 - `a733-pvr-gpu_24.2.6603887+gpu8_arm64.deb`
 - `deploy_a733_display_kernel.sh`
 - `deploy_a733_gpu.sh`
@@ -250,7 +250,7 @@ Verify and install on the A7Z:
 sha256sum -c SHA256SUMS
 chmod +x deploy_a733_display_kernel.sh
 sudo ./deploy_a733_display_kernel.sh \
-  linux-image-5.15.147-21.1-a733_5.15.147-21.1+display4_arm64.deb \
+  linux-image-5.15.147-21.1-a733_5.15.147-21.1+display5_arm64.deb \
   --activate
 sudo ./deploy_a733_gpu.sh \
   a733-pvr-gpu_24.2.6603887+gpu8_arm64.deb \
@@ -279,7 +279,7 @@ Expected on the tested small panel:
 
 ```text
 5.15.147-21.1-a733
-Version: 5.15.147-21.1+display4
+Version: 5.15.147-21.1+display5
 Version: 24.2.6603887+gpu8
 connected
 enabled

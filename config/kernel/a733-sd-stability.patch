@@ -1,0 +1,11 @@
+--- a/device-a733/configs/cubie_a7z/linux-5.15/board.dts
++++ b/device-a733/configs/cubie_a7z/linux-5.15/board.dts
+@@ -907,4 +907 @@
+-	cap-sd-highspeed;
+-	sd-uhs-sdr50;
+-	sd-uhs-ddr50;
+-	sd-uhs-sdr104;
++	/delete-property/ cap-sd-highspeed;
+@@ -915 +912 @@
+-	max-frequency = <200000000>;
++	max-frequency = <25000000>;

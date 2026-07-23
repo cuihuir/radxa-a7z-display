@@ -131,7 +131,7 @@ class A733GpuToolingTests(unittest.TestCase):
             ROOT / "config/kernel/a733-touchscreen.config"
         ).read_text()
 
-        self.assertIn("5.15.147-21.1+display4", script)
+        self.assertIn("5.15.147-21.1+display5", script)
         self.assertIn("INPUT.deb A7Z.dtb Image KERNEL.config OUTPUT.deb", script)
         self.assertIn("a733-touchscreen.config", script)
         self.assertEqual(touchscreen_config.strip(), "CONFIG_HID_MULTITOUCH=y")
@@ -201,6 +201,27 @@ class A733GpuToolingTests(unittest.TestCase):
         self.assertIn("Before=ssh.service", service)
         self.assertIn("ExecStart=/usr/bin/ssh-keygen -A", service)
         self.assertIn("WantedBy=multi-user.target", service)
+
+    def test_release_image_is_finalized_offline(self) -> None:
+        script = (ROOT / "tools/finalize_a733_release_image.sh").read_text()
+
+        self.assertIn('losetup --find --show --partscan "$image"', script)
+        self.assertIn('depmod -b "$root" "$kernel"', script)
+        self.assertIn('setcap cap_net_raw+ep "$root/usr/bin/ping"', script)
+        self.assertIn('modinfo -b "$root" -k "$kernel" pvrsrvkm', script)
+        self.assertIn('modinfo -b "$root" -k "$kernel" aic_load_fw_usb', script)
+        self.assertIn('modinfo -b "$root" -k "$kernel" aic8800_fdrv_usb', script)
+        self.assertIn("a7z-kernel-metadata.service", script)
+
+    def test_sd_slot_avoids_untuned_uhs_modes(self) -> None:
+        patch = (ROOT / "config/kernel/a733-sd-stability.patch").read_text()
+
+        self.assertIn("-\tsd-uhs-sdr50;", patch)
+        self.assertIn("-\tsd-uhs-ddr50;", patch)
+        self.assertIn("-\tsd-uhs-sdr104;", patch)
+        self.assertIn("-\tcap-sd-highspeed;", patch)
+        self.assertIn("+\t/delete-property/ cap-sd-highspeed;", patch)
+        self.assertIn("+\tmax-frequency = <25000000>;", patch)
 
 
 if __name__ == "__main__":
