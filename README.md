@@ -1,9 +1,12 @@
-# radxa-a7z-display
+# Debian 12 for Radxa Cubie A7Z
 
 [中文说明](README.zh-CN.md)
 
-Debian 12 KDE Plasma Wayland, native HDMI output, and a reproducible PowerVR
-GPU stack for Radxa A7Z/Z7A boards powered by Allwinner A733.
+Hardware-validated Debian 12 images and system integration for the Radxa Cubie
+A7Z/A733. The project includes the Linux 5.15 BSP kernel, PowerVR-accelerated
+Plasma Wayland, packaged XWayland acceleration, HDMI and touchscreen support,
+AIC8800 Wi-Fi, stable SD-card timing, power-loss filesystem recovery, UART
+diagnostics, and reproducible deployment tooling.
 
 [![Latest release](https://img.shields.io/github/v/release/cuihuir/radxa-a7z-display?label=latest)](https://github.com/cuihuir/radxa-a7z-display/releases/latest)
 [![Debian 12](https://img.shields.io/badge/Debian-12%20Bookworm-A81D33)](https://www.debian.org/releases/bookworm/)
