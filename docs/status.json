@@ -100,24 +100,24 @@
       "zh": "仓库：已发布到 GitHub 并持续维护。"
     },
     {
-      "en": "Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).",
-      "zh": "已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)。"
+      "en": "Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.1.1-a733-debian12-kde-raw).",
+      "zh": "已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.1.1-a733-debian12-kde-raw)。"
     },
     {
-      "en": "Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).",
-      "zh": "显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。"
+      "en": "Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.2.1-a733-full-kernel-display).",
+      "zh": "显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.2.1-a733-full-kernel-display)。"
     },
     {
-      "en": "GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.",
-      "zh": "GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。"
+      "en": "GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.",
+      "zh": "GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。"
     },
     {
-      "en": "Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.",
-      "zh": "热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。"
+      "en": "Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.",
+      "zh": "热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。"
     },
     {
-      "en": "Power-loss recovery image: [`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.",
-      "zh": "断电恢复镜像：[`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。"
+      "en": "Power-loss recovery image: [`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.3-a733-touchscreen-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.",
+      "zh": "断电恢复镜像：[`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.3-a733-touchscreen-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。"
     }
   ],
   "capabilities": [

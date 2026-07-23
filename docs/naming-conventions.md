@@ -2,7 +2,7 @@
 
 ## Repository name
 
-Use `radxa-a7z-display` for the repository and project identity.
+Use `radxa-a7z-debian12` for the repository and project identity.
 
 ## File naming
 
@@ -20,4 +20,3 @@ Use `radxa-a7z-display` for the repository and project identity.
 - Use short, concrete titles.
 - Include the date in the file name if the entry is meant to be a standalone record.
 - Prefer one decision per entry when possible.
-

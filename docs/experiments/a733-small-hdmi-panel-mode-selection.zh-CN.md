@@ -48,7 +48,7 @@ preferred 时序。
 ```bash
 git clone --recurse-submodules https://github.com/radxa-pkg/linux-a733.git
 cd linux-a733
-git -C bsp apply /path/to/radxa-a7z-display/patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch
+git -C bsp apply /path/to/radxa-a7z-debian12/patches/a733-bsp/0001-drm-prefer-edid-native-mode.patch
 make deb
 ```
 

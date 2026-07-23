@@ -51,11 +51,11 @@
 ## 当前里程碑
 
 - 仓库：已发布到 GitHub 并持续维护。
-- 已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw)。
-- 显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display)。
-- GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。
-- 热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。
-- 断电恢复镜像：[`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。
+- 已验证镜像：[`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.1.1-a733-debian12-kde-raw)。
+- 显示内核：[`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.2.1-a733-full-kernel-display)。
+- GPU 镜像：[`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.0-a733-pvr-gpu)，整合已验证的显示内核和 PowerVR 第一版移植。
+- 热插拔更新：[`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.1-a733-hdmi-hotplug)，修复 HDMI 重连并强化 `l0`/`l1` 启动项。
+- 断电恢复镜像：[`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.3-a733-touchscreen-recovery)，加入实机验证的 early-fsck 路径和可直接烧录的整合镜像。
 
 ## 下一阶段
 

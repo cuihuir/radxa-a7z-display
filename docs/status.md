@@ -51,11 +51,11 @@ Status: ✅ working · 📘 documented · 🧪 awaiting validation · 🚧 in pr
 ## Current Milestone
 
 - Repository: published and maintained on GitHub.
-- Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.1.1-a733-debian12-kde-raw).
-- Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.2.1-a733-full-kernel-display).
-- GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
-- Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.
-- Power-loss recovery image: [`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-display/releases/tag/v0.3.3-a733-touchscreen-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.
+- Verified image: [`v0.1.1-a733-debian12-kde-raw`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.1.1-a733-debian12-kde-raw).
+- Display kernel: [`v0.2.1-a733-full-kernel-display`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.2.1-a733-full-kernel-display).
+- GPU image: [`v0.3.0-a733-pvr-gpu`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.0-a733-pvr-gpu), combining the verified display kernel and first PowerVR port.
+- Hotplug update: [`v0.3.1-a733-hdmi-hotplug`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.1-a733-hdmi-hotplug), fixing HDMI reconnect and hardening `l0`/`l1` boot entries.
+- Power-loss recovery image: [`v0.3.3-a733-touchscreen-recovery`](https://github.com/cuihuir/radxa-a7z-debian12/releases/tag/v0.3.3-a733-touchscreen-recovery), adding a hardware-tested early-fsck path and a ready-to-flash integrated image.
 
 ## Next Milestones
 
